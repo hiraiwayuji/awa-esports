@@ -7,6 +7,7 @@ import {
   Megaphone,
   Mic2,
   Shield,
+  Crosshair,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -51,6 +52,16 @@ export const staff: StaffMember[] = [
     accent: "violet",
     rank: "LEGEND",
     callsign: "KING",
+  },
+  {
+    id: "STAFF-008",
+    role: "チーム戦術ディレクター / TACTICS",
+    name: "あぷ",
+    tagline: "盤面を読み、勝ち筋を描く。",
+    icon: Crosshair,
+    accent: "cyan",
+    rank: "S",
+    callsign: "APU",
   },
   {
     id: "STAFF-004",
