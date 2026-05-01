@@ -1,12 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import SectionTitle from "@/components/SectionTitle";
 import MemberCard from "@/components/MemberCard";
+import MemberModal from "@/components/MemberModal";
 import PageTransition from "@/components/PageTransition";
-import { staff, players } from "@/lib/data";
+import { staff, players, type StaffMember } from "@/lib/data";
 
 export default function MembersPage() {
+  const [selected, setSelected] = useState<StaffMember | null>(null);
+
   return (
     <PageTransition>
       {/* Hero */}
@@ -25,7 +29,12 @@ export default function MembersPage() {
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {staff.map((m, i) => (
-              <MemberCard key={m.id} member={m} index={i} />
+              <MemberCard
+                key={m.id}
+                member={m}
+                index={i}
+                onClick={() => setSelected(m)}
+              />
             ))}
           </div>
         </div>
@@ -77,6 +86,8 @@ export default function MembersPage() {
           </p>
         </div>
       </section>
+
+      <MemberModal member={selected} onClose={() => setSelected(null)} />
     </PageTransition>
   );
 }

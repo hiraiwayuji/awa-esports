@@ -38,9 +38,11 @@ const accentMap = {
 export default function MemberCard({
   member,
   index,
+  onClick,
 }: {
   member: StaffMember;
   index: number;
+  onClick?: () => void;
 }) {
   const a = accentMap[member.accent];
   const Icon = member.icon;
@@ -54,11 +56,15 @@ export default function MemberCard({
       whileHover={{ y: -6 }}
       className="group relative"
     >
-      <div
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={`${member.name}の詳細を見る`}
         className={clsx(
-          "relative h-full rounded-2xl border bg-awa-indigo-900/50 backdrop-blur-md p-6 overflow-hidden transition-shadow duration-500",
+          "relative h-full w-full text-left rounded-2xl border bg-awa-indigo-900/50 backdrop-blur-md p-6 overflow-hidden transition-shadow duration-500 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-awa-indigo-950",
           a.border,
           a.hoverShadow,
+          a.ring,
         )}
       >
         {/* Cyber corner brackets */}
@@ -135,7 +141,7 @@ export default function MemberCard({
 
         {/* Scan line on hover */}
         <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-line transition-opacity duration-500" />
-      </div>
+      </button>
     </motion.div>
   );
 }
