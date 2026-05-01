@@ -68,6 +68,7 @@ export const staff: StaffMember[] = [
     accent: "cyan",
     rank: "S",
     callsign: "SAMI",
+    avatarUrl: "/members/SAMI.png",
     bio: {
       headline: "出張・訪問専門の整体「さみ整体」を運営。独自の「RE-BODY施術」で、動く身体を本来の状態に戻すトレーナー。",
       paragraphs: [
@@ -95,6 +96,7 @@ export const staff: StaffMember[] = [
     accent: "violet",
     rank: "LEGEND",
     callsign: "KING",
+    avatarUrl: "/members/KING.jpg",
     bio: {
       headline: "BMXフラットランド初代世界王者。「BMX界のKING」と称される、徳島が世界に誇るレジェンド。",
       paragraphs: [
@@ -122,6 +124,7 @@ export const staff: StaffMember[] = [
     accent: "magenta",
     rank: "S",
     callsign: "XENO",
+    avatarUrl: "/members/XENO.jpg",
     bio: {
       headline: "徳島・藍住町を拠点に活動するブランディングデザイナー（UGDESIGN代表）。戦略から伴走するクリエイティブで、AWA ESPORTSのブランドを磨く。",
       paragraphs: [
