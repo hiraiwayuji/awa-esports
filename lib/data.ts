@@ -229,6 +229,7 @@ export const staff: StaffMember[] = [
 export type Player = {
   name: string;
   avatarUrl?: string;
+  avatarUrlHover?: string;
 };
 
 export const players: Player[] = [
@@ -240,7 +241,11 @@ export const players: Player[] = [
   { name: "岩ちゃん" },
   { name: "梅ドリル" },
   { name: "トーキン" },
-  { name: "シオン", avatarUrl: "/members/SHION.jpg" },
+  {
+    name: "シオン",
+    avatarUrl: "/members/SHION.jpg",
+    avatarUrlHover: "/members/SHION-2.jpg",
+  },
 ];
 
 export type NewsItem = {

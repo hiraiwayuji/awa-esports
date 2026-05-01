@@ -68,12 +68,23 @@ export default function MembersPage() {
                     <span className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse" />
                   </div>
                   {p.avatarUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={p.avatarUrl}
-                      alt={p.name}
-                      className="w-full aspect-square object-cover rounded-lg mb-3 border border-neon-cyan/30"
-                    />
+                    <div className="relative w-full aspect-square rounded-lg mb-3 border border-neon-cyan/30 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={p.avatarUrl}
+                        alt={p.name}
+                        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 group-hover:opacity-0"
+                      />
+                      {p.avatarUrlHover && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={p.avatarUrlHover}
+                          alt=""
+                          aria-hidden
+                          className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                        />
+                      )}
+                    </div>
                   )}
                   <div className="text-lg md:text-xl font-bold text-white">
                     {p.name}
