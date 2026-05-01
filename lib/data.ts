@@ -234,7 +234,7 @@ export const players: Player[] = [
   { name: "岩ちゃん" },
   { name: "梅ドリル" },
   { name: "トーキン" },
-  { name: "シオン" },
+  { name: "シオン", avatarUrl: "/members/SHION.jpg" },
 ];
 
 export type NewsItem = {
