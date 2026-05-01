@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --awa-indigo-950: #070B1F;
+  --neon-cyan: #00F0FF;
+  --awa-magenta: #FF2D95;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+  background-color: var(--awa-indigo-950);
+  color: #E6ECFF;
+  font-family: "Noto Sans JP", system-ui, sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(255, 45, 149, 0.18), transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 30%, rgba(0, 240, 255, 0.18), transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 110%, rgba(155, 92, 255, 0.20), transparent 70%),
+    linear-gradient(180deg, #070B1F 0%, #0B1230 50%, #070B1F 100%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(0, 240, 255, 0.4);
+  color: #fff;
+}
+
+/* スクロールバー（Webkit） */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #070B1F;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #FF2D95, #00F0FF);
+  border-radius: 999px;
+}
+
+/* Cyber grid utility */
+.cyber-grid {
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* Glitch text */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.glitch::before {
+  color: #FF2D95;
+  transform: translate(2px, 0);
+  mix-blend-mode: screen;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  opacity: 0.7;
+}
+.glitch::after {
+  color: #00F0FF;
+  transform: translate(-2px, 0);
+  mix-blend-mode: screen;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  opacity: 0.7;
+}
+
+/* Neon outline button */
+.neon-border {
+  position: relative;
+  isolation: isolate;
+}
+.neon-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #00F0FF, #FF2D95, #9B5CFF);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Section divider */
+.divider-neon {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.6), rgba(255, 45, 149, 0.6), transparent);
+}
+
+/* Form ring */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
