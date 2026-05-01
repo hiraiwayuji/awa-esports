@@ -96,12 +96,12 @@ export default function HomePage() {
               </span>
             </div>
 
-            <h1 className="font-display font-black leading-[0.95] text-[12vw] md:text-[7.5vw] lg:text-[6.5rem] tracking-tight">
+            <h1 className="font-display font-black leading-[0.95] text-[9vw] md:text-[7.5vw] lg:text-[6.5rem] tracking-tight">
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="block text-white"
+                className="block text-white whitespace-nowrap"
               >
                 eSPORTSを通じて
               </motion.span>
@@ -109,7 +109,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7, delay: 0.25 }}
-                className="block bg-clip-text text-transparent bg-gradient-to-r from-awa-magenta via-awa-violet to-neon-cyan"
+                className="block whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-awa-magenta via-awa-violet to-neon-cyan"
               >
                 徳島を盛り上げる
               </motion.span>

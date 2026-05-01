@@ -7,6 +7,7 @@ import {
   Megaphone,
   Mic2,
   Shield,
+  Rocket,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -221,6 +222,36 @@ export const staff: StaffMember[] = [
       links: [
         { label: "X (@2019consme)", url: "https://x.com/2019consme" },
         { label: "リンク集", url: "https://x.gd/uRl8C" },
+      ],
+    },
+  },
+  {
+    id: "STAFF-008",
+    role: "ローンチアドバイザー / LAUNCH ADVISOR",
+    name: "DOPENESS",
+    tagline: "Pave the way ─ 道を切り開く力。",
+    icon: Rocket,
+    accent: "violet",
+    rank: "S+",
+    callsign: "DOPE",
+    avatarUrl: "/members/DOPE.jpg",
+    bio: {
+      headline: "「Pave the Way（道を切り開け）」を掲げる日本のeスポーツ組織。DNECUP・DNEWIN を主催し、Esports World Cup 2025 SF6 にも登場した実績を持つ。",
+      paragraphs: [
+        "合同会社DopeNess が運営する、国内eスポーツの最前線で活動する組織。「DNEWIN」「DNECUP」などのトーナメントを主催し、Esports World Cup 2025 SF6 への出場実績もある、日本eスポーツシーンを牽引する一角。",
+        "ELECOM、JapanNext、REDMAGIC、hi-ho ひかり withgames などのゲーミング業界トップブランドをパートナーに持ち、業界の最新動向と運営ノウハウを蓄積。AWA ESPORTSにとっては、地方発の挑戦を全国・世界レベルへ接続する Launch Advisor として、立ち上げ期の戦略・人脈面を支える重要な存在。",
+      ],
+      highlights: [
+        "合同会社DopeNess（国内eスポーツ組織）",
+        "DNECUP／DNEWIN 主催",
+        "Esports World Cup 2025 SF6 出場実績",
+        "ELECOM／JapanNext／REDMAGIC ほか業界トップブランドと提携",
+      ],
+      links: [
+        { label: "公式サイト", url: "https://www.dopeness.jp" },
+        { label: "X (@dopeness2021)", url: "https://x.com/dopeness2021" },
+        { label: "YouTube", url: "https://www.youtube.com/channel/UCyQ0nmrJhg4TApWDsL90V9A" },
+        { label: "Linktree", url: "https://linktr.ee/DOPENESS_DNE" },
       ],
     },
   },
