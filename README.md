@@ -79,6 +79,51 @@ npm run start
 
 ---
 
+## About カード背景の素材追加手順
+
+About ページの3つの文化カード（阿波踊り / ufotable / マチ★アソビ）には、ホバー時に背景でクロスフェードする画像/動画スライドショーが組み込まれています。素材を後から入れるだけで自動で動きます。
+
+### 1. 素材を配置
+```
+public/about/awa-odori/1.jpg
+public/about/awa-odori/2.jpg
+public/about/ufotable/1.jpg
+public/about/machi-asobi/loop.mp4   ← 動画もOK
+```
+
+ファイル名は自由。フォルダ名（`<slug>`）が `app/about/page.tsx` の `cultureCards[].slug` と対応します。
+
+### 2. `app/about/page.tsx` の `cultureCards` の `media` 配列に追記
+
+```ts
+{
+  slug: "awa-odori",
+  media: [
+    { type: "image", src: "/about/awa-odori/1.jpg", alt: "阿波踊り 夜の演舞" },
+    { type: "image", src: "/about/awa-odori/2.jpg", alt: "踊り子たちの躍動" },
+    { type: "video", src: "/about/awa-odori/loop.mp4" },
+  ],
+},
+```
+
+### 3. 仕様
+- `interval`（カード切替間隔）デフォルト 3500ms
+- `maxOpacity`（ホバー時の最大不透明度）デフォルト 0.4
+- 動画は自動 `muted` `loop` `playsInline` で再生（モバイル対応）
+- 配列が空のままでも、フォールバックパターン（カードごとの色のグラデ + 斜線）で動作
+
+### 推奨素材スペック
+- 画像：1600×900px 程度のJPEG（圧縮品質80）、各カード3〜5枚
+- 動画：MP4（H.264）、5〜15秒ループ、1〜3MB以内、ミュート前提
+
+### フリー素材の入手先（権利クリアなもの）
+- [Pexels Videos](https://www.pexels.com/videos/)（商用利用OK、クレジット不要）
+- [Coverr](https://coverr.co/)（CC0）
+- [Mixkit](https://mixkit.co/free-stock-video/)（無料ライセンス）
+- 阿波踊り公式素材は[徳島市公式](https://www.city.tokushima.tokushima.jp/)から問い合わせ
+
+---
+
 ## TODO（次のフェーズ）
 
 - [ ] フォーム送信先のバックエンド統合（Resend / Formspree）

@@ -1,9 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import SectionTitle from "@/components/SectionTitle";
 import NeonButton from "@/components/NeonButton";
 import PageTransition from "@/components/PageTransition";
+import HoverMediaSlideshow, {
+  type Media,
+} from "@/components/HoverMediaSlideshow";
 import {
   Flame,
   Building2,
@@ -13,24 +17,52 @@ import {
   Users,
 } from "lucide-react";
 
-const cultureCards = [
+type CultureCard = {
+  icon: typeof Flame;
+  title: string;
+  en: string;
+  desc: string;
+  slug: string;
+  fallbackColor: string;
+  /**
+   * 背景に流すメディア。空配列のままでも動作（フォールバックパターン表示）。
+   * 素材を入れる場合：public/about/<slug>/N.jpg を配置し、
+   * { type: "image", src: "/about/<slug>/N.jpg" } を追加するだけ。
+   * 動画は { type: "video", src: "/about/<slug>/N.mp4" } 。
+   */
+  media: Media[];
+};
+
+const cultureCards: CultureCard[] = [
   {
     icon: Flame,
     title: "阿波踊り",
     en: "AWA-ODORI",
     desc: "夏の夜を熱狂で染める日本最大級の踊り。徳島の血に流れる「躍動と一体感」は、e-sportsの観戦体験そのもの。",
+    slug: "awa-odori",
+    fallbackColor: "#FF2D95",
+    media: [
+      // 例: { type: "image", src: "/about/awa-odori/1.jpg", alt: "阿波踊り" },
+      // 例: { type: "video", src: "/about/awa-odori/loop.mp4" },
+    ],
   },
   {
     icon: Sparkles,
     title: "ufotable",
     en: "ANIMATION STUDIO",
     desc: "世界に轟くアニメーション制作スタジオが本拠を構える街。ものづくりと表現で世界を獲った前例が、ここにある。",
+    slug: "ufotable",
+    fallbackColor: "#9B5CFF",
+    media: [],
   },
   {
     icon: Building2,
     title: "マチ★アソビ",
     en: "POP CULTURE",
     desc: "徳島市街全体が舞台のサブカルチャー祭典。観客を巻き込み「街そのものを盛り上げる」DNAが息づく。",
+    slug: "machi-asobi",
+    fallbackColor: "#F0B95C",
+    media: [],
   },
 ];
 
@@ -62,6 +94,8 @@ const ranks = [
 ];
 
 export default function AboutPage() {
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+
   return (
     <PageTransition>
       {/* Hero */}
@@ -87,19 +121,36 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -6 }}
-                className="group relative rounded-2xl border border-white/10 bg-awa-indigo-900/40 backdrop-blur-md p-8 hover:border-awa-magenta/40 hover:shadow-magenta transition-all duration-500"
+                onMouseEnter={() => setHoverIdx(i)}
+                onMouseLeave={() => setHoverIdx((h) => (h === i ? null : h))}
+                onFocus={() => setHoverIdx(i)}
+                onBlur={() => setHoverIdx((h) => (h === i ? null : h))}
+                tabIndex={0}
+                className="group relative rounded-2xl border border-white/10 bg-awa-indigo-900/40 backdrop-blur-md p-8 hover:border-awa-magenta/40 hover:shadow-magenta transition-all duration-500 overflow-hidden"
               >
-                <div className="flex items-start justify-between mb-6">
-                  <div className="w-12 h-12 grid place-items-center rounded-lg border border-awa-magenta/30 bg-awa-magenta/5">
-                    <c.icon className="w-5 h-5 text-awa-magenta" />
+                {/* ホバー時のメディアスライドショー（背景） */}
+                <HoverMediaSlideshow
+                  media={c.media}
+                  active={hoverIdx === i}
+                  fallbackColor={c.fallbackColor}
+                  interval={3500}
+                  maxOpacity={0.4}
+                />
+
+                {/* カード本体 */}
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="w-12 h-12 grid place-items-center rounded-lg border border-awa-magenta/30 bg-awa-magenta/5 backdrop-blur">
+                      <c.icon className="w-5 h-5 text-awa-magenta" />
+                    </div>
+                    <span className="text-[10px] tracking-[0.3em] font-display text-white/30">
+                      {c.en}
+                    </span>
                   </div>
-                  <span className="text-[10px] tracking-[0.3em] font-display text-white/30">
-                    {c.en}
-                  </span>
+                  <h3 className="text-2xl font-bold text-white mb-3">{c.title}</h3>
+                  <p className="text-sm text-white/70 leading-relaxed">{c.desc}</p>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">{c.title}</h3>
-                <p className="text-sm text-white/60 leading-relaxed">{c.desc}</p>
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-awa-magenta transition-all duration-500 group-hover:w-full" />
+                <span className="absolute bottom-0 left-0 h-px w-0 bg-awa-magenta transition-all duration-500 group-hover:w-full z-10" />
               </motion.div>
             ))}
           </div>
