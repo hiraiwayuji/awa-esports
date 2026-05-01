@@ -173,7 +173,7 @@ export const staff: StaffMember[] = [
   {
     id: "STAFF-006",
     role: "チームアドバイザー / ADVISOR",
-    name: "トーキンさん",
+    name: "トーキン",
     tagline: "戦略と人を見るリアリスト。",
     icon: Shield,
     accent: "warmth",
@@ -199,7 +199,7 @@ export const staff: StaffMember[] = [
   {
     id: "STAFF-007",
     role: "実況サポーター / CASTER",
-    name: "コンソメさん",
+    name: "コンソメ",
     tagline: "歓声を、勝利の追い風に。",
     icon: Mic2,
     accent: "magenta",
