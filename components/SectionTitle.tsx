@@ -1,12 +1,13 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import clsx from "clsx";
 
 type Props = {
   eyebrow?: string;
-  title: string;
-  subtitle?: string;
+  title: ReactNode;
+  subtitle?: ReactNode;
   align?: "left" | "center";
   tone?: "neon" | "warm";
 };
@@ -49,7 +50,7 @@ export default function SectionTitle({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.1 }}
-        className="font-display font-black text-3xl md:text-5xl leading-tight text-white"
+        className="font-display font-black text-3xl md:text-5xl leading-tight text-white text-balance"
       >
         {title}
       </motion.h2>
@@ -59,7 +60,7 @@ export default function SectionTitle({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="mt-5 text-sm md:text-base text-white/70 leading-relaxed"
+          className="mt-5 text-sm md:text-base text-white/70 leading-relaxed text-balance"
         >
           {subtitle}
         </motion.p>

@@ -267,8 +267,20 @@ export default function PartnersPage() {
         <div className="mx-auto max-w-3xl px-5 md:px-8">
           <SectionTitle
             eyebrow="CONTACT / お問い合わせ"
-            title="まずは、お話を聞かせてください。"
-            subtitle="プランの詳細、ご予算のご相談、コラボイベントのご提案など、お気軽にどうぞ。代表ぼーるくんから直接ご連絡いたします。"
+            title={
+              <>
+                まずは、お話を
+                <br />
+                聞かせてください。
+              </>
+            }
+            subtitle={
+              <>
+                プランの詳細、ご予算のご相談、コラボイベントのご提案など、お気軽にどうぞ。
+                <br />
+                代表ぼーるくんから直接ご連絡いたします。
+              </>
+            }
             tone="warm"
             align="center"
           />
