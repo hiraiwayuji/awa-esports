@@ -98,6 +98,22 @@ export const staff: StaffMember[] = [
     accent: "magenta",
     rank: "S",
     callsign: "XENO",
+    bio: {
+      headline: "徳島・藍住町を拠点に活動するブランディングデザイナー（UGDESIGN代表）。戦略から伴走するクリエイティブで、AWA ESPORTSのブランドを磨く。",
+      paragraphs: [
+        "18歳で地元徳島の製造業からキャリアをスタートし、大阪での製造業勤務と並行して専門学校でWEB制作を学ぶ。徳島に戻ってネットショップのデザイナーとして従事した後、マーケティングとWebサイト開発の領域で経験を積み、2023年に独立。現在はUGDESIGNとして、ロゴ・Web・販促物の戦略設計から制作までを一貫して手がける。",
+        "「見た目だけではないデザイン」を信条に、要件定義からブランドの輪郭を引き直し、クライアントとポジティブな関係を築きながら制作するスタイル。AWA ESPORTSのブランドが「徳島から世界へ」届く熱量を持てるよう、ビジュアル面の最終ジャッジを担う。",
+      ],
+      highlights: [
+        "UGDESIGN 代表（徳島県藍住町）",
+        "ロゴ・Web・販促物の戦略設計から一貫制作",
+        "Delivery's Kitchen 青山／BARBERSHOP HOME ほか実績多数",
+      ],
+      links: [
+        { label: "Instagram", url: "https://www.instagram.com/xeno.branding/" },
+        { label: "UGDESIGN", url: "https://ugdesign.jp" },
+      ],
+    },
   },
   {
     id: "STAFF-005",
