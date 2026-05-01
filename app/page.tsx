@@ -127,11 +127,13 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55, duration: 0.7 }}
-              className="mt-8 max-w-xl text-sm md:text-base text-white/70 leading-relaxed"
+              className="mt-8 max-w-xl text-sm md:text-base text-white/70 leading-relaxed text-balance"
             >
               阿波踊りの躍動感、藍色の深み。
               <br />
-              徳島の魂をデジタルの最前線へ。誰もが主役になれる、新しい競技の物語を。
+              徳島の魂をデジタルの最前線へ。
+              <br />
+              誰もが主役になれる、新しい競技の物語を。
             </motion.p>
 
             <motion.div
@@ -309,8 +311,10 @@ export default function HomePage() {
                   あなたかもしれない。
                 </span>
               </h3>
-              <p className="mt-6 text-white/60">
-                応募は1分で完了。徳島県民、または元徳島県民が対象です。
+              <p className="mt-6 text-white/60 text-balance">
+                応募は1分で完了。
+                <br className="sm:hidden" />
+                徳島県民、または元徳島県民が対象です。
               </p>
               <div className="mt-10 flex flex-wrap justify-center gap-4">
                 <NeonButton href="/join">エントリーする</NeonButton>

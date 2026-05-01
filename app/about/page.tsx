@@ -105,7 +105,13 @@ export default function AboutPage() {
           <SectionTitle
             eyebrow="ABOUT US / 私たちについて"
             title="徳島には、世界へ届く熱がある。"
-            subtitle="ufotableが、阿波踊りが、マチ★アソビが、徳島を世界の舞台へ押し上げてきた。次の主役はeスポーツ。私たちは、徳島の物語に新しい1ページを書き加える。"
+            subtitle={
+              <>
+                ufotableが、阿波踊りが、マチ★アソビが、徳島を世界の舞台へ押し上げてきた。
+                <br />
+                次の主役はeスポーツ。私たちは、徳島の物語に新しい1ページを書き加える。
+              </>
+            }
           />
         </div>
       </section>
@@ -204,7 +210,13 @@ export default function AboutPage() {
           <SectionTitle
             eyebrow="RANK SYSTEM"
             title="熱量で、駆け上がれ。"
-            subtitle="所属プレイヤーには公式ランクが付与される。スキルだけでなく、チームへの貢献、地域への発信も含めた多面的な評価で、誰もが上を目指せる。"
+            subtitle={
+              <>
+                所属プレイヤーには公式ランクが付与される。
+                <br />
+                スキルだけでなく、チームへの貢献、地域への発信も含めた多面的な評価で、誰もが上を目指せる。
+              </>
+            }
           />
           <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {ranks.map((r, i) => (

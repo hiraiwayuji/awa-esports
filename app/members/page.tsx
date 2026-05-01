@@ -19,7 +19,13 @@ export default function MembersPage() {
           <SectionTitle
             eyebrow="MEMBERS / 仲間たち"
             title="阿波の旗印を、共に掲げる。"
-            subtitle="代表、トレーナー、レジェンド、戦略家。徳島の各分野からプロフェッショナルが集結し、ひとつのチームとして世界を目指します。"
+            subtitle={
+              <>
+                代表、トレーナー、レジェンド、戦略家。
+                <br />
+                徳島の各分野からプロフェッショナルが集結し、ひとつのチームとして世界を目指します。
+              </>
+            }
           />
         </div>
       </section>

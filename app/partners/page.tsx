@@ -131,7 +131,13 @@ export default function PartnersPage() {
           <SectionTitle
             eyebrow="SPONSORSHIP PLANS"
             title="地域に愛される、3つの応援のかたち。"
-            subtitle="大企業の名前を借りるためではなく、徳島の人々と一緒に育つ仕組みとして設計しました。あなたの想いに合うプランがきっとあります。"
+            subtitle={
+              <>
+                大企業の名前を借りるためではなく、徳島の人々と一緒に育つ仕組みとして設計しました。
+                <br />
+                あなたの想いに合うプランがきっとあります。
+              </>
+            }
             tone="warm"
           />
 
@@ -218,7 +224,13 @@ export default function PartnersPage() {
           <SectionTitle
             eyebrow="BENEFITS / メリット"
             title="数字以上の、価値を届けます。"
-            subtitle="広告として消費される協賛ではなく、地域と未来に投資する応援。あなたの企業ブランドにも、ここでしか得られない価値を。"
+            subtitle={
+              <>
+                広告として消費される協賛ではなく、地域と未来に投資する応援。
+                <br />
+                あなたの企業ブランドにも、ここでしか得られない価値を。
+              </>
+            }
             tone="warm"
           />
 

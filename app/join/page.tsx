@@ -54,7 +54,13 @@ export default function JoinPage() {
           <SectionTitle
             eyebrow="JOIN US / 参加申込"
             title="READY PLAYER ONE?"
-            subtitle="徳島県民、または元徳島限定。年齢・経験は問いません。あなたの「やってみたい」が、AWA ESPORTS の次の一歩になります。"
+            subtitle={
+              <>
+                徳島県民、または元徳島限定。年齢・経験は問いません。
+                <br />
+                あなたの「やってみたい」が、AWA ESPORTS の次の一歩になります。
+              </>
+            }
           />
         </div>
       </section>

@@ -36,7 +36,13 @@ export default function NewsPage() {
           <SectionTitle
             eyebrow="NEWS & EVENTS"
             title="最新の動きを、ここから。"
-            subtitle="練習会、大会参戦、メディア出演。AWA ESPORTSの全ての挑戦を、リアルタイムでお届けします。"
+            subtitle={
+              <>
+                練習会、大会参戦、メディア出演。
+                <br />
+                AWA ESPORTSの全ての挑戦を、リアルタイムでお届けします。
+              </>
+            }
           />
 
           <div className="mt-10 flex flex-wrap gap-2">
