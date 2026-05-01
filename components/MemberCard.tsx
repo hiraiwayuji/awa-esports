@@ -109,12 +109,21 @@ export default function MemberCard({
         <div className="relative z-10 flex items-center gap-5 mb-6">
           <div
             className={clsx(
-              "relative w-16 h-16 grid place-items-center rounded-xl border",
+              "relative w-16 h-16 grid place-items-center rounded-xl border overflow-hidden",
               a.border,
               "bg-awa-indigo-950/80",
             )}
           >
-            <Icon className={clsx("w-7 h-7", a.text)} />
+            {member.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={member.avatarUrl}
+                alt={member.name}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <Icon className={clsx("w-7 h-7", a.text)} />
+            )}
             <span
               className={clsx(
                 "absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse-slow ring-2",

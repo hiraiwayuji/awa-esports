@@ -52,7 +52,7 @@ export default function MembersPage() {
           <div className="mt-14 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {players.map((p, i) => (
               <motion.div
-                key={p}
+                key={p.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -67,8 +67,16 @@ export default function MembersPage() {
                     </span>
                     <span className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse" />
                   </div>
+                  {p.avatarUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={p.avatarUrl}
+                      alt={p.name}
+                      className="w-full aspect-square object-cover rounded-lg mb-3 border border-neon-cyan/30"
+                    />
+                  )}
                   <div className="text-lg md:text-xl font-bold text-white">
-                    {p}
+                    {p.name}
                   </div>
                   <div className="mt-1 text-[10px] tracking-[0.3em] font-display text-white/40">
                     PLAYER

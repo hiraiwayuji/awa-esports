@@ -26,6 +26,7 @@ export type StaffMember = {
   accent: "cyan" | "magenta" | "violet" | "warmth";
   rank: string;
   callsign: string;
+  avatarUrl?: string;
   bio?: StaffBio;
 };
 
@@ -39,6 +40,7 @@ export const staff: StaffMember[] = [
     accent: "magenta",
     rank: "S+",
     callsign: "BALL",
+    avatarUrl: "/members/BALL.jpg",
     bio: {
       headline: "元・徳島ヴォルティスのマスコット「ぼーるくん」。現在は藍住で「ボール接骨院」を営みつつ、副業で動画編集も手がける、領域横断の連続事業家。",
       paragraphs: [
@@ -168,6 +170,7 @@ export const staff: StaffMember[] = [
     accent: "warmth",
     rank: "A+",
     callsign: "TOKIN",
+    avatarUrl: "/members/TOKIN.jpg",
     bio: {
       headline: "ストリートファイター6 ジュリ使い／アジア9位。徳島のFGC（格闘ゲームコミュニティ）を牽引する、現場主義のアドバイザー。",
       paragraphs: [
@@ -193,6 +196,7 @@ export const staff: StaffMember[] = [
     accent: "magenta",
     rank: "A+",
     callsign: "CONSO",
+    avatarUrl: "/members/CONSO.jpg",
     bio: {
       headline: "YouTube「コンソメゲームチャンネル」運営。「変な格ゲー会」代表／TGP元代表として、徳島の格ゲーシーンを長年盛り上げ続ける実況・ハイプ役。",
       paragraphs: [
@@ -213,16 +217,21 @@ export const staff: StaffMember[] = [
   },
 ];
 
-export const players = [
-  "ホーク",
-  "にっしん",
-  "カジコ",
-  "ボール",
-  "キング",
-  "岩ちゃん",
-  "梅ドリル",
-  "トーキン",
-  "シオン",
+export type Player = {
+  name: string;
+  avatarUrl?: string;
+};
+
+export const players: Player[] = [
+  { name: "ホーク" },
+  { name: "にっしん" },
+  { name: "カジコ" },
+  { name: "ボール" },
+  { name: "キング" },
+  { name: "岩ちゃん" },
+  { name: "梅ドリル" },
+  { name: "トーキン" },
+  { name: "シオン" },
 ];
 
 export type NewsItem = {

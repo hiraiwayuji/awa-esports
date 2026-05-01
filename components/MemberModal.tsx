@@ -150,11 +150,20 @@ function ModalContent({
         <div className="flex items-center gap-5 mb-7">
           <div
             className={clsx(
-              "relative w-20 h-20 grid place-items-center rounded-xl border bg-awa-indigo-950/80",
+              "relative w-24 h-24 grid place-items-center rounded-xl border bg-awa-indigo-950/80 overflow-hidden",
               a.border,
             )}
           >
-            <Icon className={clsx("w-9 h-9", a.text)} />
+            {member.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={member.avatarUrl}
+                alt={member.name}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <Icon className={clsx("w-10 h-10", a.text)} />
+            )}
           </div>
           <div className="flex flex-col">
             <span
