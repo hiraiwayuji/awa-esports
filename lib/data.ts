@@ -103,6 +103,7 @@ export const players = [
   "岩ちゃん",
   "梅ドリル",
   "トーキン",
+  "シオン",
 ];
 
 export type NewsItem = {
