@@ -193,6 +193,23 @@ export const staff: StaffMember[] = [
     accent: "magenta",
     rank: "A+",
     callsign: "CONSO",
+    bio: {
+      headline: "YouTube「コンソメゲームチャンネル」運営。「変な格ゲー会」代表／TGP元代表として、徳島の格ゲーシーンを長年盛り上げ続ける実況・ハイプ役。",
+      paragraphs: [
+        "ゲームトーク番組・ゲーム配信を主軸にしたYouTubeチャンネル「コンソメゲームチャンネル」を運営。「変な格ゲー会」の代表として、また「TGP」の元代表として、徳島の格闘ゲームコミュニティを長年運営してきた、コミュニティハブ的存在。",
+        "「明日も誰かの面白かったのために」をモットーに、現場の熱を声と編集で届ける。AWA ESPORTSにおいては、試合やイベントを実況解説で盛り上げ、観る側のテンションを最大化する CASTER ロールを担う。",
+      ],
+      highlights: [
+        "YouTube「コンソメゲームチャンネル」運営",
+        "「変な格ゲー会」代表",
+        "TGP（徳島の格ゲー会）元代表",
+        "ゲーム配信・実況・編集",
+      ],
+      links: [
+        { label: "X (@2019consme)", url: "https://x.com/2019consme" },
+        { label: "リンク集", url: "https://x.gd/uRl8C" },
+      ],
+    },
   },
 ];
 
