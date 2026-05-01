@@ -99,16 +99,17 @@ export const staff: StaffMember[] = [
       headline: "BMXフラットランド初代世界王者。「BMX界のKING」と称される、徳島が世界に誇るレジェンド。",
       paragraphs: [
         "徳島県藍住町出身。高校2年の時にテレビCMで見たBMXフラットランドに一目ぼれし、1994年から競技を開始。2001年に国内年間王者に輝き、2007年には3カ国を転戦する同競技史上初の世界サーキットで初代総合王者となる。",
-        "2018年のFISE広島では日本人最年長にして5位入賞を果たし、再起を決断。現在は徳島でBMXスクール「homebase」を主宰しながら次世代の育成に力を注ぐ。「世界一の身体感覚」と「プレッシャー下での集中力」をAWA ESPORTSに持ち込み、競技横断の知見でチームを底上げする存在。",
+        "2018年のFISE広島では日本人最年長にして5位入賞を果たし、再起を決断。現在は徳島でBMXスクール「Logical BMX」を主宰しながら次世代の育成に力を注ぐ。「世界一の身体感覚」と「プレッシャー下での集中力」をAWA ESPORTSに持ち込み、競技横断の知見でチームを底上げする存在。",
       ],
       highlights: [
         "BMXフラットランド 初代世界王者（2007年）",
         "BMX国内年間王者（2001年）",
         "FISE広島 日本人最年長5位入賞（2018年）",
-        "BMXスクール「homebase」主宰",
+        "BMXスクール「Logical BMX」主宰",
       ],
       links: [
-        { label: "Instagram", url: "https://www.instagram.com/hiroyamorizaki/" },
+        { label: "Instagram (本人)", url: "https://www.instagram.com/hiroyamorizaki/" },
+        { label: "Logical BMX", url: "https://www.instagram.com/logical_bmx/" },
       ],
     },
   },
