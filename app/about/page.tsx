@@ -8,6 +8,7 @@ import PageTransition from "@/components/PageTransition";
 import HoverMediaSlideshow, {
   type Media,
 } from "@/components/HoverMediaSlideshow";
+import AboutHoverArt from "@/components/AboutHoverArt";
 import {
   Flame,
   Building2,
@@ -22,7 +23,7 @@ type CultureCard = {
   title: string;
   en: string;
   desc: string;
-  slug: string;
+  slug: "awa-odori" | "ufotable" | "machi-asobi";
   fallbackColor: string;
   /**
    * 背景に流すメディア。空配列のままでも動作（フォールバックパターン表示）。
@@ -128,14 +129,18 @@ export default function AboutPage() {
                 tabIndex={0}
                 className="group relative rounded-2xl border border-white/10 bg-awa-indigo-900/40 backdrop-blur-md p-8 hover:border-awa-magenta/40 hover:shadow-magenta transition-all duration-500 overflow-hidden"
               >
-                {/* ホバー時のメディアスライドショー（背景） */}
-                <HoverMediaSlideshow
-                  media={c.media}
-                  active={hoverIdx === i}
-                  fallbackColor={c.fallbackColor}
-                  interval={3500}
-                  maxOpacity={0.4}
-                />
+                {/* ホバー時の背景演出 */}
+                {c.media.length > 0 ? (
+                  <HoverMediaSlideshow
+                    media={c.media}
+                    active={hoverIdx === i}
+                    fallbackColor={c.fallbackColor}
+                    interval={3500}
+                    maxOpacity={0.4}
+                  />
+                ) : (
+                  <AboutHoverArt slug={c.slug} active={hoverIdx === i} />
+                )}
 
                 {/* カード本体 */}
                 <div className="relative z-10">
