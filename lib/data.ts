@@ -66,6 +66,23 @@ export const staff: StaffMember[] = [
     accent: "cyan",
     rank: "S",
     callsign: "SAMI",
+    bio: {
+      headline: "出張・訪問専門の整体「さみ整体」を運営。独自の「RE-BODY施術」で、動く身体を本来の状態に戻すトレーナー。",
+      paragraphs: [
+        "ご自宅・現場に伺うスタイルの出張・訪問専門整体「さみ整体」を運営。独自の「RE-BODY施術」で、選手や生活者の身体ケアを担う。徳島のBMXシーンや地元の接骨院ネットワークと密接につながり、現場で動き続ける身体に寄り添ってきた人物。",
+        "AWA ESPORTSにおいては「勝つ身体は、整った身体から」という信条のもと、長時間プレーで歪みやすいプレーヤーの姿勢・コンディションを根本から整える。チームのパフォーマンス基盤を、身体面から支える存在。",
+      ],
+      highlights: [
+        "さみ整体 主宰（徳島・出張/訪問専門）",
+        "独自の「RE-BODY施術」",
+        "BMX・地元接骨院ネットワークと密接連携",
+        "前日予約推奨／LINEで受付",
+      ],
+      links: [
+        { label: "Instagram", url: "https://www.instagram.com/sami.seitai/" },
+        { label: "LINE予約", url: "https://lin.ee/sFWvNlQ" },
+      ],
+    },
   },
   {
     id: "STAFF-003",
