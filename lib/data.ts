@@ -135,7 +135,6 @@ export const staff: StaffMember[] = [
       highlights: [
         "UGDESIGN 代表（徳島県藍住町）",
         "ロゴ・Web・販促物の戦略設計から一貫制作",
-        "Delivery's Kitchen 青山／BARBERSHOP HOME ほか実績多数",
       ],
       links: [
         { label: "Instagram", url: "https://www.instagram.com/xeno.branding/" },
