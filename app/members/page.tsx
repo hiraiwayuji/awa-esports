@@ -153,34 +153,30 @@ function PlayerCard({
 
         {isLegend && p.stats && (
           <div className="mt-3 pt-3 border-t border-awa-magenta/15 space-y-1">
-            {(
-              [
-                { label: "AGG", value: p.stats.aggression },
-                { label: "PAT", value: p.stats.patience },
-                { label: "TM", value: p.stats.teamwork },
-                { label: "STR", value: p.stats.strategy },
-              ] as const
-            )
-              .filter(
-                (s): s is { label: string; value: number } =>
-                  typeof s.value === "number",
-              )
-              .map((s) => (
-                <div key={s.label} className="flex items-center gap-2">
-                  <span className="text-[8px] font-mono tracking-[0.2em] text-white/40 w-7">
-                    {s.label}
-                  </span>
-                  <div className="flex-1 h-1 bg-awa-indigo-950/60 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-awa-magenta to-awa-violet shadow-[0_0_4px_rgba(255,45,149,0.6)]"
-                      style={{ width: `${s.value}%` }}
-                    />
-                  </div>
-                  <span className="text-[8px] font-mono text-awa-magenta/70 w-6 text-right">
-                    {s.value}
-                  </span>
+            {([
+              { label: "AGG", value: p.stats.aggression },
+              { label: "PAT", value: p.stats.patience },
+              { label: "TM", value: p.stats.teamwork },
+              { label: "STR", value: p.stats.strategy },
+            ].filter((s) => typeof s.value === "number") as {
+              label: string;
+              value: number;
+            }[]).map((s) => (
+              <div key={s.label} className="flex items-center gap-2">
+                <span className="text-[8px] font-mono tracking-[0.2em] text-white/40 w-7">
+                  {s.label}
+                </span>
+                <div className="flex-1 h-1 bg-awa-indigo-950/60 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-awa-magenta to-awa-violet shadow-[0_0_4px_rgba(255,45,149,0.6)]"
+                    style={{ width: `${s.value}%` }}
+                  />
                 </div>
-              ))}
+                <span className="text-[8px] font-mono text-awa-magenta/70 w-6 text-right">
+                  {s.value}
+                </span>
+              </div>
+            ))}
           </div>
         )}
 
