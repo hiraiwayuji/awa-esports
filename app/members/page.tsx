@@ -11,8 +11,7 @@ import {
   staff,
   specialThanks,
   legendPlayers,
-  players,
-  farmTeam,
+  traineePlayers,
   type Player,
   type StaffMember,
 } from "@/lib/data";
@@ -152,9 +151,9 @@ export default function MembersPage() {
             title="PLAYERS"
             subtitle={
               <>
-                AWA ESPORTSの旗のもと、公式戦・練習会で活動中のプレーヤー陣。
+                徳島の旗を掲げる現役レジェンド陣と、
                 <br />
-                レジェンド・現役・下部組織の3層体制で次世代へつなぐ。
+                これからを担う練習生たち。
               </>
             }
           />
@@ -164,7 +163,7 @@ export default function MembersPage() {
             <div className="flex items-center gap-3 mb-6">
               <span className="h-px w-8 bg-awa-magenta" />
               <span className="text-xs font-display tracking-[0.35em] text-awa-magenta">
-                LEGEND PLAYERS / レジェンド枠
+                LEGEND PLAYERS / レジェンド
               </span>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -174,42 +173,17 @@ export default function MembersPage() {
             </div>
           </div>
 
-          {/* Active Players */}
-          <div className="mt-16">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="h-px w-8 bg-neon-cyan" />
-              <span className="text-xs font-display tracking-[0.35em] text-neon-cyan">
-                ACTIVE PLAYERS / 現役プレーヤー
-              </span>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {players.map((p, i) => (
-                <PlayerCard key={p.name} p={p} i={i} />
-              ))}
-            </div>
-          </div>
-
-          {/* Farm Team */}
+          {/* Trainees */}
           <div className="mt-16">
             <div className="flex items-center gap-3 mb-6">
               <span className="h-px w-8 bg-awa-warmth" />
               <span className="text-xs font-display tracking-[0.35em] text-awa-warmth">
-                FARM TEAM / 下部組織
+                TRAINEES / 練習生
               </span>
             </div>
-            <div className="flex flex-wrap gap-3">
-              {farmTeam.map((m, i) => (
-                <motion.span
-                  key={m.name}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-awa-indigo-900/40 px-4 py-2 text-sm text-white/70 hover:border-awa-warmth/50 hover:text-white transition-colors"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-awa-warmth/70" />
-                  {m.name}
-                </motion.span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {traineePlayers.map((p, i) => (
+                <PlayerCard key={p.name} p={p} i={i} />
               ))}
             </div>
           </div>

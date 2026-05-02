@@ -274,12 +274,6 @@ export type Player = {
 };
 
 export const legendPlayers: Player[] = [
-  { name: "（仮）KAZUYA" },
-  { name: "（仮）TAKESHI" },
-  { name: "（仮）SHIGEKI" },
-];
-
-export const players: Player[] = [
   {
     name: "ホーク",
     socials: { twitch: "https://www.twitch.tv/hawkfgc" },
@@ -298,11 +292,7 @@ export const players: Player[] = [
   },
 ];
 
-export type FarmMember = {
-  name: string;
-};
-
-export const farmTeam: FarmMember[] = [
+export const traineePlayers: Player[] = [
   { name: "（仮）ユウト" },
   { name: "（仮）ハルマ" },
   { name: "（仮）ソウタ" },
