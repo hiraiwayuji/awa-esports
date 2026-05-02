@@ -78,7 +78,17 @@ function PlayerCard({
             />
           ))}
 
-        <div className="flex items-start justify-between mb-3">
+        {/* Big background number for legend cards */}
+        {isLegend && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -bottom-4 -right-2 font-display font-black text-[5.5rem] leading-none text-awa-magenta/[0.08] select-none tracking-tighter"
+          >
+            {String(i + 1).padStart(2, "0")}
+          </span>
+        )}
+
+        <div className="relative flex items-start justify-between mb-3">
           <span className={`text-[9px] font-mono tracking-[0.25em] ${accentText}/70`}>
             {String(i + 1).padStart(3, "0")}
           </span>
@@ -140,6 +150,39 @@ function PlayerCard({
         >
           {labelText}
         </div>
+
+        {isLegend && p.stats && (
+          <div className="mt-3 pt-3 border-t border-awa-magenta/15 space-y-1">
+            {(
+              [
+                { label: "AGG", value: p.stats.aggression },
+                { label: "PAT", value: p.stats.patience },
+                { label: "TM", value: p.stats.teamwork },
+                { label: "STR", value: p.stats.strategy },
+              ] as const
+            )
+              .filter(
+                (s): s is { label: string; value: number } =>
+                  typeof s.value === "number",
+              )
+              .map((s) => (
+                <div key={s.label} className="flex items-center gap-2">
+                  <span className="text-[8px] font-mono tracking-[0.2em] text-white/40 w-7">
+                    {s.label}
+                  </span>
+                  <div className="flex-1 h-1 bg-awa-indigo-950/60 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-awa-magenta to-awa-violet shadow-[0_0_4px_rgba(255,45,149,0.6)]"
+                      style={{ width: `${s.value}%` }}
+                    />
+                  </div>
+                  <span className="text-[8px] font-mono text-awa-magenta/70 w-6 text-right">
+                    {s.value}
+                  </span>
+                </div>
+              ))}
+          </div>
+        )}
 
         {p.socials &&
           (p.socials.twitch ||
@@ -271,14 +314,46 @@ export default function MembersPage() {
           />
 
           {/* Legend Players */}
-          <div className="mt-14">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="h-px w-8 bg-awa-magenta" />
-              <span className="text-xs font-display tracking-[0.35em] text-awa-magenta">
-                LEGEND PLAYERS / レジェンド
-              </span>
+          <div className="mt-14 relative">
+            {/* Massive background watermark */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -top-8 left-0 right-0 select-none font-display font-black text-[18vw] md:text-[14vw] lg:text-[11rem] leading-none tracking-tighter text-awa-magenta/[0.05] uppercase whitespace-nowrap overflow-hidden"
+            >
+              LEGEND
+            </span>
+
+            {/* Title block */}
+            <div className="relative">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="h-px w-8 bg-awa-magenta" />
+                <span className="text-[10px] font-display tracking-[0.4em] text-awa-magenta">
+                  LEGEND PLAYERS / レジェンド
+                </span>
+              </div>
+              <h2 className="font-display font-black text-3xl md:text-4xl lg:text-5xl tracking-tight">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-magenta via-awa-magenta to-awa-violet drop-shadow-[0_0_24px_rgba(255,45,149,0.5)]">
+                  徳島の覇者たち。
+                </span>
+              </h2>
+
+              {/* HUD status bar */}
+              <div className="mt-3 flex items-center gap-3 text-[10px] font-mono tracking-[0.25em] text-white/50 flex-wrap">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_6px_rgba(74,222,128,0.8)]" />
+                  <span>
+                    ROSTER {String(legendPlayers.length).padStart(2, "0")}/∞
+                  </span>
+                </span>
+                <span className="text-white/20">/</span>
+                <span className="text-awa-magenta">
+                  STATUS: READY FOR BATTLE
+                </span>
+              </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+
+            {/* Cards — hover focus: dim sibling cards on hover */}
+            <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 [&:hover>*:not(:hover)]:opacity-40 [&>*]:transition-opacity [&>*]:duration-300">
               {legendPlayers.map((p, i) => (
                 <PlayerCard
                   key={p.name}

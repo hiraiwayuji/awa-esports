@@ -276,6 +276,13 @@ export type PlayerSponsor = {
   tier?: "MAIN" | "SUB" | string;
 };
 
+export type PlayerStats = {
+  aggression?: number;
+  patience?: number;
+  teamwork?: number;
+  strategy?: number;
+};
+
 export type Player = {
   name: string;
   avatarUrl?: string;
@@ -285,6 +292,7 @@ export type Player = {
   tagline?: string;
   bio?: PlayerBio;
   sponsors?: PlayerSponsor[];
+  stats?: PlayerStats;
 };
 
 export const legendPlayers: Player[] = [
@@ -315,6 +323,12 @@ export const legendPlayers: Player[] = [
       { name: "（仮）パーソナルスポンサー A", tier: "MAIN" },
       { name: "（仮）パーソナルスポンサー B" },
     ],
+    stats: {
+      aggression: 75,
+      patience: 80,
+      teamwork: 60,
+      strategy: 70,
+    },
   },
   { name: "カジコ" },
   { name: "ボール" },
@@ -339,6 +353,12 @@ export const legendPlayers: Player[] = [
         "スタイル：チーム重視 × 攻撃的",
       ],
       message: "勝ちにこだわることも大事ですが、楽しくゲームできることを大切にしたいです＾＾",
+    },
+    stats: {
+      aggression: 70,
+      patience: 60,
+      teamwork: 90,
+      strategy: 85,
     },
   },
   { name: "梅ドリル" },
