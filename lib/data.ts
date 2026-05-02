@@ -199,7 +199,7 @@ export const staff: StaffMember[] = [
 export const specialThanks: StaffMember[] = [
   {
     id: "SPECIAL-001",
-    role: "テクニカルアドバイザー / TECH",
+    role: "講師 / LECTURER",
     name: "四国大学 長瀬教授",
     tagline: "学術と現場をつなぐ思考の架け橋。",
     icon: Cpu,

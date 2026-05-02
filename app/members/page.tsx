@@ -10,7 +10,6 @@ import PlayerModal from "@/components/PlayerModal";
 import PageTransition from "@/components/PageTransition";
 import {
   staff,
-  specialThanks,
   legendPlayers,
   traineePlayers,
   type Player,
@@ -226,33 +225,6 @@ export default function MembersPage() {
           <p className="mt-12 text-center text-xs text-white/40 tracking-[0.2em] font-display">
             ROSTER UPDATED 2026 / NEW MEMBERS WELCOME
           </p>
-        </div>
-      </section>
-
-      {/* Special Thanks */}
-      <section className="relative pb-32">
-        <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <SectionTitle
-            eyebrow="SPECIAL THANKS / 特別協力"
-            title="外部から、旗を後押しする力。"
-            subtitle={
-              <>
-                学術と業界の最前線から、AWA ESPORTS の立ち上げを支えてくれる
-                <br />
-                特別な協力者の方々。
-              </>
-            }
-          />
-          <div className="mt-14 mx-auto max-w-4xl grid sm:grid-cols-2 gap-6">
-            {specialThanks.map((m, i) => (
-              <MemberCard
-                key={m.id}
-                member={m}
-                index={i}
-                onClick={() => setSelected(m)}
-              />
-            ))}
-          </div>
         </div>
       </section>
 
