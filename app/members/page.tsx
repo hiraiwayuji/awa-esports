@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Twitch, Youtube, Twitter } from "lucide-react";
+import { Twitch, Youtube, Twitter, Instagram } from "lucide-react";
 import SectionTitle from "@/components/SectionTitle";
 import MemberCard from "@/components/MemberCard";
 import MemberModal from "@/components/MemberModal";
@@ -141,46 +141,62 @@ function PlayerCard({
           {labelText}
         </div>
 
-        {p.socials && (p.socials.twitch || p.socials.x || p.socials.youtube) && (
-          <div className="mt-3 flex items-center gap-2">
-            {p.socials.twitch && (
-              <a
-                href={p.socials.twitch}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                aria-label={`${p.name} の Twitch`}
-                className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-violet/40 text-awa-violet hover:bg-awa-violet/10 hover:border-awa-violet transition-colors"
-              >
-                <Twitch size={13} />
-              </a>
-            )}
-            {p.socials.x && (
-              <a
-                href={p.socials.x}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                aria-label={`${p.name} の X`}
-                className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-white/20 text-white/70 hover:bg-white/10 hover:border-white/40 transition-colors"
-              >
-                <Twitter size={13} />
-              </a>
-            )}
-            {p.socials.youtube && (
-              <a
-                href={p.socials.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                aria-label={`${p.name} の YouTube`}
-                className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-magenta/40 text-awa-magenta hover:bg-awa-magenta/10 hover:border-awa-magenta transition-colors"
-              >
-                <Youtube size={13} />
-              </a>
-            )}
-          </div>
-        )}
+        {p.socials &&
+          (p.socials.twitch ||
+            p.socials.x ||
+            p.socials.youtube ||
+            p.socials.instagram) && (
+            <div className="mt-3 flex items-center gap-2">
+              {p.socials.twitch && (
+                <a
+                  href={p.socials.twitch}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={`${p.name} の Twitch`}
+                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-violet/40 text-awa-violet hover:bg-awa-violet/10 hover:border-awa-violet transition-colors"
+                >
+                  <Twitch size={13} />
+                </a>
+              )}
+              {p.socials.x && (
+                <a
+                  href={p.socials.x}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={`${p.name} の X`}
+                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-white/20 text-white/70 hover:bg-white/10 hover:border-white/40 transition-colors"
+                >
+                  <Twitter size={13} />
+                </a>
+              )}
+              {p.socials.youtube && (
+                <a
+                  href={p.socials.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={`${p.name} の YouTube`}
+                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-magenta/40 text-awa-magenta hover:bg-awa-magenta/10 hover:border-awa-magenta transition-colors"
+                >
+                  <Youtube size={13} />
+                </a>
+              )}
+              {p.socials.instagram && (
+                <a
+                  href={p.socials.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={`${p.name} の Instagram`}
+                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-pink-400/50 text-pink-400 hover:bg-pink-400/10 hover:border-pink-400 transition-colors"
+                >
+                  <Instagram size={13} />
+                </a>
+              )}
+            </div>
+          )}
 
         {/* CTA on hover — legend + clickable only */}
         {isLegend && clickable && (

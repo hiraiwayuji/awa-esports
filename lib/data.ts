@@ -261,6 +261,7 @@ export type PlayerSocials = {
   twitch?: string;
   x?: string;
   youtube?: string;
+  instagram?: string;
 };
 
 export type PlayerBio = {
@@ -320,7 +321,28 @@ export const legendPlayers: Player[] = [
   { name: "カジコ" },
   { name: "ボール" },
   { name: "森崎弘也" },
-  { name: "岩ちゃん" },
+  {
+    name: "いわちゃん",
+    avatarUrl: "/members/IWASA.jpg",
+    role: "OVERWATCH（タンク）/ VALORANT（コントローラー）",
+    tagline: "勝ちも、楽しさも、両方持って戦う。",
+    socials: {
+      instagram: "https://www.instagram.com/xeno.branding/",
+    },
+    bio: {
+      headline: "本名：岩佐悠嗣（いわさ ゆうじ）。Overwatchタンク／VALORANTコントローラーの戦略派。",
+      paragraphs: [
+        "プレイスタイルはチーム重視かつ攻撃的。チームの特徴を読み解き、戦術を組み立てるのが得意。",
+      ],
+      highlights: [
+        "主戦：Overwatch（タンク）",
+        "サブ：VALORANT（コントローラー）",
+        "強み：チーム戦略・戦術理解",
+        "スタイル：チーム重視 × 攻撃的",
+      ],
+      message: "勝ちにこだわることも大事ですが、楽しくゲームできることを大切にしたいです＾＾",
+    },
+  },
   { name: "梅ドリル" },
   { name: "トーキン" },
   {

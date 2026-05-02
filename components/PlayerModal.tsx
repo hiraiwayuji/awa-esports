@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Twitch, Youtube, Twitter, User } from "lucide-react";
+import { X, Twitch, Youtube, Twitter, Instagram, User } from "lucide-react";
 import type { Player } from "@/lib/data";
 
 export default function PlayerModal({
@@ -332,7 +332,10 @@ function PlayerModalContent({
         )}
 
         {player.socials &&
-          (player.socials.twitch || player.socials.x || player.socials.youtube) && (
+          (player.socials.twitch ||
+            player.socials.x ||
+            player.socials.youtube ||
+            player.socials.instagram) && (
             <div className="mt-6 pt-4 border-t border-white/10 flex flex-wrap gap-3">
               {player.socials.twitch && (
                 <a
@@ -365,6 +368,17 @@ function PlayerModalContent({
                 >
                   <Youtube className="w-3.5 h-3.5" />
                   YOUTUBE →
+                </a>
+              )}
+              {player.socials.instagram && (
+                <a
+                  href={player.socials.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-xs tracking-[0.2em] font-display px-4 py-2 rounded-full border border-pink-400/60 text-pink-400 transition hover:bg-pink-400/10"
+                >
+                  <Instagram className="w-3.5 h-3.5" />
+                  INSTAGRAM →
                 </a>
               )}
             </div>
