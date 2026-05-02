@@ -334,6 +334,7 @@ export const legendPlayers: Player[] = [
   { name: "カジコ" },
   {
     name: "ボールくん",
+    avatarUrl: "/members/BORU.jpg",
     role: "STREET FIGHTER 6 / モダンマノン使い",
     tagline: "コマ投げで、徳島の道を切り開く特攻隊長。",
     socials: {
