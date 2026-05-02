@@ -102,7 +102,7 @@ function PlayerCard({
             <img
               src={p.avatarUrl}
               alt={p.name}
-              className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
+              className={`absolute inset-0 w-full h-full object-cover object-top transition-all duration-700 ${
                 isLegend ? "group-hover:scale-105" : "group-hover:opacity-0"
               }`}
             />
@@ -112,7 +112,7 @@ function PlayerCard({
                 src={p.avatarUrlHover}
                 alt=""
                 aria-hidden
-                className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                className="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-opacity duration-700 group-hover:opacity-100"
               />
             )}
             {p.avatarUrlHover && isLegend && (
@@ -121,7 +121,7 @@ function PlayerCard({
                 src={p.avatarUrlHover}
                 alt=""
                 aria-hidden
-                className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100 group-hover:scale-105"
+                className="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-opacity duration-700 group-hover:opacity-100 group-hover:scale-105"
               />
             )}
           </div>

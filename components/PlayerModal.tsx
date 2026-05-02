@@ -109,7 +109,7 @@ function PlayerModalContent({
                 <img
                   src={player.avatarUrl}
                   alt={player.name}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover object-top"
                 />
                 <div
                   className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-50"
