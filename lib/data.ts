@@ -317,7 +317,6 @@ export const legendPlayers: Player[] = [
       { name: "（仮）パーソナルスポンサー B" },
     ],
   },
-  { name: "にっしん" },
   { name: "カジコ" },
   { name: "ボール" },
   { name: "森崎弘也" },
