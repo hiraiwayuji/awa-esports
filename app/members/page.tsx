@@ -321,15 +321,9 @@ export default function MembersPage() {
 
             {/* Title block */}
             <div className="relative">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="h-px w-8 bg-awa-magenta" />
-                <span className="text-[10px] font-display tracking-[0.4em] text-awa-magenta">
-                  LEGEND PLAYERS / レジェンド
-                </span>
-              </div>
               <h2 className="font-display font-black text-3xl md:text-4xl lg:text-5xl tracking-tight">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-magenta via-awa-magenta to-awa-violet drop-shadow-[0_0_24px_rgba(255,45,149,0.5)]">
-                  徳島の覇者たち。
+                  LEGEND PLAYERS
                 </span>
               </h2>
 
