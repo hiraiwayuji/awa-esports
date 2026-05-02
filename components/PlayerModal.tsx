@@ -262,6 +262,75 @@ function PlayerModalContent({
           </div>
         )}
 
+        {player.sponsors && player.sponsors.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-6 pt-4 border-t border-white/10"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-awa-warmth drop-shadow-[0_0_6px_rgba(255,170,80,0.7)]">
+                ★
+              </span>
+              <div className="text-[10px] tracking-[0.3em] font-display text-awa-warmth">
+                PERSONAL SPONSORS / 個人スポンサー
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {player.sponsors.map((s, idx) => {
+                const isMain = s.tier === "MAIN" || s.tier === "メイン";
+                const containerClass = isMain
+                  ? "relative rounded-lg border border-awa-warmth/60 bg-gradient-to-br from-awa-warmth/15 via-awa-warmth/5 to-transparent px-4 py-3 transition-all hover:border-awa-warmth hover:shadow-[0_0_24px_rgba(255,170,80,0.35)]"
+                  : "relative rounded-lg border border-white/15 bg-awa-indigo-950/40 px-4 py-3 transition-all hover:border-awa-warmth/60 hover:bg-awa-warmth/5";
+                const inner = (
+                  <div className={containerClass}>
+                    {s.tier && (
+                      <div
+                        className={`text-[9px] tracking-[0.3em] font-display mb-1 ${
+                          isMain ? "text-awa-warmth" : "text-white/40"
+                        }`}
+                      >
+                        {s.tier} SPONSOR
+                      </div>
+                    )}
+                    <div className="flex items-center gap-3">
+                      {s.logoUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={s.logoUrl}
+                          alt={s.name}
+                          className="w-9 h-9 object-contain rounded bg-awa-indigo-950/60 p-1"
+                        />
+                      )}
+                      <div
+                        className={`text-sm font-bold ${
+                          isMain ? "text-white" : "text-white/90"
+                        }`}
+                      >
+                        {s.name}
+                      </div>
+                    </div>
+                  </div>
+                );
+                return s.url ? (
+                  <a
+                    key={idx}
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <div key={idx}>{inner}</div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
         {player.socials &&
           (player.socials.twitch || player.socials.x || player.socials.youtube) && (
             <div className="mt-6 pt-4 border-t border-white/10 flex flex-wrap gap-3">

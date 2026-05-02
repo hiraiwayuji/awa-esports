@@ -270,6 +270,13 @@ export type PlayerBio = {
   message?: string;
 };
 
+export type PlayerSponsor = {
+  name: string;
+  url?: string;
+  logoUrl?: string;
+  tier?: "MAIN" | "SUB" | string;
+};
+
 export type Player = {
   name: string;
   avatarUrl?: string;
@@ -278,6 +285,7 @@ export type Player = {
   role?: string;
   tagline?: string;
   bio?: PlayerBio;
+  sponsors?: PlayerSponsor[];
 };
 
 export const legendPlayers: Player[] = [
@@ -302,6 +310,10 @@ export const legendPlayers: Player[] = [
       ],
       message: "Watch my Twitch live stream — 配信、覗きにきて。",
     },
+    sponsors: [
+      { name: "（仮）パーソナルスポンサー A", tier: "MAIN" },
+      { name: "（仮）パーソナルスポンサー B" },
+    ],
   },
   { name: "にっしん" },
   { name: "カジコ" },

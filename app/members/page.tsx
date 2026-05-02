@@ -82,7 +82,17 @@ function PlayerCard({
           <span className={`text-[9px] font-mono tracking-[0.25em] ${accentText}/70`}>
             {String(i + 1).padStart(3, "0")}
           </span>
-          <span className={`w-2 h-2 rounded-full ${accentDotBg} animate-pulse`} />
+          <div className="flex items-center gap-2">
+            {isLegend && p.sponsors && p.sponsors.length > 0 && (
+              <span
+                className="inline-flex items-center gap-0.5 text-[9px] font-display tracking-[0.15em] px-1.5 py-0.5 rounded border border-awa-warmth/60 text-awa-warmth bg-awa-indigo-950/60 shadow-[0_0_8px_rgba(255,170,80,0.35)]"
+                title={`${p.sponsors.length}社の個人スポンサー`}
+              >
+                ★ {p.sponsors.length}
+              </span>
+            )}
+            <span className={`w-2 h-2 rounded-full ${accentDotBg} animate-pulse`} />
+          </div>
         </div>
         {p.avatarUrl && (
           <div
