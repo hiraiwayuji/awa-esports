@@ -318,9 +318,8 @@ export const legendPlayers: Player[] = [
 ];
 
 export const traineePlayers: Player[] = [
-  { name: "（仮）ユウト" },
-  { name: "（仮）ハルマ" },
-  { name: "（仮）ソウタ" },
+  { name: "タケルン" },
+  { name: "トム" },
 ];
 
 export type NewsItem = {
