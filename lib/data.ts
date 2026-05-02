@@ -263,17 +263,35 @@ export type PlayerSocials = {
   youtube?: string;
 };
 
+export type PlayerBio = {
+  headline?: string;
+  paragraphs?: string[];
+  highlights?: string[];
+};
+
 export type Player = {
   name: string;
   avatarUrl?: string;
   avatarUrlHover?: string;
   socials?: PlayerSocials;
+  role?: string;
+  tagline?: string;
+  bio?: PlayerBio;
 };
 
 export const legendPlayers: Player[] = [
   {
     name: "ホーク",
+    role: "SF6 / 不知火舞・テリー使い",
+    tagline: "舞でレジェンド帯到達。テリーも握る二刀流。",
     socials: { twitch: "https://www.twitch.tv/hawkfgc" },
+    bio: {
+      headline: "ストリートファイター6プレーヤー。不知火舞でレジェンド帯到達、テリー・ボガードも使いこなす二刀流。",
+      highlights: [
+        "SF6 不知火舞：レジェンド帯到達",
+        "SF6 サブキャラ：テリー・ボガード",
+      ],
+    },
   },
   { name: "にっしん" },
   { name: "カジコ" },

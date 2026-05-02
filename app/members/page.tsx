@@ -6,6 +6,7 @@ import { Twitch, Youtube, Twitter } from "lucide-react";
 import SectionTitle from "@/components/SectionTitle";
 import MemberCard from "@/components/MemberCard";
 import MemberModal from "@/components/MemberModal";
+import PlayerModal from "@/components/PlayerModal";
 import PageTransition from "@/components/PageTransition";
 import {
   staff,
@@ -16,7 +17,16 @@ import {
   type StaffMember,
 } from "@/lib/data";
 
-function PlayerCard({ p, i }: { p: Player; i: number }) {
+function PlayerCard({
+  p,
+  i,
+  onClick,
+}: {
+  p: Player;
+  i: number;
+  onClick?: () => void;
+}) {
+  const clickable = !!onClick && !!p.bio;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -25,6 +35,20 @@ function PlayerCard({ p, i }: { p: Player; i: number }) {
       transition={{ delay: i * 0.05 }}
       whileHover={{ y: -4 }}
       className="group relative"
+      onClick={clickable ? onClick : undefined}
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={
+        clickable
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick?.();
+              }
+            }
+          : undefined
+      }
+      style={clickable ? { cursor: "pointer" } : undefined}
     >
       <div className="relative rounded-xl border border-neon-cyan/20 bg-awa-indigo-900/40 backdrop-blur p-5 hover:border-neon-cyan/60 hover:shadow-neon transition-all duration-500 overflow-hidden">
         <div className="flex items-start justify-between mb-3">
@@ -107,6 +131,7 @@ function PlayerCard({ p, i }: { p: Player; i: number }) {
 
 export default function MembersPage() {
   const [selected, setSelected] = useState<StaffMember | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
   return (
     <PageTransition>
@@ -168,7 +193,12 @@ export default function MembersPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {legendPlayers.map((p, i) => (
-                <PlayerCard key={p.name} p={p} i={i} />
+                <PlayerCard
+                  key={p.name}
+                  p={p}
+                  i={i}
+                  onClick={() => setSelectedPlayer(p)}
+                />
               ))}
             </div>
           </div>
@@ -183,7 +213,12 @@ export default function MembersPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {traineePlayers.map((p, i) => (
-                <PlayerCard key={p.name} p={p} i={i} />
+                <PlayerCard
+                  key={p.name}
+                  p={p}
+                  i={i}
+                  onClick={() => setSelectedPlayer(p)}
+                />
               ))}
             </div>
           </div>
@@ -222,6 +257,10 @@ export default function MembersPage() {
       </section>
 
       <MemberModal member={selected} onClose={() => setSelected(null)} />
+      <PlayerModal
+        player={selectedPlayer}
+        onClose={() => setSelectedPlayer(null)}
+      />
     </PageTransition>
   );
 }
