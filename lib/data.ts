@@ -397,6 +397,32 @@ export const legendPlayers: Player[] = [
     name: "シオン",
     avatarUrl: "/members/SHION.jpg",
     avatarUrlHover: "/members/SHION-2.jpg",
+    role: "STREET FIGHTER 6 → MARVEL: Tokon Fighting Souls（2026年8月移行予定）",
+    tagline: "対応型。集中力で局面を読み切る。",
+    socials: {
+      twitch: "https://www.twitch.tv/sion0766",
+      youtube: "https://www.youtube.com/@シオン-e5s",
+    },
+    bio: {
+      headline: "ストリートファイター6プレーヤー。2026年8月、MARVEL: Tokon Fighting Souls へキャリア移行予定。",
+      paragraphs: [
+        "プレイスタイルは対応型。相手の手を読み切って合わせていく集中力が最大の武器。",
+      ],
+      highlights: [
+        "主戦：STREET FIGHTER 6（〜2026年7月）",
+        "今後：MARVEL: Tokon Fighting Souls（2026年8月〜）",
+        "プレイスタイル：対応型",
+        "強み：集中力",
+        "好きなゲーム：ULTIMATE MARVEL VS. CAPCOM 3",
+      ],
+      message: "どこまでやれるかは分かりませんが、精一杯頑張ります。",
+    },
+    stats: {
+      aggression: 50,
+      patience: 90,
+      teamwork: 65,
+      strategy: 80,
+    },
   },
 ];
 
