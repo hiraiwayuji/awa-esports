@@ -160,7 +160,6 @@ export const staff: StaffMember[] = [
       ],
       highlights: [
         "SF6対戦会「Fighters Crossover徳島」主催",
-        "徳島FGCコミュニティの中核ハブ",
       ],
       links: [
         { label: "X (@talkin1978)", url: "https://x.com/talkin1978" },
