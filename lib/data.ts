@@ -91,7 +91,7 @@ export const staff: StaffMember[] = [
   {
     id: "STAFF-003",
     role: "レジェンドプレーヤー / LEGEND",
-    name: "キング森崎",
+    name: "森崎弘也",
     tagline: "経験と直感で、若い力を導く。",
     icon: Gamepad2,
     accent: "violet",
@@ -318,7 +318,7 @@ export const legendPlayers: Player[] = [
   { name: "にっしん" },
   { name: "カジコ" },
   { name: "ボール" },
-  { name: "キング" },
+  { name: "森崎弘也" },
   { name: "岩ちゃん" },
   { name: "梅ドリル" },
   { name: "トーキン" },
