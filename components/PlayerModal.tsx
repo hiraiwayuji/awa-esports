@@ -161,6 +161,22 @@ function PlayerModalContent({
                 </ul>
               </div>
             )}
+
+            {bio.message && (
+              <div className="pt-4 border-t border-white/10">
+                <div className="text-[10px] tracking-[0.3em] font-display mb-3 text-awa-magenta">
+                  MESSAGE
+                </div>
+                <blockquote className="relative pl-5 border-l-2 border-awa-magenta/60">
+                  <span className="absolute -top-3 -left-1 text-5xl text-awa-magenta/30 leading-none font-serif select-none pointer-events-none">
+                    “
+                  </span>
+                  <p className="text-sm md:text-[15px] text-white/85 leading-relaxed">
+                    {bio.message}
+                  </p>
+                </blockquote>
+              </div>
+            )}
           </div>
         ) : (
           <div className="py-12 text-center">

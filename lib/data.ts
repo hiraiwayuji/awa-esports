@@ -267,6 +267,7 @@ export type PlayerBio = {
   headline?: string;
   paragraphs?: string[];
   highlights?: string[];
+  message?: string;
 };
 
 export type Player = {
@@ -282,15 +283,24 @@ export type Player = {
 export const legendPlayers: Player[] = [
   {
     name: "ホーク",
-    role: "SF6 / 不知火舞・テリー使い",
-    tagline: "舞でレジェンド帯到達。テリーも握る二刀流。",
-    socials: { twitch: "https://www.twitch.tv/hawkfgc" },
+    role: "STREET FIGHTER 6 / 不知火舞・テリー使い",
+    tagline: "Patient but aggressive ─ 我慢からの一撃。",
+    socials: {
+      twitch: "https://www.twitch.tv/hawkfgc",
+      x: "https://x.com/hawkfgc98",
+    },
     bio: {
-      headline: "ストリートファイター6プレーヤー。不知火舞でレジェンド帯到達、テリー・ボガードも使いこなす二刀流。",
-      highlights: [
-        "SF6 不知火舞：レジェンド帯到達",
-        "SF6 サブキャラ：テリー・ボガード",
+      headline: "ストリートファイター6プレーヤー。不知火舞でレジェンド帯到達、テリー・ボガードも握るスタンダードキャラ使い。",
+      paragraphs: [
+        "プレイスタイルは Patient but aggressive ─ じっくり読み合いを制し、決める時は一気に攻め切る。",
       ],
+      highlights: [
+        "主戦：STREET FIGHTER 6",
+        "使用キャラ：不知火舞 / テリー・ボガード",
+        "SF6 不知火舞 レジェンド帯到達",
+        "スタイル：Patient but aggressive",
+      ],
+      message: "Watch my Twitch live stream — 配信、覗きにきて。",
     },
   },
   { name: "にっしん" },
