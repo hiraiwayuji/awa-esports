@@ -154,7 +154,7 @@ export const staff: StaffMember[] = [
     callsign: "TOKIN",
     avatarUrl: "/members/TOKIN.jpg",
     bio: {
-      headline: "ストリートファイター6 ジュリ使い。徳島のFGC（格闘ゲームコミュニティ）を牽引する、現場主義のアドバイザー。",
+      headline: "ストリートファイター6 ジュリ使い。現場主義のアドバイザー。",
       paragraphs: [
         "選手としての修羅場とコミュニティ運営の両方を経験しているからこその実利感覚で、AWA ESPORTSにおいては「勝つために必要なこと」と「いま削るべきこと」を冷静に言語化。戦略と人を見るリアリストとして、チームの判断軸を支える。",
       ],
