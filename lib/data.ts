@@ -290,7 +290,7 @@ export type Player = {
 
 export const legendPlayers: Player[] = [
   {
-    name: "ホーク",
+    name: "hawk",
     role: "STREET FIGHTER 6 / 不知火舞・テリー使い",
     tagline: "Patient but aggressive ─ 我慢からの一撃。",
     socials: {
