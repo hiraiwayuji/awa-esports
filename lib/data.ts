@@ -144,34 +144,6 @@ export const staff: StaffMember[] = [
     },
   },
   {
-    id: "STAFF-005",
-    role: "テクニカルアドバイザー / TECH",
-    name: "四国大学 長瀬教授",
-    tagline: "学術と現場をつなぐ思考の架け橋。",
-    icon: Cpu,
-    accent: "cyan",
-    rank: "S",
-    callsign: "NAGASE",
-    avatarUrl: "/members/NAGASE.jpg",
-    bio: {
-      headline: "四国大学 情報教育センター 講師。教育工学を専門とし、eスポーツによる地域活性化と「光・夢工房」事業を牽引。",
-      paragraphs: [
-        "プログラミング教育、カリキュラム・マネジメント、知的情報システム開発を学際的に研究。近年はeスポーツによる地域活性化、および障がい学生に対するアクセシビリティ改善に取り組み、ダイバーシティ・マネジメントを通じた新価値創造を目指している。",
-        "T-LAP（徳島光・アート教育人材育成事業）「光・夢工房」を担当し、AI時代を担うK-12（小中高生）層の人材育成にも従事。学術と現場、世代と地域を結ぶ思考の架け橋として、AWA ESPORTSの戦略的バックボーンを支える。",
-      ],
-      highlights: [
-        "四国大学 情報教育センター 講師",
-        "T-LAP「光・夢工房」担当",
-        "徳島eスポーツ協会 企画委員",
-        "専門：教育工学・プログラミング教育・eスポーツ地域活性化",
-      ],
-      links: [
-        { label: "T-LAP プロフィール", url: "https://www.shikoku-u.ac.jp/t-lap/team/" },
-        { label: "KAKEN（研究者情報）", url: "https://nrid.nii.ac.jp/ja/nrid/1000050781019/" },
-      ],
-    },
-  },
-  {
     id: "STAFF-006",
     role: "チームアドバイザー / ADVISOR",
     name: "トーキン",
@@ -225,8 +197,39 @@ export const staff: StaffMember[] = [
       ],
     },
   },
+];
+
+export const specialThanks: StaffMember[] = [
   {
-    id: "STAFF-008",
+    id: "SPECIAL-001",
+    role: "テクニカルアドバイザー / TECH",
+    name: "四国大学 長瀬教授",
+    tagline: "学術と現場をつなぐ思考の架け橋。",
+    icon: Cpu,
+    accent: "cyan",
+    rank: "S",
+    callsign: "NAGASE",
+    avatarUrl: "/members/NAGASE.jpg",
+    bio: {
+      headline: "四国大学 情報教育センター 講師。教育工学を専門とし、eスポーツによる地域活性化と「光・夢工房」事業を牽引。",
+      paragraphs: [
+        "プログラミング教育、カリキュラム・マネジメント、知的情報システム開発を学際的に研究。近年はeスポーツによる地域活性化、および障がい学生に対するアクセシビリティ改善に取り組み、ダイバーシティ・マネジメントを通じた新価値創造を目指している。",
+        "T-LAP（徳島光・アート教育人材育成事業）「光・夢工房」を担当し、AI時代を担うK-12（小中高生）層の人材育成にも従事。学術と現場、世代と地域を結ぶ思考の架け橋として、AWA ESPORTSの戦略的バックボーンを支える。",
+      ],
+      highlights: [
+        "四国大学 情報教育センター 講師",
+        "T-LAP「光・夢工房」担当",
+        "徳島eスポーツ協会 企画委員",
+        "専門：教育工学・プログラミング教育・eスポーツ地域活性化",
+      ],
+      links: [
+        { label: "T-LAP プロフィール", url: "https://www.shikoku-u.ac.jp/t-lap/team/" },
+        { label: "KAKEN（研究者情報）", url: "https://nrid.nii.ac.jp/ja/nrid/1000050781019/" },
+      ],
+    },
+  },
+  {
+    id: "SPECIAL-002",
     role: "ローンチアドバイザー / LAUNCH ADVISOR",
     name: "DOPENESS",
     tagline: "Pave the way ─ 道を切り開く力。",
@@ -257,14 +260,30 @@ export const staff: StaffMember[] = [
   },
 ];
 
+export type PlayerSocials = {
+  twitch?: string;
+  x?: string;
+  youtube?: string;
+};
+
 export type Player = {
   name: string;
   avatarUrl?: string;
   avatarUrlHover?: string;
+  socials?: PlayerSocials;
 };
 
+export const legendPlayers: Player[] = [
+  { name: "（仮）KAZUYA" },
+  { name: "（仮）TAKESHI" },
+  { name: "（仮）SHIGEKI" },
+];
+
 export const players: Player[] = [
-  { name: "ホーク" },
+  {
+    name: "ホーク",
+    socials: { twitch: "https://www.twitch.tv/hawkfgc" },
+  },
   { name: "にっしん" },
   { name: "カジコ" },
   { name: "ボール" },
@@ -277,6 +296,16 @@ export const players: Player[] = [
     avatarUrl: "/members/SHION.jpg",
     avatarUrlHover: "/members/SHION-2.jpg",
   },
+];
+
+export type FarmMember = {
+  name: string;
+};
+
+export const farmTeam: FarmMember[] = [
+  { name: "（仮）ユウト" },
+  { name: "（仮）ハルマ" },
+  { name: "（仮）ソウタ" },
 ];
 
 export type NewsItem = {

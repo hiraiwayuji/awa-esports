@@ -82,12 +82,12 @@ export default function HomePage() {
           </motion.svg>
         </motion.div>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-5 md:px-8 pt-20 pb-32 grid md:grid-cols-12 gap-8 items-center">
+        <div className="relative z-10 mx-auto max-w-7xl px-5 md:px-8 pt-20 pb-32 grid lg:grid-cols-12 gap-8 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="md:col-span-8"
+            className="lg:col-span-8 min-w-0"
           >
             <div className="flex items-center gap-3 mb-8">
               <span className="h-px w-10 bg-neon-cyan" />
@@ -96,7 +96,7 @@ export default function HomePage() {
               </span>
             </div>
 
-            <h1 className="font-display font-black leading-[0.95] text-[9vw] md:text-[7.5vw] lg:text-[6.5rem] tracking-tight">
+            <h1 className="font-display font-black leading-[0.95] text-[8vw] md:text-[5.8vw] lg:text-[5rem] tracking-tight">
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
