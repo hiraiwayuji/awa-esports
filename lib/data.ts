@@ -301,20 +301,21 @@ export const legendPlayers: Player[] = [
     name: "hawk",
     avatarUrl: "/members/HAWK.png",
     avatarUrlHover: "/members/HAWK-2.jpg",
-    role: "STREET FIGHTER 6 / 不知火舞・テリー使い",
+    role: "STREET FIGHTER 6 / 不知火舞・エド使い",
     tagline: "Patient but aggressive ─ 我慢からの一撃。",
     socials: {
       twitch: "https://www.twitch.tv/hawkfgc",
       x: "https://x.com/hawkfgc98",
     },
     bio: {
-      headline: "ストリートファイター6プレーヤー。不知火舞でレジェンド帯到達、テリー・ボガードも握るスタンダードキャラ使い。",
+      headline: "ストリートファイター6プレーヤー。不知火舞でレジェンド帯到達、サブにエドも握るスタンダードキャラ使い。",
       paragraphs: [
         "プレイスタイルは Patient but aggressive ─ じっくり読み合いを制し、決める時は一気に攻め切る。",
+        "アメリカ育ちで英語も堪能。海外勢ともそのまま渡り合える、徳島では稀有なバイリンガルプレーヤー。",
       ],
       highlights: [
         "主戦：STREET FIGHTER 6",
-        "使用キャラ：不知火舞 / テリー・ボガード",
+        "使用キャラ：不知火舞（メイン）／ エド（サブ）",
         "SF6 不知火舞 レジェンド帯到達",
         "スタイル：Patient but aggressive",
       ],
