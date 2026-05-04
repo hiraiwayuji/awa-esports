@@ -3,8 +3,8 @@ import PageTransition from "@/components/PageTransition";
 import Link from "next/link";
 
 export const metadata = {
-  title: "プライバシーポリシー — AWA ESPORTS",
-  description: "AWA ESPORTS における個人情報の取扱いについて。",
+  title: "プライバシーポリシー — AWAKEN GLOW",
+  description: "AWAKEN GLOW における個人情報の取扱いについて。",
 };
 
 const sections: { title: string; body: React.ReactNode }[] = [
@@ -100,16 +100,16 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <>
         個人情報の取扱いに関するお問い合わせは、
         <a
-          href="mailto:contact@awa-esports.jp"
-          className="text-neon-cyan hover:text-awa-magenta underline-offset-4 hover:underline transition mx-1"
+          href="mailto:contact@awakenglow.jp"
+          className="text-neon-cyan hover:text-awa-glow underline-offset-4 hover:underline transition mx-1"
         >
-          contact@awa-esports.jp
+          contact@awakenglow.jp
         </a>
         までご連絡ください。
         利用規約は
         <Link
           href="/legal/terms"
-          className="text-neon-cyan hover:text-awa-magenta underline-offset-4 hover:underline transition mx-1"
+          className="text-neon-cyan hover:text-awa-glow underline-offset-4 hover:underline transition mx-1"
         >
           こちら
         </Link>
@@ -129,7 +129,7 @@ export default function PrivacyPage() {
             title="PRIVACY POLICY"
             subtitle={
               <>
-                AWA ESPORTS における個人情報の取扱いについて定めています。
+                AWAKEN GLOW における個人情報の取扱いについて定めています。
                 <br />
                 安心してご参加いただくための方針です。
               </>
@@ -155,7 +155,7 @@ export default function PrivacyPage() {
             <div className="pt-6 border-t border-white/10 text-xs text-white/40 text-right">
               制定日：2026年5月4日
               <br />
-              運営：AWA ESPORTS（代表：平岩裕治）
+              運営：AWAKEN GLOW（代表：平岩裕治）
             </div>
           </div>
         </div>

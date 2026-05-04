@@ -22,11 +22,11 @@ import { partnerPlans } from "@/lib/data";
 
 const accentMap = {
   magenta: {
-    border: "border-awa-magenta/50",
-    text: "text-awa-magenta",
-    bg: "bg-awa-magenta/10",
-    grad: "from-awa-magenta/20 via-awa-violet/10 to-transparent",
-    chip: "bg-awa-magenta",
+    border: "border-awa-glow/50",
+    text: "text-awa-glow",
+    bg: "bg-awa-glow/10",
+    grad: "from-awa-glow/20 via-awa-glow/10 to-transparent",
+    chip: "bg-awa-glow",
   },
   cyan: {
     border: "border-neon-cyan/50",
@@ -36,11 +36,11 @@ const accentMap = {
     chip: "bg-neon-cyan",
   },
   warmth: {
-    border: "border-awa-warmth/50",
-    text: "text-awa-warmth",
-    bg: "bg-awa-warmth/10",
-    grad: "from-awa-warmth/20 via-awa-magenta/5 to-transparent",
-    chip: "bg-awa-warmth",
+    border: "border-awa-glow-deep/50",
+    text: "text-awa-glow-deep",
+    bg: "bg-awa-glow-deep/10",
+    grad: "from-awa-glow-deep/20 via-awa-glow/5 to-transparent",
+    chip: "bg-awa-glow-deep",
   },
 };
 
@@ -74,9 +74,9 @@ export default function PartnersPage() {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 text-xs font-display tracking-[0.35em] mb-4 text-awa-warmth"
+            className="inline-flex items-center gap-2 text-xs font-display tracking-[0.35em] mb-4 text-awa-glow-deep"
           >
-            <span className="h-px w-8 bg-awa-warmth" />
+            <span className="h-px w-8 bg-awa-glow-deep" />
             PARTNERS / 共に創る
           </motion.div>
           <motion.h1
@@ -87,7 +87,7 @@ export default function PartnersPage() {
           >
             徳島の未来を、
             <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-warmth via-awa-magenta to-awa-warmth">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-glow-deep via-awa-glow to-awa-glow-deep">
               共に創るパートナー募集。
             </span>
           </motion.h1>
@@ -115,9 +115,9 @@ export default function PartnersPage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + i * 0.08 }}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-awa-warmth/25 bg-awa-indigo-900/40 backdrop-blur"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-awa-glow-deep/25 bg-awa-indigo-900/40 backdrop-blur"
               >
-                <p.icon className="w-5 h-5 text-awa-warmth" />
+                <p.icon className="w-5 h-5 text-awa-glow-deep" />
                 <span className="text-sm text-white/80">{p.label}</span>
               </motion.div>
             ))}
@@ -154,12 +154,12 @@ export default function PartnersPage() {
                   whileHover={{ y: -8 }}
                   className={`relative rounded-2xl border ${a.border} bg-awa-indigo-900/55 backdrop-blur-md p-7 flex flex-col ${
                     p.featured
-                      ? "md:scale-[1.04] md:-translate-y-1 shadow-magenta"
+                      ? "md:scale-[1.04] md:-translate-y-1 shadow-glow"
                       : ""
                   }`}
                 >
                   {p.featured && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-awa-magenta text-[10px] font-display tracking-[0.3em] text-white">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-awa-glow text-[10px] font-display tracking-[0.3em] text-white">
                       <Star size={10} fill="currentColor" />
                       RECOMMENDED
                     </div>
@@ -259,10 +259,10 @@ export default function PartnersPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -6 }}
-                className="group relative rounded-2xl border border-awa-warmth/25 bg-awa-indigo-900/45 backdrop-blur-md p-7 hover:border-awa-warmth/60 hover:shadow-warmth transition-all"
+                className="group relative rounded-2xl border border-awa-glow-deep/25 bg-awa-indigo-900/45 backdrop-blur-md p-7 hover:border-awa-glow-deep/60 hover:shadow-glow transition-all"
               >
-                <div className="w-12 h-12 grid place-items-center rounded-xl border border-awa-warmth/40 bg-awa-warmth/5 mb-5">
-                  <b.icon className="w-5 h-5 text-awa-warmth" />
+                <div className="w-12 h-12 grid place-items-center rounded-xl border border-awa-glow-deep/40 bg-awa-glow-deep/5 mb-5">
+                  <b.icon className="w-5 h-5 text-awa-glow-deep" />
                 </div>
                 <h3 className="text-xl font-bold text-white">{b.title}</h3>
                 <p className="mt-3 text-sm text-white/70 leading-relaxed">
@@ -301,13 +301,13 @@ export default function PartnersPage() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-12 rounded-3xl border border-awa-warmth/30 bg-awa-indigo-900/60 backdrop-blur-xl p-2"
+            className="mt-12 rounded-3xl border border-awa-glow-deep/30 bg-awa-indigo-900/60 backdrop-blur-xl p-2"
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-awa-warmth/20">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-awa-glow-deep/20">
               <span className="text-[10px] font-mono tracking-[0.3em] text-white/50">
                 AWA-CONTACT v1.0 / PARTNER INTAKE
               </span>
-              <span className="w-2 h-2 rounded-full bg-awa-warmth animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-awa-glow-deep animate-pulse" />
             </div>
 
             <AnimatePresence mode="wait">
@@ -321,19 +321,19 @@ export default function PartnersPage() {
                   className="px-6 md:px-10 py-10 space-y-6"
                 >
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-warmth">
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       企業名 / 店名（任意）
                     </label>
                     <input
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       placeholder="例：株式会社○○ / △△商店"
-                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-warmth focus:shadow-warmth rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-warmth">
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       担当者名 *
                     </label>
                     <input
@@ -341,12 +341,12 @@ export default function PartnersPage() {
                       value={contact}
                       onChange={(e) => setContact(e.target.value)}
                       placeholder="例：山田 太郎"
-                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-warmth focus:shadow-warmth rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-warmth">
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       メールアドレス *
                     </label>
                     <input
@@ -355,19 +355,19 @@ export default function PartnersPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="example@your-company.jp"
-                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-warmth focus:shadow-warmth rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-warmth">
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       希望するプラン *
                     </label>
                     <select
                       required
                       value={plan}
                       onChange={(e) => setPlan(e.target.value)}
-                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-warmth focus:shadow-warmth rounded-lg px-4 py-3 text-white transition-all"
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white transition-all"
                     >
                       <option value="">選択してください</option>
                       {partnerPlans.map((p) => (
@@ -380,7 +380,7 @@ export default function PartnersPage() {
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-warmth">
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       お問い合わせ内容 *
                     </label>
                     <textarea
@@ -389,7 +389,7 @@ export default function PartnersPage() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="ご質問・ご提案・ご予算など、ご自由にお書きください。"
-                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-warmth focus:shadow-warmth rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all resize-none"
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all resize-none"
                     />
                   </div>
 
@@ -404,7 +404,7 @@ export default function PartnersPage() {
                       whileTap={valid ? { scale: 0.97 } : undefined}
                       className={`relative inline-flex items-center justify-center gap-3 px-8 py-3.5 rounded-full font-display tracking-[0.3em] text-xs uppercase overflow-hidden transition-all ${
                         valid
-                          ? "bg-gradient-to-r from-awa-warmth via-awa-magenta to-awa-warmth text-white shadow-warmth"
+                          ? "bg-gradient-to-r from-awa-glow-deep via-awa-glow to-awa-glow-deep text-white shadow-glow"
                           : "bg-white/5 text-white/30 cursor-not-allowed"
                       }`}
                     >
@@ -433,9 +433,9 @@ export default function PartnersPage() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 200 }}
-                    className="mx-auto w-20 h-20 grid place-items-center rounded-full bg-awa-warmth/10 border border-awa-warmth shadow-warmth mb-6"
+                    className="mx-auto w-20 h-20 grid place-items-center rounded-full bg-awa-glow-deep/10 border border-awa-glow-deep shadow-glow mb-6"
                   >
-                    <CheckCircle2 className="w-10 h-10 text-awa-warmth" />
+                    <CheckCircle2 className="w-10 h-10 text-awa-glow-deep" />
                   </motion.div>
                   <h3 className="font-display font-black text-3xl text-white mb-4">
                     ありがとうございます。
@@ -444,7 +444,7 @@ export default function PartnersPage() {
                     お問い合わせを受け付けました。
                     <br />
                     内容を確認の上、
-                    <span className="text-awa-warmth">3営業日以内に</span>
+                    <span className="text-awa-glow-deep">3営業日以内に</span>
                     代表ぼーるくんよりご連絡いたします。
                   </p>
                 </motion.div>

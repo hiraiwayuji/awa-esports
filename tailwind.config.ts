@@ -11,21 +11,18 @@ const config: Config = {
       colors: {
         // 徳島藍を核にした深い夜空
         "awa-indigo": {
-          950: "#070B1F",
-          900: "#0B1230",
-          800: "#101B47",
-          700: "#1B2A6B",
-          600: "#283DA1",
-          500: "#3F5BD9",
+          950: "#040611",
+          900: "#070B1F",
+          800: "#0B1230",
+          700: "#101B47",
+          600: "#1B2A6B",
+          500: "#283DA1",
         },
-        // ネオン系アクセント
+        // ネオン系アクセント — シアン × エメラルドグロー
         "neon-cyan": "#00F0FF",
         "neon-blue": "#3DB8FF",
-        "awa-magenta": "#FF2D95",
-        "awa-violet": "#9B5CFF",
-        // PARTNERS用の温かみ（提灯色）
-        "awa-warmth": "#F0B95C",
-        "awa-paper": "#F5EFE0",
+        "awa-glow": "#2DFFB7",
+        "awa-glow-deep": "#0FA37A",
       },
       fontFamily: {
         display: ["Orbitron", "sans-serif"],
@@ -36,16 +33,15 @@ const config: Config = {
         "grid-cyber":
           "linear-gradient(rgba(0,240,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.08) 1px, transparent 1px)",
         "radial-glow":
-          "radial-gradient(circle at center, rgba(0,240,255,0.25), transparent 60%)",
+          "radial-gradient(circle at center, rgba(45,255,183,0.25), transparent 60%)",
         "awa-gradient":
-          "linear-gradient(135deg, #070B1F 0%, #101B47 50%, #1B2A6B 100%)",
-        "magenta-cyan":
-          "linear-gradient(90deg, #FF2D95 0%, #9B5CFF 50%, #00F0FF 100%)",
+          "linear-gradient(135deg, #040611 0%, #070B1F 50%, #0B1230 100%)",
+        "cyan-glow":
+          "linear-gradient(90deg, #00F0FF 0%, #2DFFB7 100%)",
       },
       boxShadow: {
         neon: "0 0 16px rgba(0,240,255,0.55), 0 0 40px rgba(0,240,255,0.25)",
-        magenta: "0 0 16px rgba(255,45,149,0.55), 0 0 40px rgba(255,45,149,0.25)",
-        warmth: "0 0 24px rgba(240,185,92,0.35)",
+        glow: "0 0 16px rgba(45,255,183,0.55), 0 0 40px rgba(45,255,183,0.25)",
       },
       keyframes: {
         "pulse-slow": {

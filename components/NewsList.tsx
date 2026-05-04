@@ -19,9 +19,9 @@ const iconFor = (cat: NewsCategory) =>
 
 const colorFor = (cat: NewsCategory) =>
   cat === "EVENT"
-    ? "text-awa-magenta border-awa-magenta/40"
+    ? "text-awa-glow border-awa-glow/40"
     : cat === "MATCH"
-      ? "text-awa-warmth border-awa-warmth/40"
+      ? "text-awa-glow-deep border-awa-glow-deep/40"
       : "text-neon-cyan border-neon-cyan/40";
 
 export default function NewsList({ items }: { items: NewsItem[] }) {
@@ -98,7 +98,7 @@ export default function NewsList({ items }: { items: NewsItem[] }) {
                     </p>
                   </div>
                 </div>
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-awa-magenta to-neon-cyan transition-all duration-500 group-hover:w-full" />
+                <span className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-awa-glow to-neon-cyan transition-all duration-500 group-hover:w-full" />
               </Link>
             </motion.div>
           );

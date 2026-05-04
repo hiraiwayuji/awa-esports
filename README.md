@@ -1,4 +1,4 @@
-# AWA ESPORTS
+# AWAKEN GLOW
 
 徳島から世界を目指す e-sports チーム公式サイト。
 
@@ -52,9 +52,9 @@ npm run start
 ### Colors
 - `awa-indigo-{500..950}` — 徳島藍ベース（深い夜空）
 - `neon-cyan` `#00F0FF` — メインアクセント
-- `awa-magenta` `#FF2D95` — 熱量の差し色
-- `awa-violet` `#9B5CFF` — グラデ中継色
-- `awa-warmth` `#F0B95C` — Partners 用の提灯色
+- `awa-glow` `#2DFFB7` — 熱量の差し色
+- `awa-glow` `#2DFFB7` — グラデ中継色
+- `awa-glow-deep` `#2DFFB7` — Partners 用の提灯色
 
 ### Fonts
 - **Display**: Orbitron（タイトル / バッジ）

@@ -44,43 +44,44 @@ export default function Navbar() {
       <div className="mx-auto max-w-7xl px-5 md:px-8 h-16 md:h-20 flex items-center justify-between">
         <Link href="/" className="group flex items-center gap-3">
           <motion.div
-            initial={{ rotate: -8 }}
+            initial={{ rotate: -4 }}
             whileHover={{ rotate: 0, scale: 1.05 }}
             className="relative w-9 h-9 md:w-10 md:h-10"
           >
-            <svg viewBox="0 0 40 40" className="w-full h-full">
+            <svg viewBox="0 0 40 44" className="w-full h-full">
               <defs>
-                <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#FF2D95" />
-                  <stop offset="50%" stopColor="#9B5CFF" />
-                  <stop offset="100%" stopColor="#00F0FF" />
+                <linearGradient id="agShieldGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#00F0FF" />
+                  <stop offset="100%" stopColor="#2DFFB7" />
                 </linearGradient>
               </defs>
-              <polygon
-                points="20,3 37,12 37,28 20,37 3,28 3,12"
-                fill="none"
-                stroke="url(#logoGrad)"
-                strokeWidth="2.5"
+              <path
+                d="M 20 3 L 37 8 L 37 24 C 37 33 30 39 20 41 C 10 39 3 33 3 24 L 3 8 Z"
+                fill="rgba(7,11,31,0.6)"
+                stroke="url(#agShieldGrad)"
+                strokeWidth="2"
+                strokeLinejoin="round"
               />
               <text
                 x="20"
-                y="25"
+                y="27"
                 textAnchor="middle"
                 fontFamily="Orbitron"
                 fontWeight="900"
                 fontSize="14"
-                fill="url(#logoGrad)"
+                fill="#FFFFFF"
+                letterSpacing="-0.5"
               >
-                A
+                AG
               </text>
             </svg>
           </motion.div>
           <div className="flex flex-col leading-none">
             <span className="font-display font-black tracking-[0.2em] text-sm md:text-base text-white">
-              AWA ESPORTS
+              AWAKEN GLOW
             </span>
-            <span className="text-[10px] tracking-[0.3em] text-neon-cyan/70 mt-0.5">
-              TOKUSHIMA / JAPAN
+            <span className="text-[10px] tracking-[0.3em] text-awa-glow/80 mt-0.5">
+              A.G. / 阿波の意地
             </span>
           </div>
         </Link>
@@ -112,7 +113,7 @@ export default function Navbar() {
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
-                <span className="absolute left-1/2 -bottom-0.5 h-px w-0 bg-gradient-to-r from-awa-magenta to-neon-cyan transition-all duration-300 group-hover:w-3/4 group-hover:-translate-x-1/2" />
+                <span className="absolute left-1/2 -bottom-0.5 h-px w-0 bg-gradient-to-r from-awa-glow to-neon-cyan transition-all duration-300 group-hover:w-3/4 group-hover:-translate-x-1/2" />
               </Link>
             );
           })}

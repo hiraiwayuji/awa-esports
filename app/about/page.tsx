@@ -41,7 +41,7 @@ const cultureCards: CultureCard[] = [
     en: "AWA-ODORI",
     desc: "夏の夜を熱狂で染める日本最大級の踊り。徳島の血に流れる「躍動と一体感」は、e-sportsの観戦体験そのもの。",
     slug: "awa-odori",
-    fallbackColor: "#FF2D95",
+    fallbackColor: "#2DFFB7",
     media: [
       // 例: { type: "image", src: "/about/awa-odori/1.jpg", alt: "阿波踊り" },
       // 例: { type: "video", src: "/about/awa-odori/loop.mp4" },
@@ -53,7 +53,7 @@ const cultureCards: CultureCard[] = [
     en: "ANIMATION STUDIO",
     desc: "世界に轟くアニメーション制作スタジオが本拠を構える街。ものづくりと表現で世界を獲った前例が、ここにある。",
     slug: "ufotable",
-    fallbackColor: "#9B5CFF",
+    fallbackColor: "#2DFFB7",
     media: [],
   },
   {
@@ -62,7 +62,7 @@ const cultureCards: CultureCard[] = [
     en: "POP CULTURE",
     desc: "徳島市街全体が舞台のサブカルチャー祭典。観客を巻き込み「街そのものを盛り上げる」DNAが息づく。",
     slug: "machi-asobi",
-    fallbackColor: "#F0B95C",
+    fallbackColor: "#2DFFB7",
     media: [],
   },
 ];
@@ -72,13 +72,13 @@ const ranks = [
     rank: "S",
     label: "LEGEND",
     desc: "全国レベルの実績、または圧倒的なチーム貢献。",
-    color: "from-awa-magenta to-awa-violet",
+    color: "from-awa-glow to-awa-glow",
   },
   {
     rank: "A",
     label: "VANGUARD",
     desc: "県大会・主要大会で結果を残した中核プレイヤー。",
-    color: "from-awa-violet to-neon-cyan",
+    color: "from-awa-glow to-neon-cyan",
   },
   {
     rank: "B",
@@ -133,7 +133,7 @@ export default function AboutPage() {
                 onFocus={() => setHoverIdx(i)}
                 onBlur={() => setHoverIdx((h) => (h === i ? null : h))}
                 tabIndex={0}
-                className="group relative rounded-2xl border border-white/10 bg-awa-indigo-900/40 backdrop-blur-md p-8 hover:border-awa-magenta/40 hover:shadow-magenta transition-all duration-500 overflow-hidden"
+                className="group relative rounded-2xl border border-white/10 bg-awa-indigo-900/40 backdrop-blur-md p-8 hover:border-awa-glow/40 hover:shadow-glow transition-all duration-500 overflow-hidden"
               >
                 {/* ホバー時の背景演出 */}
                 {c.media.length > 0 ? (
@@ -151,8 +151,8 @@ export default function AboutPage() {
                 {/* カード本体 */}
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-6">
-                    <div className="w-12 h-12 grid place-items-center rounded-lg border border-awa-magenta/30 bg-awa-magenta/5 backdrop-blur">
-                      <c.icon className="w-5 h-5 text-awa-magenta" />
+                    <div className="w-12 h-12 grid place-items-center rounded-lg border border-awa-glow/30 bg-awa-glow/5 backdrop-blur">
+                      <c.icon className="w-5 h-5 text-awa-glow" />
                     </div>
                     <span className="text-[10px] tracking-[0.3em] font-display text-white/30">
                       {c.en}
@@ -161,7 +161,7 @@ export default function AboutPage() {
                   <h3 className="text-2xl font-bold text-white mb-3">{c.title}</h3>
                   <p className="text-sm text-white/70 leading-relaxed">{c.desc}</p>
                 </div>
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-awa-magenta transition-all duration-500 group-hover:w-full z-10" />
+                <span className="absolute bottom-0 left-0 h-px w-0 bg-awa-glow transition-all duration-500 group-hover:w-full z-10" />
               </motion.div>
             ))}
           </div>
@@ -177,7 +177,7 @@ export default function AboutPage() {
             viewport={{ once: true }}
             className="relative rounded-3xl border border-neon-cyan/30 bg-awa-indigo-900/50 backdrop-blur-md p-10 md:p-16 overflow-hidden neon-border"
           >
-            <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-awa-magenta/20 blur-3xl" />
+            <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-awa-glow/20 blur-3xl" />
             <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-neon-cyan/20 blur-3xl" />
             <div className="relative z-10">
               <div className="text-xs font-display tracking-[0.4em] text-neon-cyan mb-4">
@@ -185,7 +185,7 @@ export default function AboutPage() {
               </div>
               <h3 className="font-display font-black text-3xl md:text-5xl text-white leading-tight">
                 <span className="block">誰でもメンバーになれる。</span>
-                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-awa-magenta to-neon-cyan">
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-awa-glow to-neon-cyan">
                   でも、誰もが本気になれる。
                 </span>
               </h3>
@@ -205,6 +205,83 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Brand Identity: A.G. = AWA Grit */}
+      <section className="relative py-24">
+        <div className="mx-auto max-w-5xl px-5 md:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative grid md:grid-cols-[auto,1fr] items-center gap-10 md:gap-16 rounded-3xl border border-neon-cyan/30 bg-awa-indigo-900/40 backdrop-blur-md p-10 md:p-16 overflow-hidden"
+          >
+            <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-awa-glow/15 blur-3xl" />
+            <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-neon-cyan/15 blur-3xl" />
+
+            <div className="relative z-10 flex justify-center">
+              <svg viewBox="0 0 80 88" className="w-32 md:w-44">
+                <defs>
+                  <linearGradient id="agAboutGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#00F0FF" />
+                    <stop offset="100%" stopColor="#2DFFB7" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M 40 6 L 74 16 L 74 48 C 74 66 60 78 40 82 C 20 78 6 66 6 48 L 6 16 Z"
+                  fill="rgba(7,11,31,0.6)"
+                  stroke="url(#agAboutGrad)"
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
+                />
+                <text
+                  x="40"
+                  y="56"
+                  textAnchor="middle"
+                  fontFamily="Orbitron"
+                  fontWeight="900"
+                  fontSize="28"
+                  fill="#FFFFFF"
+                  letterSpacing="-1"
+                >
+                  AG
+                </text>
+              </svg>
+            </div>
+
+            <div className="relative z-10">
+              <div className="text-xs font-display tracking-[0.4em] text-awa-glow mb-3">
+                BRAND IDENTITY / 略称の意味
+              </div>
+              <div className="font-display font-black leading-tight">
+                <span className="block text-5xl md:text-7xl bg-clip-text text-transparent bg-gradient-to-br from-neon-cyan to-awa-glow">
+                  A.G.
+                </span>
+                <span className="block text-2xl md:text-3xl text-white mt-2">
+                  = AWA Grit
+                </span>
+              </div>
+              <p className="mt-6 text-white/70 leading-relaxed">
+                <span className="text-awa-glow">AWA</span> は徳島・阿波。
+                <br />
+                <span className="text-awa-glow">Grit</span> は「やり抜く力」「雑草魂」「粘り強さ」。
+              </p>
+              <p className="mt-4 text-white/70 leading-relaxed">
+                表向きのチーム名は AWAKEN GLOW。
+                <br />
+                裏のコンセプトは AWA Grit。
+                <br />
+                阿波の雑草魂で、粘り強く挑戦し続ける。
+              </p>
+              <p className="mt-6 text-base md:text-lg font-display text-awa-glow">
+                &quot;Awaken the Glow. Rise with AWA Grit.&quot;
+              </p>
+              <p className="mt-2 text-sm text-white/50">
+                眠れる輝きを目覚めさせ、阿波の雑草魂で這い上がる。
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Concept: Not Pro */}
       <section className="relative py-24">
         <div className="mx-auto max-w-5xl px-5 md:px-8">
@@ -212,16 +289,16 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative grid md:grid-cols-[auto,1fr] items-center gap-10 md:gap-16 rounded-3xl border border-awa-magenta/30 bg-awa-indigo-900/40 backdrop-blur-md p-10 md:p-16 overflow-hidden"
+            className="relative grid md:grid-cols-[auto,1fr] items-center gap-10 md:gap-16 rounded-3xl border border-awa-glow/30 bg-awa-indigo-900/40 backdrop-blur-md p-10 md:p-16 overflow-hidden"
           >
-            <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-awa-magenta/20 blur-3xl" />
+            <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-awa-glow/20 blur-3xl" />
             <div className="absolute -bottom-16 -right-16 w-64 h-64 rounded-full bg-neon-cyan/15 blur-3xl" />
             <div className="relative z-10">
-              <div className="text-xs font-display tracking-[0.4em] text-awa-magenta mb-3">
+              <div className="text-xs font-display tracking-[0.4em] text-awa-glow mb-3">
                 OUR STANCE / 私たちの立ち位置
               </div>
               <div className="font-display font-black leading-none">
-                <span className="block text-6xl md:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-awa-magenta via-awa-violet to-neon-cyan">
+                <span className="block text-6xl md:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-awa-glow via-awa-glow to-neon-cyan">
                   NOT PRO.
                 </span>
                 <span className="block text-white/85 text-2xl md:text-3xl mt-4 leading-snug">
@@ -236,7 +313,7 @@ export default function AboutPage() {
                 私たちは選手にギャラを払うトッププロチームではない。
               </p>
               <p>
-                AWA ESPORTS は、参加者が会費を出し合って集まる、
+                AWAKEN GLOW は、参加者が会費を出し合って集まる、
                 <br />
                 地域に根ざした<span className="text-neon-cyan">「草野球感覚」</span>のe-sportsチーム。
               </p>

@@ -4,9 +4,9 @@ import NewsList from "@/components/NewsList";
 import { getAllNews } from "@/lib/news";
 
 export const metadata = {
-  title: "News & Events — AWA ESPORTS",
+  title: "News & Events — AWAKEN GLOW",
   description:
-    "AWA ESPORTS の練習会・大会参戦・メディア出演などの最新情報をお届けします。",
+    "AWAKEN GLOW の練習会・大会参戦・メディア出演などの最新情報をお届けします。",
 };
 
 export default async function NewsPage() {
@@ -23,7 +23,7 @@ export default async function NewsPage() {
               <>
                 練習会、大会参戦、メディア出演。
                 <br />
-                AWA ESPORTSの全ての挑戦を、リアルタイムでお届けします。
+                AWAKEN GLOWの全ての挑戦を、リアルタイムでお届けします。
               </>
             }
           />

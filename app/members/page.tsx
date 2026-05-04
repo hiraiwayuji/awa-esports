@@ -31,13 +31,13 @@ function PlayerCard({
   const isLegend = variant === "legend";
 
   const containerClass = isLegend
-    ? "relative rounded-xl border border-awa-magenta/30 bg-awa-indigo-900/50 backdrop-blur p-5 hover:border-awa-magenta hover:shadow-[0_0_45px_rgba(255,45,149,0.45)] transition-all duration-500 overflow-hidden"
+    ? "relative rounded-xl border border-awa-glow/30 bg-awa-indigo-900/50 backdrop-blur p-5 hover:border-awa-glow hover:shadow-[0_0_45px_rgba(255,45,149,0.45)] transition-all duration-500 overflow-hidden"
     : "relative rounded-xl border border-neon-cyan/20 bg-awa-indigo-900/40 backdrop-blur p-5 hover:border-neon-cyan/60 hover:shadow-neon transition-all duration-500 overflow-hidden";
 
-  const accentText = isLegend ? "text-awa-magenta" : "text-neon-cyan";
-  const accentDotBg = isLegend ? "bg-awa-magenta" : "bg-neon-cyan";
-  const avatarBorder = isLegend ? "border-awa-magenta/40" : "border-neon-cyan/30";
-  const sweepVia = isLegend ? "via-awa-magenta/25" : "via-neon-cyan/20";
+  const accentText = isLegend ? "text-awa-glow" : "text-neon-cyan";
+  const accentDotBg = isLegend ? "bg-awa-glow" : "bg-neon-cyan";
+  const avatarBorder = isLegend ? "border-awa-glow/40" : "border-neon-cyan/30";
+  const sweepVia = isLegend ? "via-awa-glow/25" : "via-neon-cyan/20";
   const labelText = isLegend ? "LEGEND" : "TRAINEE";
 
   return (
@@ -74,7 +74,7 @@ function PlayerCard({
           ].map((c, idx) => (
             <span
               key={idx}
-              className={`absolute w-3 h-3 pointer-events-none border-awa-magenta/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${c}`}
+              className={`absolute w-3 h-3 pointer-events-none border-awa-glow/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${c}`}
             />
           ))}
 
@@ -82,7 +82,7 @@ function PlayerCard({
         {isLegend && (
           <span
             aria-hidden
-            className="pointer-events-none absolute -bottom-4 -right-2 font-display font-black text-[5.5rem] leading-none text-awa-magenta/[0.08] select-none tracking-tighter"
+            className="pointer-events-none absolute -bottom-4 -right-2 font-display font-black text-[5.5rem] leading-none text-awa-glow/[0.08] select-none tracking-tighter"
           >
             {String(i + 1).padStart(2, "0")}
           </span>
@@ -95,7 +95,7 @@ function PlayerCard({
           <div className="flex items-center gap-2">
             {isLegend && p.sponsors && p.sponsors.length > 0 && (
               <span
-                className="inline-flex items-center gap-0.5 text-[9px] font-display tracking-[0.15em] px-1.5 py-0.5 rounded border border-awa-warmth/60 text-awa-warmth bg-awa-indigo-950/60 shadow-[0_0_8px_rgba(255,170,80,0.35)]"
+                className="inline-flex items-center gap-0.5 text-[9px] font-display tracking-[0.15em] px-1.5 py-0.5 rounded border border-awa-glow-deep/60 text-awa-glow-deep bg-awa-indigo-950/60 shadow-[0_0_8px_rgba(255,170,80,0.35)]"
                 title={`${p.sponsors.length}社の個人スポンサー`}
               >
                 ★ {p.sponsors.length}
@@ -145,14 +145,14 @@ function PlayerCard({
         </div>
         <div
           className={`mt-1 text-[10px] tracking-[0.3em] font-display ${
-            isLegend ? "text-awa-magenta/80" : "text-white/40"
+            isLegend ? "text-awa-glow/80" : "text-white/40"
           }`}
         >
           {labelText}
         </div>
 
         {isLegend && p.stats && (
-          <div className="mt-3 pt-3 border-t border-awa-magenta/15 space-y-1">
+          <div className="mt-3 pt-3 border-t border-awa-glow/15 space-y-1">
             {([
               { label: "AGG", value: p.stats.aggression },
               { label: "PAT", value: p.stats.patience },
@@ -168,11 +168,11 @@ function PlayerCard({
                 </span>
                 <div className="flex-1 h-1 bg-awa-indigo-950/60 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-awa-magenta to-awa-violet shadow-[0_0_4px_rgba(255,45,149,0.6)]"
+                    className="h-full bg-gradient-to-r from-awa-glow to-awa-glow shadow-[0_0_4px_rgba(255,45,149,0.6)]"
                     style={{ width: `${s.value}%` }}
                   />
                 </div>
-                <span className="text-[8px] font-mono text-awa-magenta/70 w-6 text-right">
+                <span className="text-[8px] font-mono text-awa-glow/70 w-6 text-right">
                   {s.value}
                 </span>
               </div>
@@ -193,7 +193,7 @@ function PlayerCard({
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`${p.name} の Twitch`}
-                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-violet/40 text-awa-violet hover:bg-awa-violet/10 hover:border-awa-violet transition-colors"
+                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-glow/40 text-awa-glow hover:bg-awa-glow/10 hover:border-awa-glow transition-colors"
                 >
                   <Twitch size={13} />
                 </a>
@@ -217,7 +217,7 @@ function PlayerCard({
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`${p.name} の YouTube`}
-                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-magenta/40 text-awa-magenta hover:bg-awa-magenta/10 hover:border-awa-magenta transition-colors"
+                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-glow/40 text-awa-glow hover:bg-awa-glow/10 hover:border-awa-glow transition-colors"
                 >
                   <Youtube size={13} />
                 </a>
@@ -239,7 +239,7 @@ function PlayerCard({
 
         {/* CTA on hover — legend + clickable only */}
         {isLegend && clickable && (
-          <div className="absolute inset-x-0 bottom-0 px-5 py-2.5 bg-gradient-to-t from-awa-magenta/40 via-awa-magenta/15 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+          <div className="absolute inset-x-0 bottom-0 px-5 py-2.5 bg-gradient-to-t from-awa-glow/40 via-awa-glow/15 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500">
             <span className="text-[10px] font-display tracking-[0.35em] text-white">
               VIEW PROFILE →
             </span>
@@ -314,7 +314,7 @@ export default function MembersPage() {
             {/* Massive background watermark */}
             <span
               aria-hidden
-              className="pointer-events-none absolute -top-8 left-0 right-0 select-none font-display font-black text-[18vw] md:text-[14vw] lg:text-[11rem] leading-none tracking-tighter text-awa-magenta/[0.05] uppercase whitespace-nowrap overflow-hidden"
+              className="pointer-events-none absolute -top-8 left-0 right-0 select-none font-display font-black text-[18vw] md:text-[14vw] lg:text-[11rem] leading-none tracking-tighter text-awa-glow/[0.05] uppercase whitespace-nowrap overflow-hidden"
             >
               LEGEND
             </span>
@@ -322,7 +322,7 @@ export default function MembersPage() {
             {/* Title block */}
             <div className="relative">
               <h2 className="font-display font-black text-3xl md:text-4xl lg:text-5xl tracking-tight">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-magenta via-awa-magenta to-awa-violet drop-shadow-[0_0_24px_rgba(255,45,149,0.5)]">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-glow via-awa-glow to-awa-glow drop-shadow-[0_0_24px_rgba(255,45,149,0.5)]">
                   LEGEND PLAYERS
                 </span>
               </h2>
@@ -336,7 +336,7 @@ export default function MembersPage() {
                   </span>
                 </span>
                 <span className="text-white/20">/</span>
-                <span className="text-awa-magenta">
+                <span className="text-awa-glow">
                   STATUS: READY FOR BATTLE
                 </span>
               </div>
@@ -359,8 +359,8 @@ export default function MembersPage() {
           {/* Trainees */}
           <div className="mt-16">
             <div className="flex items-center gap-3 mb-6">
-              <span className="h-px w-8 bg-awa-warmth" />
-              <span className="text-xs font-display tracking-[0.35em] text-awa-warmth">
+              <span className="h-px w-8 bg-awa-glow-deep" />
+              <span className="text-xs font-display tracking-[0.35em] text-awa-glow-deep">
                 TRAINEES / 練習生
               </span>
             </div>

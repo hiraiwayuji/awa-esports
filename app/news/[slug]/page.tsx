@@ -14,9 +14,9 @@ const iconFor = (cat: NewsCategory) =>
 
 const colorFor = (cat: NewsCategory) =>
   cat === "EVENT"
-    ? "text-awa-magenta border-awa-magenta/40"
+    ? "text-awa-glow border-awa-glow/40"
     : cat === "MATCH"
-      ? "text-awa-warmth border-awa-warmth/40"
+      ? "text-awa-glow-deep border-awa-glow-deep/40"
       : "text-neon-cyan border-neon-cyan/40";
 
 const mdxComponents = {
@@ -52,7 +52,7 @@ const mdxComponents = {
   ),
   a: (props: React.ComponentProps<"a">) => (
     <a
-      className="text-neon-cyan hover:text-awa-magenta underline-offset-4 hover:underline transition"
+      className="text-neon-cyan hover:text-awa-glow underline-offset-4 hover:underline transition"
       {...props}
     />
   ),
@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: Props) {
   const article = await getNewsBySlug(params.slug);
   if (!article) return {};
   return {
-    title: `${article.title} — AWA ESPORTS`,
+    title: `${article.title} — AWAKEN GLOW`,
     description: article.excerpt,
   };
 }

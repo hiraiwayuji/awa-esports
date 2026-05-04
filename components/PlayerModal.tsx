@@ -44,7 +44,7 @@ export default function PlayerModal({
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-xl max-h-[85vh] overflow-y-auto rounded-2xl border border-awa-magenta/60 bg-awa-indigo-900/95 backdrop-blur-xl shadow-[0_0_60px_rgba(255,45,149,0.35)]"
+            className="relative w-full max-w-xl max-h-[85vh] overflow-y-auto rounded-2xl border border-awa-glow/60 bg-awa-indigo-900/95 backdrop-blur-xl shadow-[0_0_60px_rgba(255,45,149,0.35)]"
           >
             <PlayerModalContent player={player} onClose={onClose} />
           </motion.div>
@@ -74,11 +74,11 @@ function PlayerModalContent({
       ].map((c, i) => (
         <span
           key={i}
-          className={`absolute w-5 h-5 pointer-events-none text-awa-magenta ${c}`}
+          className={`absolute w-5 h-5 pointer-events-none text-awa-glow ${c}`}
         />
       ))}
 
-      <span className="absolute inset-0 pointer-events-none bg-gradient-to-br from-awa-magenta/10 to-transparent opacity-60" />
+      <span className="absolute inset-0 pointer-events-none bg-gradient-to-br from-awa-glow/10 to-transparent opacity-60" />
 
       <button
         onClick={onClose}
@@ -91,8 +91,8 @@ function PlayerModalContent({
       <div className="relative z-[1] p-7 md:p-10">
         <div className="flex items-center justify-between mb-6 pr-12">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-awa-magenta animate-pulse shadow-[0_0_10px_rgba(255,45,149,0.9)]" />
-            <span className="text-[10px] font-display tracking-[0.3em] text-awa-magenta">
+            <span className="w-2 h-2 rounded-full bg-awa-glow animate-pulse shadow-[0_0_10px_rgba(255,45,149,0.9)]" />
+            <span className="text-[10px] font-display tracking-[0.3em] text-awa-glow">
               LEGEND PLAYER
             </span>
           </div>
@@ -102,7 +102,7 @@ function PlayerModalContent({
         </div>
 
         <div className="flex items-center gap-5 mb-7">
-          <div className="relative w-28 h-28 grid place-items-center rounded-xl border border-awa-magenta/60 bg-awa-indigo-950/80 overflow-hidden shadow-[0_0_24px_rgba(255,45,149,0.35)]">
+          <div className="relative w-28 h-28 grid place-items-center rounded-xl border border-awa-glow/60 bg-awa-indigo-950/80 overflow-hidden shadow-[0_0_24px_rgba(255,45,149,0.35)]">
             {player.avatarUrl ? (
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -118,10 +118,10 @@ function PlayerModalContent({
                       "repeating-linear-gradient(to bottom, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 3px)",
                   }}
                 />
-                <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-awa-magenta/20 via-transparent to-awa-violet/20" />
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-awa-glow/20 via-transparent to-awa-glow/20" />
               </>
             ) : (
-              <User className="w-10 h-10 text-awa-magenta" />
+              <User className="w-10 h-10 text-awa-glow" />
             )}
             {[
               "top-1 left-1 border-t border-l",
@@ -131,17 +131,17 @@ function PlayerModalContent({
             ].map((c, idx) => (
               <span
                 key={idx}
-                className={`absolute w-2.5 h-2.5 pointer-events-none border-awa-magenta/80 ${c}`}
+                className={`absolute w-2.5 h-2.5 pointer-events-none border-awa-glow/80 ${c}`}
               />
             ))}
           </div>
           <div className="flex flex-col">
             {player.role && (
-              <span className="text-[10px] tracking-[0.25em] font-display text-awa-magenta">
+              <span className="text-[10px] tracking-[0.25em] font-display text-awa-glow">
                 {player.role}
               </span>
             )}
-            <span className="text-2xl md:text-3xl font-black mt-1 bg-clip-text text-transparent bg-gradient-to-r from-white via-awa-magenta to-awa-violet drop-shadow-[0_0_18px_rgba(255,45,149,0.35)]">
+            <span className="text-2xl md:text-3xl font-black mt-1 bg-clip-text text-transparent bg-gradient-to-r from-white via-awa-glow to-awa-glow drop-shadow-[0_0_18px_rgba(255,45,149,0.35)]">
               {player.name}
             </span>
           </div>
@@ -156,7 +156,7 @@ function PlayerModalContent({
         {bio ? (
           <div className="space-y-6">
             {bio.headline && (
-              <p className="text-base md:text-lg font-bold leading-relaxed text-awa-magenta">
+              <p className="text-base md:text-lg font-bold leading-relaxed text-awa-glow">
                 {bio.headline}
               </p>
             )}
@@ -172,7 +172,7 @@ function PlayerModalContent({
 
             {bio.highlights && bio.highlights.length > 0 && (
               <div className="pt-4 border-t border-white/10">
-                <div className="text-[10px] tracking-[0.3em] font-display mb-3 text-awa-magenta">
+                <div className="text-[10px] tracking-[0.3em] font-display mb-3 text-awa-glow">
                   HIGHLIGHTS
                 </div>
                 <ul className="space-y-2">
@@ -181,7 +181,7 @@ function PlayerModalContent({
                       key={i}
                       className="flex items-start gap-3 text-sm text-white/80"
                     >
-                      <span className="mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0 bg-awa-magenta" />
+                      <span className="mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0 bg-awa-glow" />
                       <span>{h}</span>
                     </li>
                   ))}
@@ -201,12 +201,12 @@ function PlayerModalContent({
                 className="pt-4 border-t border-white/10"
               >
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-awa-magenta animate-pulse shadow-[0_0_8px_rgba(255,45,149,0.8)]" />
-                  <div className="text-[10px] tracking-[0.3em] font-display text-awa-magenta">
+                  <span className="w-1.5 h-1.5 rounded-full bg-awa-glow animate-pulse shadow-[0_0_8px_rgba(255,45,149,0.8)]" />
+                  <div className="text-[10px] tracking-[0.3em] font-display text-awa-glow">
                     MESSAGE FROM {player.name.toUpperCase()}
                   </div>
                 </div>
-                <blockquote className="relative pl-6 pr-2 py-1 border-l-2 border-awa-magenta/70">
+                <blockquote className="relative pl-6 pr-2 py-1 border-l-2 border-awa-glow/70">
                   <motion.span
                     initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
                     animate={{ opacity: 0.6, scale: 1, rotate: 0 }}
@@ -215,7 +215,7 @@ function PlayerModalContent({
                       delay: 0.7,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="absolute -top-3 -left-1 text-6xl text-awa-magenta leading-none font-serif select-none pointer-events-none drop-shadow-[0_0_14px_rgba(255,45,149,0.8)]"
+                    className="absolute -top-3 -left-1 text-6xl text-awa-glow leading-none font-serif select-none pointer-events-none drop-shadow-[0_0_14px_rgba(255,45,149,0.8)]"
                   >
                     “
                   </motion.span>
@@ -253,7 +253,7 @@ function PlayerModalContent({
           </div>
         ) : (
           <div className="py-12 text-center">
-            <div className="text-[10px] tracking-[0.4em] font-display mb-3 text-awa-magenta">
+            <div className="text-[10px] tracking-[0.4em] font-display mb-3 text-awa-glow">
               COMING SOON
             </div>
             <p className="text-sm text-white/60">
@@ -270,10 +270,10 @@ function PlayerModalContent({
             className="mt-6 pt-4 border-t border-white/10"
           >
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-awa-warmth drop-shadow-[0_0_6px_rgba(255,170,80,0.7)]">
+              <span className="text-awa-glow-deep drop-shadow-[0_0_6px_rgba(255,170,80,0.7)]">
                 ★
               </span>
-              <div className="text-[10px] tracking-[0.3em] font-display text-awa-warmth">
+              <div className="text-[10px] tracking-[0.3em] font-display text-awa-glow-deep">
                 PERSONAL SPONSORS / 個人スポンサー
               </div>
             </div>
@@ -281,14 +281,14 @@ function PlayerModalContent({
               {player.sponsors.map((s, idx) => {
                 const isMain = s.tier === "MAIN" || s.tier === "メイン";
                 const containerClass = isMain
-                  ? "relative rounded-lg border border-awa-warmth/60 bg-gradient-to-br from-awa-warmth/15 via-awa-warmth/5 to-transparent px-4 py-3 transition-all hover:border-awa-warmth hover:shadow-[0_0_24px_rgba(255,170,80,0.35)]"
-                  : "relative rounded-lg border border-white/15 bg-awa-indigo-950/40 px-4 py-3 transition-all hover:border-awa-warmth/60 hover:bg-awa-warmth/5";
+                  ? "relative rounded-lg border border-awa-glow-deep/60 bg-gradient-to-br from-awa-glow-deep/15 via-awa-glow-deep/5 to-transparent px-4 py-3 transition-all hover:border-awa-glow-deep hover:shadow-[0_0_24px_rgba(255,170,80,0.35)]"
+                  : "relative rounded-lg border border-white/15 bg-awa-indigo-950/40 px-4 py-3 transition-all hover:border-awa-glow-deep/60 hover:bg-awa-glow-deep/5";
                 const inner = (
                   <div className={containerClass}>
                     {s.tier && (
                       <div
                         className={`text-[9px] tracking-[0.3em] font-display mb-1 ${
-                          isMain ? "text-awa-warmth" : "text-white/40"
+                          isMain ? "text-awa-glow-deep" : "text-white/40"
                         }`}
                       >
                         {s.tier} SPONSOR
@@ -342,7 +342,7 @@ function PlayerModalContent({
                   href={player.socials.twitch}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs tracking-[0.2em] font-display px-4 py-2 rounded-full border border-awa-violet/60 text-awa-violet transition hover:bg-awa-violet/10"
+                  className="inline-flex items-center gap-2 text-xs tracking-[0.2em] font-display px-4 py-2 rounded-full border border-awa-glow/60 text-awa-glow transition hover:bg-awa-glow/10"
                 >
                   <Twitch className="w-3.5 h-3.5" />
                   TWITCH →
@@ -364,7 +364,7 @@ function PlayerModalContent({
                   href={player.socials.youtube}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs tracking-[0.2em] font-display px-4 py-2 rounded-full border border-awa-magenta/60 text-awa-magenta transition hover:bg-awa-magenta/10"
+                  className="inline-flex items-center gap-2 text-xs tracking-[0.2em] font-display px-4 py-2 rounded-full border border-awa-glow/60 text-awa-glow transition hover:bg-awa-glow/10"
                 >
                   <Youtube className="w-3.5 h-3.5" />
                   YOUTUBE →

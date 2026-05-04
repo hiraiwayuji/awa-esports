@@ -38,9 +38,9 @@ export default function HomePage() {
         >
           <defs>
             <linearGradient id="heroLine" x1="0" x2="1">
-              <stop offset="0%" stopColor="#FF2D95" stopOpacity="0" />
+              <stop offset="0%" stopColor="#2DFFB7" stopOpacity="0" />
               <stop offset="50%" stopColor="#00F0FF" />
-              <stop offset="100%" stopColor="#9B5CFF" stopOpacity="0" />
+              <stop offset="100%" stopColor="#2DFFB7" stopOpacity="0" />
             </linearGradient>
           </defs>
           {Array.from({ length: 18 }).map((_, i) => (
@@ -92,7 +92,7 @@ export default function HomePage() {
             <div className="flex items-center gap-3 mb-8">
               <span className="h-px w-10 bg-neon-cyan" />
               <span className="text-xs font-display tracking-[0.4em] text-neon-cyan">
-                AWA ESPORTS / EST. 2026
+                AWAKEN GLOW / A.G. / EST. 2026
               </span>
             </div>
 
@@ -103,15 +103,15 @@ export default function HomePage() {
                 transition={{ duration: 0.7, delay: 0.1 }}
                 className="block text-white whitespace-nowrap"
               >
-                eSPORTSを通じて
+                眠れる輝きを、
               </motion.span>
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7, delay: 0.25 }}
-                className="block whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-awa-magenta via-awa-violet to-neon-cyan"
+                className="block whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-neon-cyan to-awa-glow"
               >
-                徳島を盛り上げる
+                目覚めさせろ。
               </motion.span>
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
@@ -119,7 +119,7 @@ export default function HomePage() {
                 transition={{ duration: 0.7, delay: 0.4 }}
                 className="block text-white/30 text-[6vw] md:text-[3.5vw] lg:text-5xl mt-3 tracking-[0.1em]"
               >
-                FROM AWA TO THE WORLD.
+                AWAKEN THE GLOW.
               </motion.span>
             </h1>
 
@@ -129,11 +129,11 @@ export default function HomePage() {
               transition={{ delay: 0.55, duration: 0.7 }}
               className="mt-8 max-w-xl text-sm md:text-base text-white/70 leading-relaxed text-balance"
             >
-              阿波踊りの躍動感、藍色の深み。
+              内側にある輝きを目覚めさせ、
               <br />
-              徳島の魂をデジタルの最前線へ。
+              <span className="text-awa-glow">阿波の雑草魂</span>で這い上がる。
               <br />
-              誰もが主役になれる、新しい競技の物語を。
+              徳島から始まる、新しい競技の物語を。
             </motion.p>
 
             <motion.div
@@ -169,7 +169,7 @@ export default function HomePage() {
                     className="flex items-center justify-between border-b border-white/10 pb-3"
                   >
                     <div className="flex items-center gap-3">
-                      <s.icon size={14} className="text-awa-magenta" />
+                      <s.icon size={14} className="text-awa-glow" />
                       <span className="text-xs tracking-[0.2em] text-white/60">
                         {s.label}
                       </span>
@@ -208,17 +208,17 @@ export default function HomePage() {
           {Array.from({ length: 2 }).map((_, k) => (
             <div key={k} className="flex items-center gap-12 pr-12">
               {[
-                "AWA ESPORTS",
+                "AWAKEN GLOW",
                 "★",
-                "TOKUSHIMA",
+                "A.G. / AWA GRIT",
                 "★",
-                "FROM AWA TO THE WORLD",
+                "AWAKEN THE GLOW",
                 "★",
-                "EST. 2026",
+                "RISE WITH AWA GRIT",
                 "★",
-                "誰もが主役になれる",
+                "阿波の意地",
                 "★",
-                "阿波の熱を、競技の最前線へ",
+                "TOKUSHIMA / EST. 2026",
                 "★",
               ].map((t, i) => (
                 <span
@@ -250,17 +250,17 @@ export default function HomePage() {
                 title: "RANK SYSTEM",
                 jp: "競争心を煽るランク制度",
                 desc: "プレースキル・貢献度・人柄。多面的な評価で伸びるランク制度を導入。",
-                textClass: "text-awa-magenta",
-                bgClass: "bg-awa-magenta",
-                hoverBorder: "hover:border-awa-magenta/40",
+                textClass: "text-awa-glow",
+                bgClass: "bg-awa-glow",
+                hoverBorder: "hover:border-awa-glow/40",
               },
               {
                 title: "LOCAL ROOTED",
                 jp: "徳島と共に育つ",
                 desc: "阿波踊り、ufotable、マチ★アソビ。地域の文化と、新しい競技を結びつける。",
-                textClass: "text-awa-warmth",
-                bgClass: "bg-awa-warmth",
-                hoverBorder: "hover:border-awa-warmth/40",
+                textClass: "text-awa-glow-deep",
+                bgClass: "bg-awa-glow-deep",
+                hoverBorder: "hover:border-awa-glow-deep/40",
               },
             ].map((p, i) => (
               <motion.div
@@ -307,14 +307,14 @@ export default function HomePage() {
               <h3 className="font-display font-black text-3xl md:text-5xl leading-tight text-white">
                 次に旗を立てるのは、
                 <br className="hidden md:block" />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-magenta to-neon-cyan">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-glow to-neon-cyan">
                   あなたかもしれない。
                 </span>
               </h3>
               <p className="mt-6 text-white/60 text-balance">
                 応募は1分で完了。
                 <br className="sm:hidden" />
-                徳島県民、または元徳島県民が対象です。
+                徳島ルーツの方を中心に、興味のある県外の方も歓迎です。
               </p>
               <div className="mt-10 flex flex-wrap justify-center gap-4">
                 <NeonButton href="/join">エントリーする</NeonButton>

@@ -12,7 +12,7 @@ type Particle = {
   life: number;
 };
 
-const COLORS = ["#00F0FF", "#FF2D95", "#9B5CFF", "#3DB8FF"];
+const COLORS = ["#00F0FF", "#2DFFB7", "#2DFFB7", "#3DB8FF"];
 
 export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);

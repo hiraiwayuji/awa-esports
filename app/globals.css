@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --awa-indigo-950: #070B1F;
+  --awa-indigo-950: #040611;
   --neon-cyan: #00F0FF;
-  --awa-magenta: #FF2D95;
+  --awa-glow: #2DFFB7;
 }
 
 * {
@@ -23,15 +23,15 @@ body {
 body {
   min-height: 100vh;
   background-image:
-    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(255, 45, 149, 0.18), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(45, 255, 183, 0.18), transparent 60%),
     radial-gradient(ellipse 50% 50% at 80% 30%, rgba(0, 240, 255, 0.18), transparent 60%),
-    radial-gradient(ellipse 80% 60% at 50% 110%, rgba(155, 92, 255, 0.20), transparent 70%),
-    linear-gradient(180deg, #070B1F 0%, #0B1230 50%, #070B1F 100%);
+    radial-gradient(ellipse 80% 60% at 50% 110%, rgba(15, 163, 122, 0.18), transparent 70%),
+    linear-gradient(180deg, #040611 0%, #070B1F 50%, #040611 100%);
   background-attachment: fixed;
 }
 
 ::selection {
-  background: rgba(0, 240, 255, 0.4);
+  background: rgba(45, 255, 183, 0.4);
   color: #fff;
 }
 
@@ -40,10 +40,10 @@ body {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #070B1F;
+  background: #040611;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #FF2D95, #00F0FF);
+  background: linear-gradient(180deg, #00F0FF, #2DFFB7);
   border-radius: 999px;
 }
 
@@ -69,7 +69,7 @@ body {
   pointer-events: none;
 }
 .glitch::before {
-  color: #FF2D95;
+  color: #2DFFB7;
   transform: translate(2px, 0);
   mix-blend-mode: screen;
   clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
@@ -94,7 +94,7 @@ body {
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, #00F0FF, #FF2D95, #9B5CFF);
+  background: linear-gradient(135deg, #00F0FF, #2DFFB7);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -106,7 +106,7 @@ body {
 /* Section divider */
 .divider-neon {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.6), rgba(255, 45, 149, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.6), rgba(45, 255, 183, 0.6), transparent);
 }
 
 /* Form ring */

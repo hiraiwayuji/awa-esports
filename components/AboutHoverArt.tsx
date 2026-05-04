@@ -78,8 +78,8 @@ function AwaOdori({ active }: { active: boolean }) {
       >
         <defs>
           <linearGradient id="ougi" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#F0B95C" />
-            <stop offset="100%" stopColor="#FF2D95" />
+            <stop offset="0%" stopColor="#2DFFB7" />
+            <stop offset="100%" stopColor="#2DFFB7" />
           </linearGradient>
         </defs>
         <path
@@ -186,7 +186,7 @@ function AwaOdori({ active }: { active: boolean }) {
             bottom: 0,
             width: 2 + (i % 3),
             height: 2 + (i % 3),
-            background: i % 2 ? "#F0B95C" : "#FF2D95",
+            background: i % 2 ? "#2DFFB7" : "#2DFFB7",
             boxShadow: "0 0 8px currentColor",
           }}
           animate={
@@ -237,7 +237,7 @@ function Ufotable({ active }: { active: boolean }) {
               y1="0"
               x2={x2}
               y2={y2}
-              stroke={i % 3 === 0 ? "#9B5CFF" : "rgba(155,92,255,0.4)"}
+              stroke={i % 3 === 0 ? "#2DFFB7" : "rgba(155,92,255,0.4)"}
               strokeWidth={i % 6 === 0 ? "0.8" : "0.3"}
             />
           );
@@ -285,7 +285,7 @@ function Ufotable({ active }: { active: boolean }) {
           {Array.from({ length: 30 }).map((_, j) => (
             <span
               key={j}
-              className="block h-3 w-3 bg-awa-violet/70 rounded-sm flex-shrink-0"
+              className="block h-3 w-3 bg-awa-glow/70 rounded-sm flex-shrink-0"
             />
           ))}
         </motion.div>
@@ -382,7 +382,7 @@ function MachiAsobi({ active }: { active: boolean }) {
             y={50 + ((i * 7) % 25)}
             width={2}
             height={2}
-            fill={i % 3 === 0 ? "#F0B95C" : "#FF2D95"}
+            fill={i % 3 === 0 ? "#2DFFB7" : "#2DFFB7"}
           />
         ))}
       </svg>
@@ -401,8 +401,8 @@ function MachiAsobi({ active }: { active: boolean }) {
       >
         <defs>
           <linearGradient id="starG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#F0B95C" />
-            <stop offset="100%" stopColor="#FF2D95" />
+            <stop offset="0%" stopColor="#2DFFB7" />
+            <stop offset="100%" stopColor="#2DFFB7" />
           </linearGradient>
         </defs>
         <polygon
@@ -423,7 +423,7 @@ function MachiAsobi({ active }: { active: boolean }) {
           style={{
             left: `${10 + ((i * 23) % 75)}%`,
             top: `${20 + ((i * 17) % 50)}%`,
-            color: i % 2 ? "#F0B95C" : "#FF2D95",
+            color: i % 2 ? "#2DFFB7" : "#2DFFB7",
             fontSize: 10 + (i % 3) * 4,
             textShadow: "0 0 8px currentColor",
           }}
@@ -450,9 +450,9 @@ function MachiAsobi({ active }: { active: boolean }) {
       <motion.div
         className="absolute left-5 top-8 font-display font-black text-2xl tracking-[0.1em]"
         style={{
-          color: "#F0B95C",
+          color: "#2DFFB7",
           textShadow:
-            "0 0 8px #F0B95C, 0 0 18px rgba(240,185,92,0.7), 0 0 28px rgba(255,45,149,0.5)",
+            "0 0 8px #2DFFB7, 0 0 18px rgba(240,185,92,0.7), 0 0 28px rgba(255,45,149,0.5)",
         }}
         animate={active ? { opacity: [1, 0.7, 1, 0.4, 1] } : { opacity: 1 }}
         transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
@@ -469,8 +469,8 @@ function MachiAsobi({ active }: { active: boolean }) {
             top: `${30 + i * 22}%`,
             background:
               i % 2
-                ? "linear-gradient(90deg, transparent, #FF2D95, transparent)"
-                : "linear-gradient(90deg, transparent, #F0B95C, transparent)",
+                ? "linear-gradient(90deg, transparent, #2DFFB7, transparent)"
+                : "linear-gradient(90deg, transparent, #2DFFB7, transparent)",
           }}
           animate={
             active

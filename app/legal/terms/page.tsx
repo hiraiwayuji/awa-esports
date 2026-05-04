@@ -3,8 +3,8 @@ import PageTransition from "@/components/PageTransition";
 import Link from "next/link";
 
 export const metadata = {
-  title: "利用規約 — AWA ESPORTS",
-  description: "AWA ESPORTS の参加・施設利用に関する規約。",
+  title: "利用規約 — AWAKEN GLOW",
+  description: "AWAKEN GLOW の参加・施設利用に関する規約。",
 };
 
 const sections: { title: string; body: React.ReactNode }[] = [
@@ -12,7 +12,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "第1条（目的）",
     body: (
       <>
-        本規約は、徳島県を拠点とするe-sportsチーム「AWA ESPORTS」（以下「当チーム」）が
+        本規約は、徳島県を拠点とするe-sportsチーム「AWAKEN GLOW」（以下「当チーム」）が
         運営する活動・施設利用・各種イベントへの参加に関する条件を定めるものです。
         当チームは、参加者が会費を出し合って集まる
         「草野球感覚」の地域e-sportsコミュニティです。
@@ -81,7 +81,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         別途
         <Link
           href="/legal/privacy"
-          className="text-neon-cyan hover:text-awa-magenta underline-offset-4 hover:underline transition mx-1"
+          className="text-neon-cyan hover:text-awa-glow underline-offset-4 hover:underline transition mx-1"
         >
           プライバシーポリシー
         </Link>
@@ -124,10 +124,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <>
         本規約に関するお問い合わせは、
         <a
-          href="mailto:contact@awa-esports.jp"
-          className="text-neon-cyan hover:text-awa-magenta underline-offset-4 hover:underline transition mx-1"
+          href="mailto:contact@awakenglow.jp"
+          className="text-neon-cyan hover:text-awa-glow underline-offset-4 hover:underline transition mx-1"
         >
-          contact@awa-esports.jp
+          contact@awakenglow.jp
         </a>
         までご連絡ください。
       </>
@@ -145,7 +145,7 @@ export default function TermsPage() {
             title="TERMS OF SERVICE"
             subtitle={
               <>
-                AWA ESPORTS の活動・施設利用にあたっての規約です。
+                AWAKEN GLOW の活動・施設利用にあたっての規約です。
                 <br />
                 参加前にご確認ください。
               </>
@@ -171,7 +171,7 @@ export default function TermsPage() {
             <div className="pt-6 border-t border-white/10 text-xs text-white/40 text-right">
               制定日：2026年5月4日
               <br />
-              運営：AWA ESPORTS（代表：平岩裕治）
+              運営：AWAKEN GLOW（代表：平岩裕治）
             </div>
           </div>
         </div>

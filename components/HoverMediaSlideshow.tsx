@@ -29,7 +29,7 @@ export default function HoverMediaSlideshow({
   active,
   interval = 3000,
   maxOpacity = 0.35,
-  fallbackColor = "#FF2D95",
+  fallbackColor = "#2DFFB7",
 }: Props) {
   const [index, setIndex] = useState(0);
 

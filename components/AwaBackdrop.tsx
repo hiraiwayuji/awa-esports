@@ -58,7 +58,7 @@ export default function AwaBackdrop() {
                 y1="0"
                 x2="0"
                 y2="40"
-                stroke="#F0B95C"
+                stroke="#2DFFB7"
                 strokeWidth="1"
               />
             </pattern>

@@ -32,7 +32,7 @@ export default function NeonButton({
           "bg-awa-indigo-900/60 text-white hover:shadow-neon",
         variant === "ghost" && "bg-transparent text-neon-cyan",
         variant === "warm" &&
-          "bg-awa-warmth/10 text-awa-warmth hover:shadow-warmth border-awa-warmth/40",
+          "bg-awa-glow-deep/10 text-awa-glow-deep hover:shadow-glow border-awa-glow-deep/40",
         className,
       )}
     >
@@ -40,8 +40,8 @@ export default function NeonButton({
         className={clsx(
           "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500",
           variant === "warm"
-            ? "bg-gradient-to-r from-awa-warmth/20 via-awa-magenta/20 to-awa-warmth/20"
-            : "bg-gradient-to-r from-awa-magenta/30 via-awa-violet/30 to-neon-cyan/30",
+            ? "bg-gradient-to-r from-awa-glow-deep/20 via-awa-glow/20 to-awa-glow-deep/20"
+            : "bg-gradient-to-r from-awa-glow/30 via-awa-glow/30 to-neon-cyan/30",
         )}
       />
       <span className="relative z-10">{children}</span>

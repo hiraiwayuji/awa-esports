@@ -33,13 +33,13 @@ export default function SectionTitle({
           viewport={{ once: true }}
           className={clsx(
             "inline-flex items-center gap-2 text-xs font-display tracking-[0.35em] mb-4",
-            tone === "neon" ? "text-neon-cyan" : "text-awa-warmth",
+            tone === "neon" ? "text-neon-cyan" : "text-awa-glow-deep",
           )}
         >
           <span
             className={clsx(
               "h-px w-8",
-              tone === "neon" ? "bg-neon-cyan" : "bg-awa-warmth",
+              tone === "neon" ? "bg-neon-cyan" : "bg-awa-glow-deep",
             )}
           />
           {eyebrow}

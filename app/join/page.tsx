@@ -60,7 +60,7 @@ export default function JoinPage() {
               <>
                 徳島ルーツの方を中心に、興味のある県外の方も歓迎。
                 <br />
-                あなたの「やってみたい」が、AWA ESPORTS の次の一歩になります。
+                あなたの「やってみたい」が、AWAKEN GLOW の次の一歩になります。
               </>
             }
           />
@@ -127,8 +127,8 @@ export default function JoinPage() {
             {/* Cockpit header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-neon-cyan/20">
               <div className="flex items-center gap-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-awa-magenta animate-pulse" />
-                <span className="w-2.5 h-2.5 rounded-full bg-awa-warmth" />
+                <span className="w-2.5 h-2.5 rounded-full bg-awa-glow animate-pulse" />
+                <span className="w-2.5 h-2.5 rounded-full bg-awa-glow-deep" />
                 <span className="w-2.5 h-2.5 rounded-full bg-neon-cyan" />
                 <span className="ml-3 text-[10px] font-mono tracking-[0.3em] text-white/50">
                   AWA-COCKPIT v1.0 / ENTRY MODULE
@@ -213,7 +213,7 @@ export default function JoinPage() {
                       <motion.p
                         initial={{ opacity: 0, y: -4 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mt-3 text-xs text-awa-magenta/90 leading-relaxed"
+                        className="mt-3 text-xs text-awa-glow/90 leading-relaxed"
                       >
                         ※ 県外の方は、まず見学・お試し参加からご案内します。
                         <br />
@@ -241,7 +241,7 @@ export default function JoinPage() {
                           onClick={() => setGame(g)}
                           className={`text-[11px] px-3 py-1.5 rounded-full border transition-all ${
                             game === g
-                              ? "border-awa-magenta bg-awa-magenta/10 text-awa-magenta"
+                              ? "border-awa-glow bg-awa-glow/10 text-awa-glow"
                               : "border-white/15 text-white/60 hover:border-white/40 hover:text-white"
                           }`}
                         >
@@ -259,7 +259,7 @@ export default function JoinPage() {
                         className={
                           valid
                             ? "text-neon-cyan font-bold"
-                            : "text-awa-magenta/70"
+                            : "text-awa-glow/70"
                         }
                       >
                         {valid ? "READY" : "STANDBY"}
@@ -272,7 +272,7 @@ export default function JoinPage() {
                       whileTap={valid ? { scale: 0.97 } : undefined}
                       className={`relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-display tracking-[0.3em] text-xs uppercase overflow-hidden transition-all ${
                         valid
-                          ? "bg-gradient-to-r from-awa-magenta via-awa-violet to-neon-cyan text-white shadow-neon"
+                          ? "bg-gradient-to-r from-awa-glow via-awa-glow to-neon-cyan text-white shadow-neon"
                           : "bg-white/5 text-white/30 cursor-not-allowed"
                       }`}
                     >
@@ -311,8 +311,8 @@ export default function JoinPage() {
                   <h3 className="font-display font-black text-3xl md:text-4xl text-white mb-4">
                     WELCOME TO
                     <br />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-magenta to-neon-cyan">
-                      AWA ESPORTS.
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-glow to-neon-cyan">
+                      AWAKEN GLOW.
                     </span>
                   </h3>
                   <p className="text-sm text-white/60 leading-relaxed max-w-md mx-auto">
@@ -327,7 +327,7 @@ export default function JoinPage() {
                     内容を確認の上、運営からご連絡いたします。
                   </p>
                   {(residency === "neighbor" || residency === "other") && (
-                    <p className="mt-4 text-xs text-awa-magenta/80 leading-relaxed max-w-md mx-auto">
+                    <p className="mt-4 text-xs text-awa-glow/80 leading-relaxed max-w-md mx-auto">
                       県外メンバーも歓迎しています。
                       <br />
                       まずは見学・お試し参加からご案内いたします。

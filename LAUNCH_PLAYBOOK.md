@@ -1,4 +1,4 @@
-# AWA ESPORTS — LAUNCH PLAYBOOK
+# AWAKEN GLOW — LAUNCH PLAYBOOK
 ## 徳島発・世界基準のe-sportsチーム立ち上げハンドブック
 
 > ぼーるくん専用 / 内部資料 / 2026-05 初版
@@ -33,7 +33,7 @@
 - **メンバーが顔を出す**：選手はキャラクターであり、視聴者の友達。HIKO（Sentinels）、Sykkuno、Rachell（OfflineTV）など、人格そのものがコンテンツ。
 - **クリエイター × アスリートの融合**：競技だけのチームは10年続かない。コンテンツも作れる選手を育てる/採る。
 
-### AWA ESPORTSの独自ポジション
+### AWAKEN GLOWの独自ポジション
 > **「徳島の物語ファクトリー」として機能する地域チーム。**
 
 - 都市部メガチームのモノマネをしない
@@ -340,7 +340,7 @@
 
 ### Week 1〜2（インフラ整備）
 - [ ] 公式サイト公開（このプロジェクト完成 → ドメイン取得 → デプロイ）
-- [ ] ドメイン取得：`awa-esports.jp` または `awa-esports.com`
+- [ ] ドメイン取得：`awakenglow.jp` または `awa-esports.com`
 - [ ] SNSアカウント整備：X / Instagram / TikTok / YouTube / Twitch / Discord
 - [ ] プレスリリース配信：徳島新聞、四国放送、徳島市政記者クラブ、四国電力 PR Times
 - [ ] Discord サーバー設計（チャンネル：announcement, general, valorant, sf6, recruitment, events）
@@ -351,7 +351,7 @@
 - [ ] **第1回 徳島練習会**を徳島市内で開催（観戦OK、入会案内ブース）
 - [ ] 配信デビュー：練習会の様子をTwitchでライブ
 - [ ] イベント記事をnote / プレスリリースで配信
-- [ ] 既存メンバー全員のSNSプロフィールを「AWA ESPORTS」表記に統一
+- [ ] 既存メンバー全員のSNSプロフィールを「AWAKEN GLOW」表記に統一
 
 ### Week 5〜8（営業フェーズ）
 - [ ] スポンサー候補50社リストアップ
@@ -468,6 +468,6 @@
 >
 > 「世界中のチームのいいところを集めた、徳島ぼーるくん仕様の地図」として使ってもらえれば、それで十分です。
 >
-> AWA ESPORTSが、徳島の物語を世界に届けるその日まで。
+> AWAKEN GLOWが、徳島の物語を世界に届けるその日まで。
 >
 > — Co-authored with Claude

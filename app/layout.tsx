@@ -5,16 +5,18 @@ import Footer from "@/components/Footer";
 import ParticleBackground from "@/components/ParticleBackground";
 
 export const metadata: Metadata = {
-  title: "AWA ESPORTS — 徳島から世界へ",
+  title: "AWAKEN GLOW — 眠れる輝きを、目覚めさせろ。",
   description:
-    "eスポーツを通じて徳島を盛り上げる。阿波の伝統と未来の競技をつなぐe-sportsチーム公式サイト。",
+    "AWAKEN GLOW（A.G. / AWA Grit）は徳島を拠点とするe-sportsチーム。阿波の雑草魂で、内側にある輝きを目覚めさせる。",
   keywords: [
+    "AWAKEN GLOW",
+    "AWA Grit",
+    "A.G.",
     "eスポーツ",
     "徳島",
-    "AWA ESPORTS",
-    "ゲーミング",
-    "e-sports",
+    "阿波",
     "Tokushima",
+    "e-sports",
   ],
 };
 
