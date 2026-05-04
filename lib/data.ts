@@ -432,44 +432,6 @@ export const traineePlayers: Player[] = [
   { name: "トム" },
 ];
 
-export type NewsItem = {
-  date: string;
-  category: "EVENT" | "NEWS" | "MATCH";
-  title: string;
-  excerpt: string;
-};
-
-export const news: NewsItem[] = [
-  {
-    date: "2026.05.18",
-    category: "EVENT",
-    title: "第1回 徳島練習会開催決定！",
-    excerpt:
-      "徳島市内のe-sportsスペースを借りて、所属プレーヤーと参加希望者の合同練習会を開催します。観戦のみのご参加もOK。",
-  },
-  {
-    date: "2026.05.05",
-    category: "NEWS",
-    title: "AWA ESPORTS チーム公式始動！",
-    excerpt:
-      "ロゴ、チームカラー、メンバー体制を発表。地域に根ざしたe-sportsチームとして、徳島の盛り上げに本気で挑みます。",
-  },
-  {
-    date: "2026.04.28",
-    category: "MATCH",
-    title: "オンライン交流戦：四国カップ参加表明",
-    excerpt:
-      "四国4県のチームが参加するオンライン交流大会への参加を決定。徳島代表として、阿波の名に懸けて挑みます。",
-  },
-  {
-    date: "2026.04.15",
-    category: "NEWS",
-    title: "公式SNS（X / Instagram / YouTube）開設",
-    excerpt:
-      "練習風景、メンバーの素顔、戦略談義などを継続的に発信していきます。ぜひフォローを！",
-  },
-];
-
 export const partnerPlans = [
   {
     code: "P-01",

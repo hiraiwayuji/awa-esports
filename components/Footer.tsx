@@ -39,6 +39,8 @@ export default function Footer() {
               ["/news", "News"],
               ["/partners", "Partners"],
               ["/join", "Join Us"],
+              ["/legal/terms", "利用規約"],
+              ["/legal/privacy", "プライバシーポリシー"],
             ].map(([h, l]) => (
               <li key={h}>
                 <Link
@@ -73,9 +75,14 @@ export default function Footer() {
 
       <div className="border-t border-white/5">
         <div className="mx-auto max-w-7xl px-5 md:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-white/40">
-            © {new Date().getFullYear()} AWA ESPORTS. All Rights Reserved.
-          </p>
+          <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
+            <p className="text-xs text-white/40">
+              © {new Date().getFullYear()} AWA ESPORTS. All Rights Reserved.
+            </p>
+            <p className="text-xs text-white/40">
+              運営：AWA ESPORTS（代表：平岩裕治）
+            </p>
+          </div>
           <p className="text-[10px] tracking-[0.3em] text-white/30 font-display">
             POWERED BY 阿波 / TOKUSHIMA
           </p>

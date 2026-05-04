@@ -195,10 +195,59 @@ export default function AboutPage() {
                   徳島の若者にも、社会人にも、リタイア世代にも、新しい挑戦の舞台がある。
                 </p>
                 <p>
-                  「徳島県民、または元徳島限定」という条件は、線引きではなく、
-                  この地域への愛と覚悟の証。広がりすぎないからこそ、深く、強く、ひとつになれる。
+                  「徳島ルーツを大切にする」というスタンスは、線引きではなく、
+                  この地域への愛と覚悟の証。徳島に縁を持つ人を中心に、
+                  ここから世界を目指したい挑戦者を、私たちは歓迎する。
                 </p>
               </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Concept: Not Pro */}
+      <section className="relative py-24">
+        <div className="mx-auto max-w-5xl px-5 md:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative grid md:grid-cols-[auto,1fr] items-center gap-10 md:gap-16 rounded-3xl border border-awa-magenta/30 bg-awa-indigo-900/40 backdrop-blur-md p-10 md:p-16 overflow-hidden"
+          >
+            <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-awa-magenta/20 blur-3xl" />
+            <div className="absolute -bottom-16 -right-16 w-64 h-64 rounded-full bg-neon-cyan/15 blur-3xl" />
+            <div className="relative z-10">
+              <div className="text-xs font-display tracking-[0.4em] text-awa-magenta mb-3">
+                OUR STANCE / 私たちの立ち位置
+              </div>
+              <div className="font-display font-black leading-none">
+                <span className="block text-6xl md:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-awa-magenta via-awa-violet to-neon-cyan">
+                  NOT PRO.
+                </span>
+                <span className="block text-white/85 text-2xl md:text-3xl mt-4 leading-snug">
+                  草野球感覚で、
+                  <br />
+                  本気になる。
+                </span>
+              </div>
+            </div>
+            <div className="relative z-10 space-y-4 text-white/70 leading-relaxed">
+              <p>
+                私たちは選手にギャラを払うトッププロチームではない。
+              </p>
+              <p>
+                AWA ESPORTS は、参加者が会費を出し合って集まる、
+                <br />
+                地域に根ざした<span className="text-neon-cyan">「草野球感覚」</span>のe-sportsチーム。
+              </p>
+              <p>
+                腕前ではなく、ゲームと徳島が好きという気持ちを持ち寄る場所。
+                <br />
+                だから誰でも、何歳でも、いつから始めても歓迎する。
+              </p>
+              <p className="text-white/40 text-xs pt-2">
+                ※ 通常活動は会場利用料を参加メンバーで分担する形式です。詳細は入会時にご案内します。
+              </p>
             </div>
           </motion.div>
         </div>

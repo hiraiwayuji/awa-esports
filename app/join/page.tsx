@@ -31,7 +31,9 @@ export default function JoinPage() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [game, setGame] = useState("");
-  const [residency, setResidency] = useState<"current" | "former" | "">("");
+  const [residency, setResidency] = useState<
+    "current" | "former" | "neighbor" | "other" | ""
+  >("");
   const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
 
   const handleSubmit = (e: FormEvent) => {
@@ -56,7 +58,7 @@ export default function JoinPage() {
             title="READY PLAYER ONE?"
             subtitle={
               <>
-                徳島県民、または元徳島限定。年齢・経験は問いません。
+                徳島ルーツの方を中心に、興味のある県外の方も歓迎。
                 <br />
                 あなたの「やってみたい」が、AWA ESPORTS の次の一歩になります。
               </>
@@ -73,8 +75,8 @@ export default function JoinPage() {
               {
                 icon: MapPin,
                 title: "RESIDENCY",
-                jp: "徳島県民 または 元徳島県民",
-                desc: "現在県外の方も、徳島ルーツがあればOK。",
+                jp: "徳島ルーツ歓迎・県外も応相談",
+                desc: "現在徳島・元県民の方を中心に、興味のある県外の方も。",
               },
               {
                 icon: CalendarDays,
@@ -178,15 +180,25 @@ export default function JoinPage() {
                     <label className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
                       03 / RESIDENCY — 徳島との関係
                     </label>
-                    <div className="mt-3 grid grid-cols-2 gap-3">
+                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {[
                         { v: "current", l: "現在 徳島県在住" },
                         { v: "former", l: "元 徳島県民" },
+                        { v: "neighbor", l: "隣県在住で興味あり" },
+                        { v: "other", l: "それ以外で興味あり" },
                       ].map((opt) => (
                         <button
                           key={opt.v}
                           type="button"
-                          onClick={() => setResidency(opt.v as "current" | "former")}
+                          onClick={() =>
+                            setResidency(
+                              opt.v as
+                                | "current"
+                                | "former"
+                                | "neighbor"
+                                | "other",
+                            )
+                          }
                           className={`relative rounded-lg border px-4 py-3 text-sm transition-all ${
                             residency === opt.v
                               ? "border-neon-cyan bg-neon-cyan/10 text-neon-cyan shadow-neon"
@@ -197,6 +209,17 @@ export default function JoinPage() {
                         </button>
                       ))}
                     </div>
+                    {(residency === "neighbor" || residency === "other") && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-3 text-xs text-awa-magenta/90 leading-relaxed"
+                      >
+                        ※ 県外の方は、まず見学・お試し参加からご案内します。
+                        <br />
+                        活動拠点は徳島・藍住エリアです。
+                      </motion.p>
+                    )}
                   </div>
 
                   {/* Game */}
@@ -303,6 +326,13 @@ export default function JoinPage() {
                     <br />
                     内容を確認の上、運営からご連絡いたします。
                   </p>
+                  {(residency === "neighbor" || residency === "other") && (
+                    <p className="mt-4 text-xs text-awa-magenta/80 leading-relaxed max-w-md mx-auto">
+                      県外メンバーも歓迎しています。
+                      <br />
+                      まずは見学・お試し参加からご案内いたします。
+                    </p>
+                  )}
                   <button
                     onClick={() => {
                       setStatus("idle");
