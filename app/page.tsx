@@ -103,7 +103,7 @@ export default function HomePage() {
                 transition={{ duration: 0.7, delay: 0.1 }}
                 className="block text-white whitespace-nowrap"
               >
-                眠れる輝きを、
+                眠れる輝きを
               </motion.span>
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
@@ -111,7 +111,7 @@ export default function HomePage() {
                 transition={{ duration: 0.7, delay: 0.25 }}
                 className="block whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-neon-cyan to-awa-glow"
               >
-                目覚めさせろ。
+                目覚めさせろ
               </motion.span>
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
