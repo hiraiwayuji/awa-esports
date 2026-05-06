@@ -377,6 +377,37 @@ export default function MembersPage() {
             </div>
           </div>
 
+          {/* Team Uniform — teaser */}
+          <div className="mt-16">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="h-px w-8 bg-neon-cyan" />
+              <span className="text-xs font-display tracking-[0.35em] text-neon-cyan">
+                TEAM UNIFORM / 公式ジャージ
+              </span>
+            </div>
+            <div className="relative mx-auto max-w-3xl aspect-[4/3] rounded-xl overflow-hidden border border-neon-cyan/20 bg-awa-indigo-900/40">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/uniforms/AWAKEN_GLOW_JERSEY.png"
+                alt=""
+                aria-hidden
+                className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-70"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-awa-indigo-950/70 via-awa-indigo-950/30 to-awa-indigo-950/80" />
+              <div className="relative z-10 flex flex-col items-center justify-center h-full gap-3 p-8 text-center">
+                <span className="text-[10px] font-display tracking-[0.4em] text-neon-cyan/80">
+                  OFFICIAL JERSEY
+                </span>
+                <span className="text-3xl sm:text-5xl font-display font-black tracking-[0.3em] text-white drop-shadow-[0_0_25px_rgba(34,211,238,0.6)]">
+                  COMING SOON
+                </span>
+                <span className="text-xs text-white/60 tracking-[0.25em]">
+                  藍染 × ネオン — AWA GRIT
+                </span>
+              </div>
+            </div>
+          </div>
+
           <p className="mt-12 text-center text-xs text-white/40 tracking-[0.2em] font-display">
             ROSTER UPDATED 2026 / NEW MEMBERS WELCOME
           </p>
