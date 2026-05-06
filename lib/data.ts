@@ -430,6 +430,7 @@ export const legendPlayers: Player[] = [
 export const traineePlayers: Player[] = [
   { name: "タケルン" },
   { name: "トム" },
+  { name: "ケイ" },
 ];
 
 export const partnerPlans = [
