@@ -432,6 +432,7 @@ export const traineePlayers: Player[] = [
   { name: "トム" },
   {
     name: "ケイ",
+    avatarUrl: "/members/KEI.jpg",
     role: "STREET FIGHTER 6 / アタッカー",
     tagline: "観察して、攻める。",
     bio: {
