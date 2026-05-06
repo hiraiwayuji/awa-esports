@@ -430,7 +430,28 @@ export const legendPlayers: Player[] = [
 export const traineePlayers: Player[] = [
   { name: "タケルン" },
   { name: "トム" },
-  { name: "ケイ" },
+  {
+    name: "ケイ",
+    role: "STREET FIGHTER 6 / アタッカー",
+    tagline: "観察して、攻める。",
+    bio: {
+      headline:
+        "ストリートファイター6プレーヤー。攻撃的なアタッカーとしてチームに加入したルーキー。",
+      paragraphs: [
+        "プレイスタイルは攻撃的。前に出る判断を厭わず、相手の隙を見たら一気に踏み込む。",
+        "強みは観察力。攻めの中でも相手のクセや手癖を冷静に読み取り、次の一手につなげるタイプ。",
+        "メイン以外では『ピクミン』をこよなく愛する一面も。",
+      ],
+      highlights: [
+        "主戦：STREET FIGHTER 6",
+        "ロール：アタッカー",
+        "プレイスタイル：攻撃的",
+        "強み：観察力",
+        "好きなゲーム：ピクミン",
+      ],
+      message: "チームと一緒に頑張っていきます。",
+    },
+  },
 ];
 
 export const partnerPlans = [
