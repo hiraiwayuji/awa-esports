@@ -257,7 +257,7 @@ export default function HomePage() {
               {
                 title: "LOCAL ROOTED",
                 jp: "徳島と共に育つ",
-                desc: "阿波踊り、ufotable、マチ★アソビ。地域の文化と、新しい競技を結びつける。",
+                desc: "祭りも、自然も、文化も。徳島の魅力と、新しい競技を結びつける。",
                 textClass: "text-awa-glow-deep",
                 bgClass: "bg-awa-glow-deep",
                 hoverBorder: "hover:border-awa-glow-deep/40",

@@ -12,7 +12,8 @@ import AboutHoverArt from "@/components/AboutHoverArt";
 import {
   Flame,
   Building2,
-  Sparkles,
+  Mountain,
+  Waves,
   TrendingUp,
   Award,
   Users,
@@ -23,7 +24,7 @@ type CultureCard = {
   title: string;
   en: string;
   desc: string;
-  slug: "awa-odori" | "ufotable" | "machi-asobi";
+  slug: "awa-odori" | "iya-kazurabashi" | "naruto-uzushio" | "machi-asobi";
   fallbackColor: string;
   /**
    * 背景に流すメディア。空配列のままでも動作（フォールバックパターン表示）。
@@ -48,11 +49,20 @@ const cultureCards: CultureCard[] = [
     ],
   },
   {
-    icon: Sparkles,
-    title: "ufotable",
-    en: "ANIMATION STUDIO",
-    desc: "世界に轟くアニメーション制作スタジオが本拠を構える街。ものづくりと表現で世界を獲った前例が、ここにある。",
-    slug: "ufotable",
+    icon: Mountain,
+    title: "祖谷のかずら橋",
+    en: "WILD NATURE",
+    desc: "落人がかずらを編んで谷を渡った、徳島の秘境。自然と渡り合いながら生き抜く粘り強さは、AWA Grit そのもの。",
+    slug: "iya-kazurabashi",
+    fallbackColor: "#2DFFB7",
+    media: [],
+  },
+  {
+    icon: Waves,
+    title: "鳴門の渦潮",
+    en: "NATURAL WONDER",
+    desc: "世界三大潮流のひとつ。海をうねらせる巨大な渦の迫力は、徳島が持つ自然の力の象徴。",
+    slug: "naruto-uzushio",
     fallbackColor: "#2DFFB7",
     media: [],
   },
@@ -107,7 +117,7 @@ export default function AboutPage() {
             title="徳島には、世界へ届く熱がある。"
             subtitle={
               <>
-                ufotableが、阿波踊りが、マチ★アソビが、徳島を世界の舞台へ押し上げてきた。
+                祭りが、自然が、文化が、徳島を世界の舞台へ押し上げてきた。
                 <br />
                 次の主役はeスポーツ。私たちは、徳島の物語に新しい1ページを書き加える。
               </>
@@ -119,7 +129,7 @@ export default function AboutPage() {
       {/* Culture */}
       <section className="relative py-20">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {cultureCards.map((c, i) => (
               <motion.div
                 key={c.title}

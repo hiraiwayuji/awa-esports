@@ -81,13 +81,14 @@ npm run start
 
 ## About カード背景の素材追加手順
 
-About ページの3つの文化カード（阿波踊り / ufotable / マチ★アソビ）には、ホバー時に背景でクロスフェードする画像/動画スライドショーが組み込まれています。素材を後から入れるだけで自動で動きます。
+About ページの4つの文化カード（阿波踊り / 祖谷のかずら橋 / 鳴門の渦潮 / マチ★アソビ）には、ホバー時に背景でクロスフェードする画像/動画スライドショーが組み込まれています。素材を後から入れるだけで自動で動きます。
 
 ### 1. 素材を配置
 ```
 public/about/awa-odori/1.jpg
 public/about/awa-odori/2.jpg
-public/about/ufotable/1.jpg
+public/about/iya-kazurabashi/1.jpg
+public/about/naruto-uzushio/1.jpg
 public/about/machi-asobi/loop.mp4   ← 動画もOK
 ```
 
