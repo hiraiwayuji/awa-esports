@@ -111,7 +111,7 @@ export default function HomePage() {
                 transition={{ duration: 0.7, delay: 0.25 }}
                 className="block whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-neon-cyan to-awa-glow"
               >
-                目覚めさせろ
+                目覚めさせる
               </motion.span>
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
@@ -119,7 +119,7 @@ export default function HomePage() {
                 transition={{ duration: 0.7, delay: 0.4 }}
                 className="block text-white/30 text-[6vw] md:text-[3.5vw] lg:text-5xl mt-3 tracking-[0.1em]"
               >
-                AWAKEN THE GLOW.
+                AWAKEN YOUR GLOW.
               </motion.span>
             </h1>
 
@@ -131,9 +131,9 @@ export default function HomePage() {
             >
               内側にある輝きを目覚めさせ、
               <br />
-              <span className="text-awa-glow">阿波の雑草魂</span>で這い上がる。
+              <span className="text-awa-glow">それぞれの挑戦</span>が集まる場所へ。
               <br />
-              徳島から始まる、新しい競技の物語を。
+              徳島から始まる、新しいeスポーツの物語を。
             </motion.p>
 
             <motion.div
@@ -210,15 +210,15 @@ export default function HomePage() {
               {[
                 "AWAKEN GLOW",
                 "★",
-                "A.G. / AWA GRIT",
+                "A.G.",
                 "★",
-                "AWAKEN THE GLOW",
+                "AWAKEN YOUR GLOW",
                 "★",
-                "RISE WITH AWA GRIT",
+                "GROW TOGETHER",
                 "★",
-                "阿波の意地",
+                "OPEN TO ALL",
                 "★",
-                "TOKUSHIMA / EST. 2026",
+                "TOKUSHIMA ESPORTS / EST. 2026",
                 "★",
               ].map((t, i) => (
                 <span
@@ -248,7 +248,7 @@ export default function HomePage() {
               },
               {
                 title: "RANK SYSTEM",
-                jp: "競争心を煽るランク制度",
+                jp: "成長を後押しするランク制度",
                 desc: "プレースキル・貢献度・人柄。多面的な評価で伸びるランク制度を導入。",
                 textClass: "text-awa-glow",
                 bgClass: "bg-awa-glow",

@@ -40,7 +40,7 @@ const cultureCards: CultureCard[] = [
     icon: Flame,
     title: "阿波踊り",
     en: "AWA-ODORI",
-    desc: "夏の夜を熱狂で染める日本最大級の踊り。徳島の血に流れる「躍動と一体感」は、e-sportsの観戦体験そのもの。",
+    desc: "夏の夜を熱狂で染める日本最大級の踊り。徳島の血に流れる「躍動と一体感」は、eスポーツの観戦体験そのもの。",
     slug: "awa-odori",
     fallbackColor: "#2DFFB7",
     media: [
@@ -52,7 +52,7 @@ const cultureCards: CultureCard[] = [
     icon: Mountain,
     title: "祖谷のかずら橋",
     en: "WILD NATURE",
-    desc: "落人がかずらを編んで谷を渡った、徳島の秘境。自然と渡り合いながら生き抜く粘り強さは、AWA Grit そのもの。",
+    desc: "落人がかずらを編んで谷を渡った、徳島の秘境。自然と渡り合う粘り強さが、いまも徳島の暮らしに息づいている。",
     slug: "iya-kazurabashi",
     fallbackColor: "#2DFFB7",
     media: [],
@@ -196,18 +196,17 @@ export default function AboutPage() {
               <h3 className="font-display font-black text-3xl md:text-5xl text-white leading-tight">
                 <span className="block">誰でもメンバーになれる。</span>
                 <span className="block bg-clip-text text-transparent bg-gradient-to-r from-awa-glow to-neon-cyan">
-                  でも、誰もが本気になれる。
+                  仲間と一緒に、本気になれる。
                 </span>
               </h3>
               <div className="mt-8 grid md:grid-cols-2 gap-6 text-white/70 leading-relaxed">
                 <p>
-                  e-sportsは、年齢、性別、過去の競技経験を超えてフラットに人を結びつける。
-                  徳島の若者にも、社会人にも、リタイア世代にも、新しい挑戦の舞台がある。
+                  eスポーツは、年齢・性別・過去の競技経験を超えて、フラットに人を結びつける。
+                  学生にも、社会人にも、子どもや親子にも、リタイア世代にも、新しい挑戦の舞台がある。
                 </p>
                 <p>
-                  「徳島ルーツを大切にする」というスタンスは、線引きではなく、
-                  この地域への愛と覚悟の証。徳島に縁を持つ人を中心に、
-                  ここから世界を目指したい挑戦者を、私たちは歓迎する。
+                  「徳島ルーツを大切にする」というスタンスは、線引きではなく、この地域への愛着の証。
+                  徳島に縁を持つ人を中心に、これから挑戦したい人、仲間と成長したい人を、私たちは歓迎する。
                 </p>
               </div>
             </div>
@@ -215,7 +214,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Brand Identity: A.G. = AWA Grit */}
+      {/* Brand Identity: A.G. = AWAKEN GLOW */}
       <section className="relative py-24">
         <div className="mx-auto max-w-5xl px-5 md:px-8">
           <motion.div
@@ -259,33 +258,32 @@ export default function AboutPage() {
 
             <div className="relative z-10">
               <div className="text-xs font-display tracking-[0.4em] text-awa-glow mb-3">
-                BRAND IDENTITY / 略称の意味
+                BRAND IDENTITY / 名前の意味
               </div>
               <div className="font-display font-black leading-tight">
                 <span className="block text-5xl md:text-7xl bg-clip-text text-transparent bg-gradient-to-br from-neon-cyan to-awa-glow">
                   A.G.
                 </span>
                 <span className="block text-2xl md:text-3xl text-white mt-2">
-                  = AWA Grit
+                  = AWAKEN GLOW
                 </span>
               </div>
               <p className="mt-6 text-white/70 leading-relaxed">
-                <span className="text-awa-glow">AWA</span> は徳島・阿波。
-                <br />
-                <span className="text-awa-glow">Grit</span> は「やり抜く力」「雑草魂」「粘り強さ」。
+                AWAKEN GLOW という名前には、一人ひとりの中にある可能性や個性を目覚めさせ、
+                それぞれの形で輝ける場所をつくりたい、という想いを込めています。
               </p>
               <p className="mt-4 text-white/70 leading-relaxed">
-                表向きのチーム名は AWAKEN GLOW。
-                <br />
-                裏のコンセプトは AWA Grit。
-                <br />
-                阿波の雑草魂で、粘り強く挑戦し続ける。
+                上手い人だけが集まるチームではなく、これから挑戦したい人、仲間と成長したい人、
+                徳島から新しい文化を一緒につくりたい人のためのチーム。
+              </p>
+              <p className="mt-4 text-white/70 leading-relaxed">
+                ゲームを通して、人と人がつながり、挑戦するきっかけが生まれる場所へ。
               </p>
               <p className="mt-6 text-base md:text-lg font-display text-awa-glow">
-                &quot;Awaken the Glow. Rise with AWA Grit.&quot;
+                &quot;Awaken your Glow. Grow together from Tokushima.&quot;
               </p>
               <p className="mt-2 text-sm text-white/50">
-                眠れる輝きを目覚めさせ、阿波の雑草魂で這い上がる。
+                徳島から始まる、新しいeスポーツコミュニティを。
               </p>
             </div>
           </motion.div>
@@ -325,7 +323,7 @@ export default function AboutPage() {
               <p>
                 AWAKEN GLOW は、参加者が会費を出し合って集まる、
                 <br />
-                地域に根ざした<span className="text-neon-cyan">「草野球感覚」</span>のe-sportsチーム。
+                地域に根ざした<span className="text-neon-cyan">「草野球感覚」</span>のeスポーツチーム。
               </p>
               <p>
                 腕前ではなく、ゲームと徳島が好きという気持ちを持ち寄る場所。
@@ -345,7 +343,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionTitle
             eyebrow="RANK SYSTEM"
-            title="熱量で、駆け上がれ。"
+            title="あなたのペースで、上へ。"
             subtitle={
               <>
                 所属プレイヤーには公式ランクが付与される。

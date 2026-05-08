@@ -1,9 +1,9 @@
 # AWAKEN GLOW
 
-徳島から世界を目指す e-sports チーム公式サイト。
+徳島から新しいeスポーツ文化をつくるチームの公式サイト。
 
 **コンセプト**：*Awa-Neon & Digital Passion*
-徳島の伝統（阿波踊りの躍動感、藍色の深み）と、e-sports の近未来感を融合した「世界基準のローカルチーム」サイト。
+徳島の伝統（阿波踊りの躍動感、藍色の深み）と、eスポーツの近未来感を融合したサイト。
 
 ---
 
@@ -75,7 +75,7 @@ npm run start
 
 ## Internal Docs
 
-- [`LAUNCH_PLAYBOOK.md`](./LAUNCH_PLAYBOOK.md) — 世界基準のe-sportsチーム立ち上げ実践ハンドブック（ぼーるくん専用 / 公開しない）
+- [`LAUNCH_PLAYBOOK.md`](./LAUNCH_PLAYBOOK.md) — 世界基準のeスポーツチーム立ち上げ実践ハンドブック（ぼーるくん専用 / 公開しない）
 
 ---
 

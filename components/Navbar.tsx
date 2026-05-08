@@ -81,7 +81,7 @@ export default function Navbar() {
               AWAKEN GLOW
             </span>
             <span className="text-[10px] tracking-[0.3em] text-awa-glow/80 mt-0.5">
-              A.G. / 阿波の意地
+              A.G. / AWAKEN GLOW
             </span>
           </div>
         </Link>

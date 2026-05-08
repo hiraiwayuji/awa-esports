@@ -11,9 +11,11 @@ export default function Footer() {
             AWAKEN GLOW
           </div>
           <p className="mt-3 text-sm text-white/60 leading-relaxed max-w-md">
-            徳島から世界を目指す e-sports チーム。
+            徳島から新しいeスポーツ文化をつくるチーム。
             <br />
-            阿波の伝統と未来の競技をつなぎ、地域に新しい熱狂を。
+            経験や年齢に関係なく、挑戦する人が集まり、
+            <br />
+            仲間とともに成長できる場所を目指します。
           </p>
           <div className="mt-6 flex gap-3">
             {[Twitter, Instagram, Youtube, Twitch].map((Icon, i) => (
