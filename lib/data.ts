@@ -518,3 +518,52 @@ export const partnerPlans = [
     featured: false,
   },
 ];
+
+export type PartnerCompany = {
+  id: string;
+  name: string;
+  label: string;
+  logoUrl?: string;
+  instagramUrl?: string;
+  memberNote?: string;
+  invertOnDark?: boolean;
+};
+
+export const partnerCompanies: PartnerCompany[] = [
+  {
+    id: "ball-clinic",
+    name: "ボール接骨院",
+    label: "BALL CLINIC",
+    logoUrl: "/partners/BALL_CLINIC.svg",
+    instagramUrl: "https://www.instagram.com/ballsekkotsuin/",
+    memberNote: "代表：ぼーるくん",
+    invertOnDark: true,
+  },
+  {
+    id: "sami-seitai",
+    name: "さみ整体",
+    label: "SAMI SEITAI",
+    logoUrl: "/partners/SAMI_SEITAI.png",
+    instagramUrl: "https://www.instagram.com/sami.seitai/",
+    memberNote: "メンバー：さみ",
+    invertOnDark: true,
+  },
+  {
+    id: "xeno-branding",
+    name: "XENO BRANDING STUDIO",
+    label: "XENO",
+    logoUrl: "/partners/XENO.jpg",
+    instagramUrl: "https://www.instagram.com/xeno.branding/",
+    memberNote: "メンバー：ゼノ",
+    invertOnDark: true,
+  },
+  {
+    id: "homebase",
+    name: "HOMEBASE",
+    label: "HOMEBASE",
+    logoUrl: "/partners/HOMEBASE.png",
+    instagramUrl: "https://www.instagram.com/logical_bmx/",
+    memberNote: "代表：森崎弘也",
+    invertOnDark: true,
+  },
+];

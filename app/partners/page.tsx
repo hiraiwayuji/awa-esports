@@ -18,6 +18,7 @@ import {
 import SectionTitle from "@/components/SectionTitle";
 import PageTransition from "@/components/PageTransition";
 import AwaBackdrop from "@/components/AwaBackdrop";
+import PartnersStrip from "@/components/PartnersStrip";
 import { partnerPlans } from "@/lib/data";
 
 const accentMap = {
@@ -124,6 +125,9 @@ export default function PartnersPage() {
           </div>
         </div>
       </section>
+
+      {/* Member Companies */}
+      <PartnersStrip variant="page" />
 
       {/* Plans */}
       <section className="relative py-20">

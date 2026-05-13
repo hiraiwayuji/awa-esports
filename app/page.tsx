@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
 import NeonButton from "@/components/NeonButton";
+import PartnersStrip from "@/components/PartnersStrip";
 import { ChevronDown, Zap, Users, Trophy, Flame } from "lucide-react";
 
 const stats = [
@@ -289,6 +290,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* PARTNERS */}
+      <PartnersStrip />
 
       {/* CTA */}
       <section className="relative py-32">
