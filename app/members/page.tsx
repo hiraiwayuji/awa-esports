@@ -25,20 +25,28 @@ function PlayerCard({
   p: Player;
   i: number;
   onClick?: () => void;
-  variant?: "legend" | "trainee";
+  variant?: "athlete" | "creator" | "trainee";
 }) {
   const clickable = !!onClick && !!p.bio;
-  const isLegend = variant === "legend";
+  const isFeatured = variant !== "trainee";
+  const isAthlete = variant === "athlete";
+  const isCreator = variant === "creator";
 
-  const containerClass = isLegend
-    ? "relative rounded-xl border border-awa-glow/30 bg-awa-indigo-900/50 backdrop-blur p-5 hover:border-awa-glow hover:shadow-[0_0_45px_rgba(255,45,149,0.45)] transition-all duration-500 overflow-hidden"
-    : "relative rounded-xl border border-neon-cyan/20 bg-awa-indigo-900/40 backdrop-blur p-5 hover:border-neon-cyan/60 hover:shadow-neon transition-all duration-500 overflow-hidden";
+  const containerClass = isAthlete
+    ? "relative rounded-xl border border-neon-cyan/40 bg-awa-indigo-900/50 backdrop-blur p-5 hover:border-neon-cyan hover:shadow-[0_0_45px_rgba(0,240,255,0.45)] transition-all duration-500 overflow-hidden"
+    : isCreator
+      ? "relative rounded-xl border border-awa-glow/30 bg-awa-indigo-900/50 backdrop-blur p-5 hover:border-awa-glow hover:shadow-[0_0_45px_rgba(255,45,149,0.45)] transition-all duration-500 overflow-hidden"
+      : "relative rounded-xl border border-neon-cyan/20 bg-awa-indigo-900/40 backdrop-blur p-5 hover:border-neon-cyan/60 hover:shadow-neon transition-all duration-500 overflow-hidden";
 
-  const accentText = isLegend ? "text-awa-glow" : "text-neon-cyan";
-  const accentDotBg = isLegend ? "bg-awa-glow" : "bg-neon-cyan";
-  const avatarBorder = isLegend ? "border-awa-glow/40" : "border-neon-cyan/30";
-  const sweepVia = isLegend ? "via-awa-glow/25" : "via-neon-cyan/20";
-  const labelText = isLegend ? "LEGEND" : "TRAINEE";
+  const accentText = isCreator ? "text-awa-glow" : "text-neon-cyan";
+  const accentDotBg = isCreator ? "bg-awa-glow" : "bg-neon-cyan";
+  const avatarBorder = isAthlete
+    ? "border-neon-cyan/40"
+    : isCreator
+      ? "border-awa-glow/40"
+      : "border-neon-cyan/30";
+  const sweepVia = isCreator ? "via-awa-glow/25" : "via-neon-cyan/25";
+  const labelText = isAthlete ? "ATHLETE" : isCreator ? "CREATOR" : "TRAINEE";
 
   return (
     <motion.div
@@ -46,7 +54,7 @@ function PlayerCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: i * 0.05 }}
-      whileHover={isLegend ? { y: -8, scale: 1.03 } : { y: -4 }}
+      whileHover={isFeatured ? { y: -8, scale: 1.03 } : { y: -4 }}
       className="group relative"
       onClick={clickable ? onClick : undefined}
       role={clickable ? "button" : undefined}
@@ -64,8 +72,18 @@ function PlayerCard({
       style={clickable ? { cursor: "pointer" } : undefined}
     >
       <div className={containerClass}>
-        {/* Cyber corner brackets — legend only, fade in on hover */}
-        {isLegend &&
+        {/* S-rank badge — featured cards only, when rank === "S" */}
+        {isFeatured && p.rank === "S" && (
+          <span
+            aria-label="Sランク"
+            className="absolute -top-2.5 -right-2.5 z-20 inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-[#FFE27A] via-[#FFC93A] to-[#D98E0A] text-awa-indigo-950 font-display font-black text-lg shadow-[0_0_18px_rgba(255,201,58,0.75)] border border-[#FFE27A]"
+          >
+            S
+          </span>
+        )}
+
+        {/* Cyber corner brackets — featured only, fade in on hover */}
+        {isFeatured &&
           [
             "top-2 left-2 border-t border-l",
             "top-2 right-2 border-t border-r",
@@ -74,15 +92,19 @@ function PlayerCard({
           ].map((c, idx) => (
             <span
               key={idx}
-              className={`absolute w-3 h-3 pointer-events-none border-awa-glow/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${c}`}
+              className={`absolute w-3 h-3 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+                isCreator ? "border-awa-glow/70" : "border-neon-cyan/70"
+              } ${c}`}
             />
           ))}
 
-        {/* Big background number for legend cards */}
-        {isLegend && (
+        {/* Big background number for featured cards */}
+        {isFeatured && (
           <span
             aria-hidden
-            className="pointer-events-none absolute -bottom-4 -right-2 font-display font-black text-[5.5rem] leading-none text-awa-glow/[0.08] select-none tracking-tighter"
+            className={`pointer-events-none absolute -bottom-4 -right-2 font-display font-black text-[5.5rem] leading-none select-none tracking-tighter ${
+              isCreator ? "text-awa-glow/[0.08]" : "text-neon-cyan/[0.08]"
+            }`}
           >
             {String(i + 1).padStart(2, "0")}
           </span>
@@ -93,7 +115,7 @@ function PlayerCard({
             {String(i + 1).padStart(3, "0")}
           </span>
           <div className="flex items-center gap-2">
-            {isLegend && p.sponsors && p.sponsors.length > 0 && (
+            {isFeatured && p.sponsors && p.sponsors.length > 0 && (
               <span
                 className="inline-flex items-center gap-0.5 text-[9px] font-display tracking-[0.15em] px-1.5 py-0.5 rounded border border-awa-glow-deep/60 text-awa-glow-deep bg-awa-indigo-950/60 shadow-[0_0_8px_rgba(255,170,80,0.35)]"
                 title={`${p.sponsors.length}社の個人スポンサー`}
@@ -113,10 +135,10 @@ function PlayerCard({
               src={p.avatarUrl}
               alt={p.name}
               className={`absolute inset-0 w-full h-full object-cover object-top transition-all duration-700 ${
-                isLegend ? "group-hover:scale-105" : "group-hover:opacity-0"
+                isFeatured ? "group-hover:scale-105" : "group-hover:opacity-0"
               }`}
             />
-            {p.avatarUrlHover && !isLegend && (
+            {p.avatarUrlHover && !isFeatured && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={p.avatarUrlHover}
@@ -125,7 +147,7 @@ function PlayerCard({
                 className="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-opacity duration-700 group-hover:opacity-100"
               />
             )}
-            {p.avatarUrlHover && isLegend && (
+            {p.avatarUrlHover && isFeatured && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={p.avatarUrlHover}
@@ -138,21 +160,29 @@ function PlayerCard({
         )}
         <div
           className={`font-bold text-white ${
-            isLegend ? "text-xl md:text-2xl" : "text-lg md:text-xl"
+            isFeatured ? "text-xl md:text-2xl" : "text-lg md:text-xl"
           }`}
         >
           {p.name}
         </div>
         <div
           className={`mt-1 text-[10px] tracking-[0.3em] font-display ${
-            isLegend ? "text-awa-glow/80" : "text-white/40"
+            isFeatured
+              ? isCreator
+                ? "text-awa-glow/80"
+                : "text-neon-cyan/80"
+              : "text-white/40"
           }`}
         >
           {labelText}
         </div>
 
-        {isLegend && p.stats && (
-          <div className="mt-3 pt-3 border-t border-awa-glow/15 space-y-1">
+        {isFeatured && p.stats && (
+          <div
+            className={`mt-3 pt-3 border-t space-y-1 ${
+              isCreator ? "border-awa-glow/15" : "border-neon-cyan/15"
+            }`}
+          >
             {([
               { label: "AGG", value: p.stats.aggression },
               { label: "PAT", value: p.stats.patience },
@@ -168,11 +198,19 @@ function PlayerCard({
                 </span>
                 <div className="flex-1 h-1 bg-awa-indigo-950/60 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-awa-glow to-awa-glow shadow-[0_0_4px_rgba(255,45,149,0.6)]"
+                    className={
+                      isCreator
+                        ? "h-full bg-gradient-to-r from-awa-glow to-awa-glow shadow-[0_0_4px_rgba(255,45,149,0.6)]"
+                        : "h-full bg-gradient-to-r from-neon-cyan to-neon-cyan shadow-[0_0_4px_rgba(0,240,255,0.6)]"
+                    }
                     style={{ width: `${s.value}%` }}
                   />
                 </div>
-                <span className="text-[8px] font-mono text-awa-glow/70 w-6 text-right">
+                <span
+                  className={`text-[8px] font-mono w-6 text-right ${
+                    isCreator ? "text-awa-glow/70" : "text-neon-cyan/70"
+                  }`}
+                >
                   {s.value}
                 </span>
               </div>
@@ -193,7 +231,11 @@ function PlayerCard({
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`${p.name} の Twitch`}
-                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-glow/40 text-awa-glow hover:bg-awa-glow/10 hover:border-awa-glow transition-colors"
+                  className={
+                    isAthlete
+                      ? "inline-flex items-center justify-center w-7 h-7 rounded-md border border-neon-cyan/40 text-neon-cyan hover:bg-neon-cyan/10 hover:border-neon-cyan transition-colors"
+                      : "inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-glow/40 text-awa-glow hover:bg-awa-glow/10 hover:border-awa-glow transition-colors"
+                  }
                 >
                   <Twitch size={13} />
                 </a>
@@ -217,7 +259,11 @@ function PlayerCard({
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`${p.name} の YouTube`}
-                  className="inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-glow/40 text-awa-glow hover:bg-awa-glow/10 hover:border-awa-glow transition-colors"
+                  className={
+                    isAthlete
+                      ? "inline-flex items-center justify-center w-7 h-7 rounded-md border border-neon-cyan/40 text-neon-cyan hover:bg-neon-cyan/10 hover:border-neon-cyan transition-colors"
+                      : "inline-flex items-center justify-center w-7 h-7 rounded-md border border-awa-glow/40 text-awa-glow hover:bg-awa-glow/10 hover:border-awa-glow transition-colors"
+                  }
                 >
                   <Youtube size={13} />
                 </a>
@@ -237,9 +283,15 @@ function PlayerCard({
             </div>
           )}
 
-        {/* CTA on hover — legend + clickable only */}
-        {isLegend && clickable && (
-          <div className="absolute inset-x-0 bottom-0 px-5 py-2.5 bg-gradient-to-t from-awa-glow/40 via-awa-glow/15 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+        {/* CTA on hover — featured + clickable only */}
+        {isFeatured && clickable && (
+          <div
+            className={`absolute inset-x-0 bottom-0 px-5 py-2.5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ${
+              isCreator
+                ? "bg-gradient-to-t from-awa-glow/40 via-awa-glow/15 to-transparent"
+                : "bg-gradient-to-t from-neon-cyan/40 via-neon-cyan/15 to-transparent"
+            }`}
+          >
             <span className="text-[10px] font-display tracking-[0.35em] text-white">
               VIEW PROFILE →
             </span>
@@ -258,6 +310,9 @@ function PlayerCard({
 export default function MembersPage() {
   const [selected, setSelected] = useState<StaffMember | null>(null);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+
+  const athletes = legendPlayers.filter((p) => p.division === "athlete");
+  const creators = legendPlayers.filter((p) => p.division === "creator");
 
   return (
     <PageTransition>
@@ -302,54 +357,101 @@ export default function MembersPage() {
             title="PLAYERS"
             subtitle={
               <>
-                徳島の旗を掲げる現役レジェンド陣と、
+                競技で勝ちにいくアスリート部門と、
                 <br />
-                これからを担う練習生たち。
+                配信・発信で広げるクリエイター部門。
               </>
             }
           />
 
-          {/* Legend Players */}
+          {/* Athletes */}
           <div className="mt-14 relative">
             {/* Massive background watermark */}
             <span
               aria-hidden
-              className="pointer-events-none absolute -top-8 left-0 right-0 select-none font-display font-black text-[18vw] md:text-[14vw] lg:text-[11rem] leading-none tracking-tighter text-awa-glow/[0.05] uppercase whitespace-nowrap overflow-hidden"
+              className="pointer-events-none absolute -top-8 left-0 right-0 select-none font-display font-black text-[18vw] md:text-[14vw] lg:text-[11rem] leading-none tracking-tighter text-neon-cyan/[0.05] uppercase whitespace-nowrap overflow-hidden"
             >
-              LEGEND
+              ATHLETES
             </span>
 
             {/* Title block */}
             <div className="relative">
               <h2 className="font-display font-black text-3xl md:text-4xl lg:text-5xl tracking-tight">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-glow via-awa-glow to-awa-glow drop-shadow-[0_0_24px_rgba(255,45,149,0.5)]">
-                  LEGEND PLAYERS
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-neon-cyan via-neon-cyan to-neon-cyan drop-shadow-[0_0_24px_rgba(0,240,255,0.5)]">
+                  ATHLETES
+                </span>
+                <span className="ml-3 text-sm md:text-base font-body font-bold text-white/70 align-middle">
+                  / アスリート部門
                 </span>
               </h2>
+              <p className="mt-2 text-xs md:text-sm text-white/55 tracking-wide">
+                競技で勝ちにいく、徳島の最前線。
+              </p>
 
               {/* HUD status bar */}
               <div className="mt-3 flex items-center gap-3 text-[10px] font-mono tracking-[0.25em] text-white/50 flex-wrap">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_6px_rgba(74,222,128,0.8)]" />
-                  <span>
-                    ROSTER {String(legendPlayers.length).padStart(2, "0")}/∞
-                  </span>
+                  <span>ROSTER {String(athletes.length).padStart(2, "0")}/∞</span>
                 </span>
                 <span className="text-white/20">/</span>
-                <span className="text-awa-glow">
-                  STATUS: READY FOR BATTLE
-                </span>
+                <span className="text-neon-cyan">STATUS: READY FOR BATTLE</span>
               </div>
             </div>
 
-            {/* Cards — hover focus: dim sibling cards on hover */}
+            {/* Cards */}
             <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 [&:hover>*:not(:hover)]:opacity-40 [&>*]:transition-opacity [&>*]:duration-300">
-              {legendPlayers.map((p, i) => (
+              {athletes.map((p, i) => (
                 <PlayerCard
                   key={p.name}
                   p={p}
                   i={i}
-                  variant="legend"
+                  variant="athlete"
+                  onClick={() => setSelectedPlayer(p)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Creators */}
+          <div className="mt-20 relative">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -top-8 left-0 right-0 select-none font-display font-black text-[18vw] md:text-[14vw] lg:text-[11rem] leading-none tracking-tighter text-awa-glow/[0.05] uppercase whitespace-nowrap overflow-hidden"
+            >
+              CREATORS
+            </span>
+
+            <div className="relative">
+              <h2 className="font-display font-black text-3xl md:text-4xl lg:text-5xl tracking-tight">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-awa-glow via-awa-glow to-awa-glow drop-shadow-[0_0_24px_rgba(255,45,149,0.5)]">
+                  CREATORS
+                </span>
+                <span className="ml-3 text-sm md:text-base font-body font-bold text-white/70 align-middle">
+                  / クリエイター部門
+                </span>
+              </h2>
+              <p className="mt-2 text-xs md:text-sm text-white/55 tracking-wide">
+                配信・発信で、徳島を広げる。
+              </p>
+
+              <div className="mt-3 flex items-center gap-3 text-[10px] font-mono tracking-[0.25em] text-white/50 flex-wrap">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-awa-glow animate-pulse shadow-[0_0_6px_rgba(255,45,149,0.8)]" />
+                  <span>ROSTER {String(creators.length).padStart(2, "0")}/∞</span>
+                </span>
+                <span className="text-white/20">/</span>
+                <span className="text-awa-glow">STATUS: ON AIR</span>
+              </div>
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 [&:hover>*:not(:hover)]:opacity-40 [&>*]:transition-opacity [&>*]:duration-300">
+              {creators.map((p, i) => (
+                <PlayerCard
+                  key={p.name}
+                  p={p}
+                  i={i}
+                  variant="creator"
                   onClick={() => setSelectedPlayer(p)}
                 />
               ))}

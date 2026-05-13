@@ -284,8 +284,13 @@ export type PlayerStats = {
   strategy?: number;
 };
 
+export type PlayerDivision = "athlete" | "creator";
+export type PlayerRank = "S";
+
 export type Player = {
   name: string;
+  division?: PlayerDivision;
+  rank?: PlayerRank;
   avatarUrl?: string;
   avatarUrlHover?: string;
   socials?: PlayerSocials;
@@ -299,6 +304,8 @@ export type Player = {
 export const legendPlayers: Player[] = [
   {
     name: "hawk",
+    division: "athlete",
+    rank: "S",
     avatarUrl: "/members/HAWK.png",
     avatarUrlHover: "/members/HAWK-2.jpg",
     role: "STREET FIGHTER 6 / 不知火舞・エド使い",
@@ -332,9 +339,10 @@ export const legendPlayers: Player[] = [
       strategy: 70,
     },
   },
-  { name: "カジコ" },
+  { name: "カジコ", division: "athlete" },
   {
     name: "ボールくん",
+    division: "creator",
     avatarUrl: "/members/BORU.jpg",
     role: "STREET FIGHTER 6 / モダンマノン使い",
     tagline: "コマ投げで、徳島の道を切り開く特攻隊長。",
@@ -363,9 +371,10 @@ export const legendPlayers: Player[] = [
       strategy: 60,
     },
   },
-  { name: "森崎弘也" },
+  { name: "森崎弘也", division: "athlete" },
   {
     name: "いわちゃん",
+    division: "creator",
     avatarUrl: "/members/IWASA.jpg",
     role: "OVERWATCH（タンク）/ VALORANT（コントローラー）",
     tagline: "勝ちも、楽しさも、両方持って戦う。",
@@ -392,10 +401,11 @@ export const legendPlayers: Player[] = [
       strategy: 85,
     },
   },
-  { name: "梅ドリル" },
-  { name: "トーキン" },
+  { name: "梅ドリル", division: "creator" },
+  { name: "トーキン", division: "creator" },
   {
     name: "シオン",
+    division: "athlete",
     avatarUrl: "/members/SHION.jpg",
     avatarUrlHover: "/members/SHION-2.jpg",
     role: "STREET FIGHTER 6 → MARVEL: Tokon Fighting Souls（2026年8月移行予定）",
