@@ -372,7 +372,7 @@ export const legendPlayers: Player[] = [
     },
   },
   { name: "カジコ", division: "athlete" },
-  { name: "森崎弘也", division: "athlete" },
+  { name: "森崎弘也", division: "athlete", avatarUrl: "/members/KING.jpg" },
   {
     name: "ボールくん",
     division: "creator",
