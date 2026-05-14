@@ -391,31 +391,6 @@ export const legendPlayers: Player[] = [
   { name: "カジコ", division: "athlete", game: "SF6" },
   { name: "森崎弘也", division: "athlete", game: "SF6", avatarUrl: "/members/KING.jpg" },
   {
-    name: "あず ♀",
-    division: "athlete",
-    game: "PUYO",
-    role: "ぷよぷよ / テトリス ほか",
-    tagline: "徳島を、最強のeスポーツチームに。",
-    bio: {
-      headline: "本名：森本 海（もりもと かい）。読み方は「あずめす」。ぷよぷよ・テトリスを軸に、多種多様なタイトルを経験してきた、徳島の不定形ファイター。",
-      paragraphs: [
-        "プレイスタイルは不定形。固定の型を持たず、経験値の豊富さで状況に合わせて柔軟に戦うのが持ち味。",
-      ],
-      highlights: [
-        "主戦：ぷよぷよ / テトリス ほか",
-        "強み：不定形・経験値",
-        "好きなゲーム：ポケモン / スプラトゥーン / ぷよぷよ / テトリス / マリオカート / パワプロ / ドラクエ ほか",
-      ],
-      message: "徳島を最強のeスポーツチームに。",
-    },
-    stats: {
-      aggression: 50,
-      patience: 75,
-      teamwork: 70,
-      strategy: 85,
-    },
-  },
-  {
     name: "EXE",
     division: "athlete",
     game: "PUYO",
@@ -445,6 +420,31 @@ export const legendPlayers: Player[] = [
       patience: 90,
       teamwork: 60,
       strategy: 95,
+    },
+  },
+  {
+    name: "あず ♀",
+    division: "athlete",
+    game: "PUYO",
+    role: "ぷよぷよ / テトリス ほか",
+    tagline: "徳島を、最強のeスポーツチームに。",
+    bio: {
+      headline: "本名：森本 海（もりもと かい）。読み方は「あずめす」。ぷよぷよ・テトリスを軸に、多種多様なタイトルを経験してきた、徳島の不定形ファイター。",
+      paragraphs: [
+        "プレイスタイルは不定形。固定の型を持たず、経験値の豊富さで状況に合わせて柔軟に戦うのが持ち味。",
+      ],
+      highlights: [
+        "主戦：ぷよぷよ / テトリス ほか",
+        "強み：不定形・経験値",
+        "好きなゲーム：ポケモン / スプラトゥーン / ぷよぷよ / テトリス / マリオカート / パワプロ / ドラクエ ほか",
+      ],
+      message: "徳島を最強のeスポーツチームに。",
+    },
+    stats: {
+      aggression: 50,
+      patience: 75,
+      teamwork: 70,
+      strategy: 85,
     },
   },
   {
