@@ -339,70 +339,6 @@ export const legendPlayers: Player[] = [
       strategy: 70,
     },
   },
-  { name: "カジコ", division: "athlete" },
-  {
-    name: "ボールくん",
-    division: "creator",
-    avatarUrl: "/members/BORU.jpg",
-    role: "STREET FIGHTER 6 / モダンマノン使い",
-    tagline: "コマ投げで、徳島の道を切り開く特攻隊長。",
-    socials: {
-      x: "https://x.com/borukuntkv",
-    },
-    bio: {
-      headline: "本名：平岩裕治。元 大塚FC（→徳島ヴォルティス）プロサッカー選手。AWAKEN GLOW 代表が自らアタッカーとしてSF6の最前線に立つ。",
-      paragraphs: [
-        "プレイスタイルはモダンマノンによるコマ投げ中心。攻撃力を武器に、特攻隊長として徳島の道を切り開く。",
-      ],
-      highlights: [
-        "主戦：STREET FIGHTER 6（モダンマノン）",
-        "ロール：アタッカー",
-        "強み：攻撃力",
-        "他に好きなゲーム：APEX / Ghost of Tsushima",
-        "経歴：元 大塚FC プロサッカー選手 → 徳島ヴォルティス公式マスコット",
-        "AWAKEN GLOW 創業者・代表",
-      ],
-      message: "徳島を盛り上げるために、特攻隊長として道を切り開いていきます。",
-    },
-    stats: {
-      aggression: 95,
-      patience: 45,
-      teamwork: 70,
-      strategy: 60,
-    },
-  },
-  { name: "森崎弘也", division: "athlete" },
-  {
-    name: "いわちゃん",
-    division: "creator",
-    avatarUrl: "/members/IWASA.jpg",
-    role: "OVERWATCH（タンク）/ VALORANT（コントローラー）",
-    tagline: "勝ちも、楽しさも、両方持って戦う。",
-    socials: {
-      instagram: "https://www.instagram.com/xeno.branding/",
-    },
-    bio: {
-      headline: "本名：岩佐悠嗣（いわさ ゆうじ）。Overwatchタンク／VALORANTコントローラーの戦略派。",
-      paragraphs: [
-        "プレイスタイルはチーム重視かつ攻撃的。チームの特徴を読み解き、戦術を組み立てるのが得意。",
-      ],
-      highlights: [
-        "主戦：Overwatch（タンク）",
-        "サブ：VALORANT（コントローラー）",
-        "強み：チーム戦略・戦術理解",
-        "スタイル：チーム重視 × 攻撃的",
-      ],
-      message: "勝ちにこだわることも大事ですが、楽しくゲームできることを大切にしたいです＾＾",
-    },
-    stats: {
-      aggression: 70,
-      patience: 60,
-      teamwork: 90,
-      strategy: 85,
-    },
-  },
-  { name: "梅ドリル", division: "creator" },
-  { name: "トーキン", division: "creator" },
   {
     name: "シオン",
     division: "athlete",
@@ -435,6 +371,70 @@ export const legendPlayers: Player[] = [
       strategy: 80,
     },
   },
+  { name: "カジコ", division: "athlete" },
+  { name: "森崎弘也", division: "athlete" },
+  {
+    name: "ボールくん",
+    division: "creator",
+    avatarUrl: "/members/BORU.jpg",
+    role: "STREET FIGHTER 6 / モダンマノン使い",
+    tagline: "コマ投げで、徳島の道を切り開く特攻隊長。",
+    socials: {
+      x: "https://x.com/borukuntkv",
+    },
+    bio: {
+      headline: "本名：平岩裕治。元 大塚FC（→徳島ヴォルティス）プロサッカー選手。AWAKEN GLOW 代表が自らアタッカーとしてSF6の最前線に立つ。",
+      paragraphs: [
+        "プレイスタイルはモダンマノンによるコマ投げ中心。攻撃力を武器に、特攻隊長として徳島の道を切り開く。",
+      ],
+      highlights: [
+        "主戦：STREET FIGHTER 6（モダンマノン）",
+        "ロール：アタッカー",
+        "強み：攻撃力",
+        "他に好きなゲーム：APEX / Ghost of Tsushima",
+        "経歴：元 大塚FC プロサッカー選手 → 徳島ヴォルティス公式マスコット",
+        "AWAKEN GLOW 創業者・代表",
+      ],
+      message: "徳島を盛り上げるために、特攻隊長として道を切り開いていきます。",
+    },
+    stats: {
+      aggression: 95,
+      patience: 45,
+      teamwork: 70,
+      strategy: 60,
+    },
+  },
+  {
+    name: "いわちゃん",
+    division: "creator",
+    avatarUrl: "/members/IWASA.jpg",
+    role: "OVERWATCH（タンク）/ VALORANT（コントローラー）",
+    tagline: "勝ちも、楽しさも、両方持って戦う。",
+    socials: {
+      instagram: "https://www.instagram.com/xeno.branding/",
+    },
+    bio: {
+      headline: "本名：岩佐悠嗣（いわさ ゆうじ）。Overwatchタンク／VALORANTコントローラーの戦略派。",
+      paragraphs: [
+        "プレイスタイルはチーム重視かつ攻撃的。チームの特徴を読み解き、戦術を組み立てるのが得意。",
+      ],
+      highlights: [
+        "主戦：Overwatch（タンク）",
+        "サブ：VALORANT（コントローラー）",
+        "強み：チーム戦略・戦術理解",
+        "スタイル：チーム重視 × 攻撃的",
+      ],
+      message: "勝ちにこだわることも大事ですが、楽しくゲームできることを大切にしたいです＾＾",
+    },
+    stats: {
+      aggression: 70,
+      patience: 60,
+      teamwork: 90,
+      strategy: 85,
+    },
+  },
+  { name: "梅ドリル", division: "creator" },
+  { name: "トーキン", division: "creator" },
 ];
 
 export const traineePlayers: Player[] = [
