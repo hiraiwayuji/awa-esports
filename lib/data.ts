@@ -286,10 +286,12 @@ export type PlayerStats = {
 
 export type PlayerDivision = "athlete" | "creator";
 export type PlayerRank = "S";
+export type PlayerGame = "SF6" | "PUYO";
 
 export type Player = {
   name: string;
   division?: PlayerDivision;
+  game?: PlayerGame;
   rank?: PlayerRank;
   avatarUrl?: string;
   avatarUrlHover?: string;
@@ -301,10 +303,24 @@ export type Player = {
   stats?: PlayerStats;
 };
 
+export const GAME_LABELS: Record<PlayerGame, { short: string; long: string; tagline: string }> = {
+  SF6: {
+    short: "SF6",
+    long: "STREET FIGHTER 6 部門",
+    tagline: "格闘ゲームの最高峰、徳島から世界へ。",
+  },
+  PUYO: {
+    short: "PUYO",
+    long: "ぷよぷよeスポーツ 部門",
+    tagline: "連鎖の美しさで魅せる、頭脳の競技。",
+  },
+};
+
 export const legendPlayers: Player[] = [
   {
     name: "hawk",
     division: "athlete",
+    game: "SF6",
     rank: "S",
     avatarUrl: "/members/HAWK.png",
     avatarUrlHover: "/members/HAWK-2.jpg",
@@ -342,6 +358,7 @@ export const legendPlayers: Player[] = [
   {
     name: "シオン",
     division: "athlete",
+    game: "SF6",
     avatarUrl: "/members/SHION.jpg",
     avatarUrlHover: "/members/SHION-2.jpg",
     role: "STREET FIGHTER 6 → MARVEL: Tokon Fighting Souls（2026年8月移行予定）",
@@ -371,8 +388,40 @@ export const legendPlayers: Player[] = [
       strategy: 80,
     },
   },
-  { name: "カジコ", division: "athlete" },
-  { name: "森崎弘也", division: "athlete", avatarUrl: "/members/KING.jpg" },
+  { name: "カジコ", division: "athlete", game: "SF6" },
+  { name: "森崎弘也", division: "athlete", game: "SF6", avatarUrl: "/members/KING.jpg" },
+  {
+    name: "EXE",
+    division: "athlete",
+    game: "PUYO",
+    avatarUrl: "/members/EXE.jpg",
+    role: "ぷよぷよeスポーツ / 大連鎖重視型",
+    tagline: "「EXEスペシャル」で連鎖の美を組み立てる。",
+    socials: {
+      x: "https://x.com/EXEshikokupuyo",
+      youtube: "https://youtube.com/@exe_2424",
+    },
+    bio: {
+      headline: "本名：坂本 光。徳島ぷよぷよ界の大連鎖重視型プレーヤー。「EXEスペシャル」と名付けた独自の連鎖尾を武器に戦う。",
+      paragraphs: [
+        "プレイスタイルは大連鎖重視型。各種連鎖を多数組むことができるレパートリーの豊富さと、「EXEスペシャル」と名付けた独自の連鎖尾が最大の武器。",
+      ],
+      highlights: [
+        "主戦：ぷよぷよeスポーツ",
+        "プレイスタイル：大連鎖重視型",
+        "得意：レパートリー豊富な連鎖構築",
+        "特技：独自の連鎖尾「EXEスペシャル」",
+        "好きなゲーム：ぷよぷよ / XI(sai) / GGXXΛC / MAD RAT DEAD / カービィのきらきらきっず",
+      ],
+      message: "徳島のぷよぷよを盛り上げられるよう、自己研鑽しながら活動していきます！",
+    },
+    stats: {
+      aggression: 60,
+      patience: 90,
+      teamwork: 60,
+      strategy: 95,
+    },
+  },
   {
     name: "ボールくん",
     division: "creator",

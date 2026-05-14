@@ -12,7 +12,9 @@ import {
   staff,
   legendPlayers,
   traineePlayers,
+  GAME_LABELS,
   type Player,
+  type PlayerGame,
   type StaffMember,
 } from "@/lib/data";
 
@@ -314,6 +316,16 @@ export default function MembersPage() {
   const athletes = legendPlayers.filter((p) => p.division === "athlete");
   const creators = legendPlayers.filter((p) => p.division === "creator");
 
+  // アスリートをゲーム別にグループ化（順序は GAME_LABELS の定義順）
+  const athleteGroups: Array<{ game: PlayerGame; players: Player[] }> = (
+    Object.keys(GAME_LABELS) as PlayerGame[]
+  )
+    .map((game) => ({ game, players: athletes.filter((p) => p.game === game) }))
+    .filter((g) => g.players.length > 0);
+
+  // game未指定のathlete（フォールバック）も保持
+  const ungroupedAthletes = athletes.filter((p) => !p.game);
+
   return (
     <PageTransition>
       {/* Hero */}
@@ -399,17 +411,56 @@ export default function MembersPage() {
               </div>
             </div>
 
-            {/* Cards */}
-            <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 [&:hover>*:not(:hover)]:opacity-40 [&>*]:transition-opacity [&>*]:duration-300">
-              {athletes.map((p, i) => (
-                <PlayerCard
-                  key={p.name}
-                  p={p}
-                  i={i}
-                  variant="athlete"
-                  onClick={() => setSelectedPlayer(p)}
-                />
-              ))}
+            {/* ゲーム別サブグループ */}
+            <div className="mt-8 space-y-10">
+              {athleteGroups.map(({ game, players }) => {
+                const label = GAME_LABELS[game];
+                return (
+                  <div key={game}>
+                    {/* サブヘッダー */}
+                    <div className="flex items-end justify-between flex-wrap gap-2 mb-5 pb-3 border-b border-white/10">
+                      <div>
+                        <h3 className="font-display font-black text-lg md:text-2xl tracking-tight text-white">
+                          {label.long}
+                        </h3>
+                        <p className="mt-1 text-[10px] md:text-xs text-white/55 tracking-wide">
+                          {label.tagline}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono tracking-[0.2em] text-neon-cyan/70">
+                        {label.short} · {String(players.length).padStart(2, "0")}
+                      </span>
+                    </div>
+                    {/* Cards */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 [&:hover>*:not(:hover)]:opacity-40 [&>*]:transition-opacity [&>*]:duration-300">
+                      {players.map((p, i) => (
+                        <PlayerCard
+                          key={p.name}
+                          p={p}
+                          i={i}
+                          variant="athlete"
+                          onClick={() => setSelectedPlayer(p)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* ゲーム未分類フォールバック */}
+              {ungroupedAthletes.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+                  {ungroupedAthletes.map((p, i) => (
+                    <PlayerCard
+                      key={p.name}
+                      p={p}
+                      i={i}
+                      variant="athlete"
+                      onClick={() => setSelectedPlayer(p)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
