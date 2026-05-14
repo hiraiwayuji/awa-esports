@@ -128,7 +128,7 @@ function PlayerCard({
             <span className={`w-2 h-2 rounded-full ${accentDotBg} animate-pulse`} />
           </div>
         </div>
-        {p.avatarUrl && (
+        {p.avatarUrl ? (
           <div
             className={`relative w-full aspect-square rounded-lg mb-3 border overflow-hidden ${avatarBorder}`}
           >
@@ -158,6 +158,39 @@ function PlayerCard({
                 className="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-opacity duration-700 group-hover:opacity-100 group-hover:scale-105"
               />
             )}
+          </div>
+        ) : (
+          <div
+            className={`relative w-full aspect-square rounded-lg mb-3 border overflow-hidden ${avatarBorder} bg-gradient-to-br from-awa-indigo-950 via-awa-indigo-900 to-awa-indigo-800 grid place-items-center`}
+            aria-label="写真は準備中"
+          >
+            {/* グリッド背景 */}
+            <span
+              aria-hidden
+              className="absolute inset-0 bg-grid-cyber bg-[length:18px_18px] opacity-30"
+            />
+            {/* 走査線 */}
+            <span
+              aria-hidden
+              className={`absolute inset-x-0 h-px ${isCreator ? "bg-awa-glow/40" : "bg-neon-cyan/40"} animate-scan-line`}
+            />
+            {/* イニシャル＋COMING SOON */}
+            <div className="relative text-center px-2">
+              <div
+                className={`font-display font-black text-3xl md:text-4xl tracking-tight ${
+                  isCreator ? "text-awa-glow/70" : "text-neon-cyan/70"
+                }`}
+              >
+                {p.name.slice(0, 2).toUpperCase()}
+              </div>
+              <div
+                className={`mt-2 text-[9px] font-mono tracking-[0.25em] ${
+                  isCreator ? "text-awa-glow/60" : "text-neon-cyan/60"
+                }`}
+              >
+                COMING SOON
+              </div>
+            </div>
           </div>
         )}
         <div
