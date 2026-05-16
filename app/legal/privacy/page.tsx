@@ -15,12 +15,21 @@ const sections: { title: string; body: React.ReactNode }[] = [
         当チームは、参加申込フォーム・お問い合わせフォーム等を通じて、
         以下の情報を取得することがあります。
         <ul className="mt-3 ml-5 list-disc space-y-1 text-white/60">
-          <li>お名前</li>
+          <li>お名前 / フリガナ</li>
           <li>年齢</li>
           <li>徳島県との関係（在住・出身・興味の有無等）</li>
-          <li>好きなゲームタイトル</li>
-          <li>その他、お問い合わせの過程でご提供いただく情報</li>
+          <li>ご連絡先（メールアドレス・LINE ID・電話番号のいずれか）</li>
+          <li>ご興味のある部門・好きなゲームタイトル</li>
+          <li>
+            未成年の方の場合：保護者のお名前およびご連絡先
+          </li>
+          <li>
+            その他、お問い合わせ・活動の過程でご提供いただく情報
+          </li>
         </ul>
+        <p className="mt-3 text-xs text-white/50 leading-relaxed">
+          ※ 取得した情報は、トラブル発生時のご連絡や安全な活動運営のためにも利用します。
+        </p>
       </>
     ),
   },
@@ -33,6 +42,9 @@ const sections: { title: string; body: React.ReactNode }[] = [
           <li>参加申込・お問い合わせへの対応</li>
           <li>活動・イベントのご案内</li>
           <li>本人確認、参加者名簿の管理</li>
+          <li>
+            事故・トラブル発生時のご本人・保護者・関係者へのご連絡
+          </li>
           <li>当チームの運営改善・統計分析（個人を特定しない形）</li>
         </ul>
       </>
@@ -106,7 +118,14 @@ const sections: { title: string; body: React.ReactNode }[] = [
           contact@awakenglow.jp
         </a>
         までご連絡ください。
-        利用規約は
+        運営者情報は
+        <Link
+          href="/legal/operator"
+          className="text-neon-cyan hover:text-awa-glow underline-offset-4 hover:underline transition mx-1"
+        >
+          こちら
+        </Link>
+        、利用規約は
         <Link
           href="/legal/terms"
           className="text-neon-cyan hover:text-awa-glow underline-offset-4 hover:underline transition mx-1"
@@ -152,10 +171,10 @@ export default function PrivacyPage() {
               </div>
             ))}
 
-            <div className="pt-6 border-t border-white/10 text-xs text-white/40 text-right">
-              制定日：2026年5月4日
-              <br />
-              運営：AWAKEN GLOW（代表：平岩裕治）
+            <div className="pt-6 border-t border-white/10 text-xs text-white/40 text-right space-y-0.5">
+              <div>制定日：2026年5月4日</div>
+              <div>最終改定日：2026年5月16日</div>
+              <div>運営：AWAKEN GLOW（代表：平岩裕治）</div>
             </div>
           </div>
         </div>

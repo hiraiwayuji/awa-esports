@@ -38,10 +38,13 @@ export default function Footer() {
             {[
               ["/about", "About"],
               ["/members", "Members"],
+              ["/schedule", "Schedule"],
               ["/news", "News"],
               ["/partners", "Partners"],
               ["/join", "Join Us"],
+              ["/legal/operator", "運営者情報"],
               ["/legal/terms", "利用規約"],
+              ["/legal/player-agreement", "選手登録規約"],
               ["/legal/privacy", "プライバシーポリシー"],
             ].map(([h, l]) => (
               <li key={h}>
