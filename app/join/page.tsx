@@ -16,7 +16,6 @@ import {
 import SectionTitle from "@/components/SectionTitle";
 import PageTransition from "@/components/PageTransition";
 
-type ContactMethod = "email" | "line" | "phone";
 type Residency = "current" | "former" | "neighbor" | "other";
 type Division = "SF6" | "PUYO" | "UNDECIDED";
 
@@ -33,28 +32,17 @@ const popularGames = [
   "Rainbow Six Siege",
 ];
 
-const contactMethodOptions: {
-  v: ContactMethod;
-  l: string;
-  placeholder: string;
-}[] = [
-  { v: "email", l: "メール", placeholder: "you@example.com" },
-  { v: "line", l: "LINE ID", placeholder: "@your-line-id" },
-  { v: "phone", l: "電話番号", placeholder: "090-0000-0000" },
-];
-
 const divisionOptions: { v: Division; l: string; desc: string }[] = [
   { v: "SF6", l: "STREET FIGHTER 6 部門", desc: "格ゲー / SF6" },
   { v: "PUYO", l: "ぷよぷよeスポーツ 部門", desc: "連鎖 / 思考戦" },
   { v: "UNDECIDED", l: "未定 / 相談したい", desc: "他タイトルの相談も歓迎" },
 ];
 
-function validateContact(method: ContactMethod, value: string): boolean {
-  const v = value.trim();
-  if (v.length === 0) return false;
-  if (method === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  if (method === "phone") return /^[0-9+\-\s()]{8,}$/.test(v);
-  return v.length >= 2;
+function isEmail(v: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+}
+function isPhone(v: string): boolean {
+  return /^[0-9+\-\s()]{8,}$/.test(v.trim());
 }
 
 function isKana(s: string): boolean {
@@ -66,8 +54,9 @@ export default function JoinPage() {
   const [nameKana, setNameKana] = useState("");
   const [age, setAge] = useState("");
   const [residency, setResidency] = useState<Residency | "">("");
-  const [contactMethod, setContactMethod] = useState<ContactMethod>("email");
-  const [contactValue, setContactValue] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactLine, setContactLine] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
   const [divisions, setDivisions] = useState<Division[]>([]);
   const [favoriteGame, setFavoriteGame] = useState("");
   const [guardianName, setGuardianName] = useState("");
@@ -88,7 +77,15 @@ export default function JoinPage() {
   };
 
   const kanaValid = nameKana.trim().length > 0 && isKana(nameKana);
-  const contactValid = validateContact(contactMethod, contactValue);
+
+  const emailFilled = contactEmail.trim().length > 0;
+  const lineFilled = contactLine.trim().length > 0;
+  const phoneFilled = contactPhone.trim().length > 0;
+  const emailOk = !emailFilled || isEmail(contactEmail);
+  const phoneOk = !phoneFilled || isPhone(contactPhone);
+  const lineOk = !lineFilled || contactLine.trim().length >= 2;
+  const hasAtLeastOneContact = emailFilled || lineFilled || phoneFilled;
+  const contactValid = hasAtLeastOneContact && emailOk && phoneOk && lineOk;
 
   const valid =
     name.trim().length > 0 &&
@@ -116,8 +113,9 @@ export default function JoinPage() {
           nameKana,
           age: ageNum,
           residency,
-          contactMethod,
-          contactValue,
+          contactEmail: contactEmail.trim(),
+          contactLine: contactLine.trim(),
+          contactPhone: contactPhone.trim(),
           divisions,
           favoriteGame,
           guardianName: isMinor ? guardianName : "",
@@ -336,45 +334,63 @@ export default function JoinPage() {
                     )}
                   </div>
 
-                  {/* Contact */}
+                  {/* Contact — at least one required, multiple OK */}
                   <div>
                     <label className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
-                      05 / CONTACT — 連絡先
+                      05 / CONTACT — 連絡先（いずれか1つ以上・複数可）
                     </label>
-                    <div className="mt-3 grid grid-cols-3 gap-2">
-                      {contactMethodOptions.map((opt) => (
-                        <button
-                          key={opt.v}
-                          type="button"
-                          onClick={() => {
-                            setContactMethod(opt.v);
-                            setContactValue("");
-                          }}
-                          className={`rounded-lg border px-3 py-2 text-xs transition-all ${
-                            contactMethod === opt.v
-                              ? "border-neon-cyan bg-neon-cyan/10 text-neon-cyan shadow-neon"
-                              : "border-white/15 text-white/70 hover:border-white/40"
-                          }`}
-                        >
-                          {opt.l}
-                        </button>
-                      ))}
+                    <div className="mt-3 space-y-3">
+                      <div>
+                        <div className="text-[10px] tracking-[0.2em] text-white/50 mb-1">
+                          メール
+                        </div>
+                        <input
+                          type="email"
+                          inputMode="email"
+                          value={contactEmail}
+                          onChange={(e) => setContactEmail(e.target.value)}
+                          placeholder="you@example.com"
+                          className="w-full bg-awa-indigo-950/60 border border-white/10 focus:border-neon-cyan focus:shadow-neon rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
+                        />
+                        {emailFilled && !emailOk && (
+                          <p className="mt-1 text-[11px] text-awa-glow/80">
+                            メールアドレスの形式をご確認ください。
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-[10px] tracking-[0.2em] text-white/50 mb-1">
+                          LINE ID
+                        </div>
+                        <input
+                          value={contactLine}
+                          onChange={(e) => setContactLine(e.target.value)}
+                          placeholder="@your-line-id"
+                          className="w-full bg-awa-indigo-950/60 border border-white/10 focus:border-neon-cyan focus:shadow-neon rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
+                        />
+                      </div>
+                      <div>
+                        <div className="text-[10px] tracking-[0.2em] text-white/50 mb-1">
+                          電話番号
+                        </div>
+                        <input
+                          type="tel"
+                          inputMode="tel"
+                          value={contactPhone}
+                          onChange={(e) => setContactPhone(e.target.value)}
+                          placeholder="090-0000-0000"
+                          className="w-full bg-awa-indigo-950/60 border border-white/10 focus:border-neon-cyan focus:shadow-neon rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
+                        />
+                        {phoneFilled && !phoneOk && (
+                          <p className="mt-1 text-[11px] text-awa-glow/80">
+                            電話番号の形式をご確認ください。
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <input
-                      value={contactValue}
-                      onChange={(e) => setContactValue(e.target.value)}
-                      placeholder={
-                        contactMethodOptions.find(
-                          (o) => o.v === contactMethod,
-                        )?.placeholder
-                      }
-                      inputMode={
-                        contactMethod === "phone" ? "tel" : contactMethod === "email" ? "email" : "text"
-                      }
-                      className="mt-3 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-neon-cyan focus:shadow-neon rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
-                    />
-                    <p className="mt-2 text-[11px] text-white/40 leading-relaxed">
-                      ※ 運営からの折返し連絡に使用します。
+                    <p className="mt-3 text-[11px] text-white/40 leading-relaxed">
+                      ※ いずれか1つ以上ご入力ください。複数あれば、運営からの折返しが確実です。
+                      <br />
                       第三者には提供しません（
                       <Link
                         href="/legal/privacy"
@@ -611,7 +627,9 @@ export default function JoinPage() {
                       setNameKana("");
                       setAge("");
                       setResidency("");
-                      setContactValue("");
+                      setContactEmail("");
+                      setContactLine("");
+                      setContactPhone("");
                       setDivisions([]);
                       setFavoriteGame("");
                       setGuardianName("");

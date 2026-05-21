@@ -5,7 +5,6 @@ import { z } from "zod";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const contactMethodEnum = z.enum(["email", "line", "phone"]);
 const residencyEnum = z.enum(["current", "former", "neighbor", "other"]);
 const divisionEnum = z.enum(["SF6", "PUYO", "UNDECIDED"]);
 
@@ -15,14 +14,27 @@ const JoinSchema = z
     nameKana: z.string().trim().min(1).max(80),
     age: z.coerce.number().int().min(1).max(120),
     residency: residencyEnum,
-    contactMethod: contactMethodEnum,
-    contactValue: z.string().trim().min(1).max(200),
+    contactEmail: z.string().trim().max(200).optional().default(""),
+    contactLine: z.string().trim().max(200).optional().default(""),
+    contactPhone: z.string().trim().max(200).optional().default(""),
     divisions: z.array(divisionEnum).min(1).max(3),
     favoriteGame: z.string().trim().max(120).optional().default(""),
     guardianName: z.string().trim().max(80).optional().default(""),
     guardianContact: z.string().trim().max(200).optional().default(""),
     consent: z.literal(true),
   })
+  .refine(
+    (v) => v.contactEmail.length > 0 || v.contactLine.length > 0 || v.contactPhone.length > 0,
+    { message: "連絡先を1つ以上ご入力ください。", path: ["contactEmail"] },
+  )
+  .refine(
+    (v) => v.contactEmail.length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.contactEmail),
+    { message: "メールアドレスの形式が不正です。", path: ["contactEmail"] },
+  )
+  .refine(
+    (v) => v.contactPhone.length === 0 || /^[0-9+\-\s()]{8,}$/.test(v.contactPhone),
+    { message: "電話番号の形式が不正です。", path: ["contactPhone"] },
+  )
   .refine(
     (v) => {
       if (v.age < 18) {
@@ -40,12 +52,6 @@ const RESIDENCY_LABEL: Record<JoinPayload["residency"], string> = {
   former: "元 徳島県民",
   neighbor: "隣県在住で興味あり",
   other: "それ以外で興味あり",
-};
-
-const METHOD_LABEL: Record<JoinPayload["contactMethod"], string> = {
-  email: "メール",
-  line: "LINE ID",
-  phone: "電話番号",
 };
 
 const DIVISION_LABEL: Record<JoinPayload["divisions"][number], string> = {
@@ -79,8 +85,23 @@ function escapeHtml(s: string): string {
     .replace(/'/g, "&#39;");
 }
 
+function buildContactRows(p: JoinPayload): { label: string; value: string }[] {
+  const rows: { label: string; value: string }[] = [];
+  if (p.contactEmail) rows.push({ label: "メール", value: p.contactEmail });
+  if (p.contactLine) rows.push({ label: "LINE ID", value: p.contactLine });
+  if (p.contactPhone) rows.push({ label: "電話番号", value: p.contactPhone });
+  return rows;
+}
+
 function buildHtml(p: JoinPayload): string {
   const divisions = p.divisions.map((d) => DIVISION_LABEL[d]).join(" / ");
+  const contactRows = buildContactRows(p);
+  const contactBlock = contactRows
+    .map(
+      (r) =>
+        `<div style="font-size:16px;font-weight:700;margin-top:6px;">${escapeHtml(r.label)}：${escapeHtml(r.value)}</div>`,
+    )
+    .join("");
   const guardianBlock = p.age < 18
     ? `<tr><th style="text-align:left;padding:8px;background:#f6f8fb;width:160px;">保護者氏名</th><td style="padding:8px;">${escapeHtml(p.guardianName)}</td></tr>
        <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">保護者連絡先</th><td style="padding:8px;">${escapeHtml(p.guardianContact)}</td></tr>`
@@ -89,8 +110,8 @@ function buildHtml(p: JoinPayload): string {
 <!doctype html><html lang="ja"><body style="font-family:system-ui,'Hiragino Sans','Yu Gothic UI',sans-serif;color:#0a0e22;">
   <h2 style="margin:0 0 12px;">AWAKEN GLOW — 入会申込</h2>
   <div style="background:#0a0e22;color:#fff;padding:14px 16px;border-radius:10px;margin:12px 0;">
-    <div style="font-size:12px;letter-spacing:0.2em;color:#00F0FF;">CONTACT</div>
-    <div style="font-size:18px;font-weight:700;margin-top:4px;">${escapeHtml(METHOD_LABEL[p.contactMethod])}：${escapeHtml(p.contactValue)}</div>
+    <div style="font-size:12px;letter-spacing:0.2em;color:#00F0FF;">CONTACT${contactRows.length > 1 ? `（${contactRows.length}件）` : ""}</div>
+    ${contactBlock}
   </div>
   <table style="border-collapse:collapse;width:100%;font-size:14px;">
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;width:160px;">お名前</th><td style="padding:8px;">${escapeHtml(p.name)}（${escapeHtml(p.nameKana)}）</td></tr>
@@ -107,12 +128,15 @@ function buildHtml(p: JoinPayload): string {
 
 function buildText(p: JoinPayload): string {
   const divisions = p.divisions.map((d) => DIVISION_LABEL[d]).join(" / ");
+  const contactRows = buildContactRows(p);
+  const contactBlock = contactRows.map((r) => `${r.label}: ${r.value}`).join("\n");
   const guardianBlock = p.age < 18
     ? `保護者氏名: ${p.guardianName}\n保護者連絡先: ${p.guardianContact}\n`
     : "";
   return `AWAKEN GLOW — 入会申込
 
-【連絡先】 ${METHOD_LABEL[p.contactMethod]}: ${p.contactValue}
+【連絡先】
+${contactBlock}
 
 お名前: ${p.name}（${p.nameKana}）
 年齢: ${p.age}歳${p.age < 18 ? "（未成年）" : ""}
@@ -173,8 +197,7 @@ export async function POST(req: Request) {
     const { error } = await resend.emails.send({
       from,
       to,
-      replyTo:
-        payload.contactMethod === "email" ? payload.contactValue : undefined,
+      replyTo: payload.contactEmail || undefined,
       subject: `[AWAKEN GLOW] 入会申込 — ${payload.name}（${payload.age}歳・${RESIDENCY_LABEL[payload.residency]}）`,
       html: buildHtml(payload),
       text: buildText(payload),
