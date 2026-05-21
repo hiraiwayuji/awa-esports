@@ -465,7 +465,7 @@ export const legendPlayers: Player[] = [
     },
   },
   {
-    name: "殺意ゆう",
+    name: "Evilyuu",
     division: "athlete",
     game: "SF6",
     role: "STREET FIGHTER 6",
