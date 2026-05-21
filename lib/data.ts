@@ -444,6 +444,27 @@ export const legendPlayers: Player[] = [
     },
   },
   {
+    name: "HT",
+    division: "athlete",
+    game: "SF6",
+    role: "STREET FIGHTER 6 / ザンギエフ使い",
+    tagline: "伝説のザンギ使い。",
+    bio: {
+      headline: "徳島が誇る伝説のザンギエフ使い。一撃の重さで盤面をひっくり返す。",
+      highlights: [
+        "主戦：STREET FIGHTER 6",
+        "使用キャラ：ザンギエフ",
+        "二つ名：伝説のザンギ使い",
+      ],
+    },
+    stats: {
+      aggression: 85,
+      patience: 80,
+      teamwork: 55,
+      strategy: 70,
+    },
+  },
+  {
     name: "EXE",
     division: "athlete",
     game: "PUYO",
