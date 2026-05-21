@@ -391,6 +391,59 @@ export const legendPlayers: Player[] = [
   { name: "カジコ", division: "athlete", game: "SF6" },
   { name: "森崎弘也", division: "athlete", game: "SF6", avatarUrl: "/members/KING.jpg" },
   {
+    name: "SB@963",
+    division: "athlete",
+    game: "SF6",
+    role: "STREET FIGHTER 6 / アタッカー・サポート",
+    tagline: "連携で、徳島のゲームの輪を広げる。",
+    bio: {
+      headline: "ストリートファイター6プレーヤー。アタッカーとサポート、状況に応じて切り替える連携重視タイプ。",
+      paragraphs: [
+        "プレイスタイルは攻撃的。連携力・チームワークを武器に、チームで勝つ展開を作る。",
+      ],
+      highlights: [
+        "主戦：STREET FIGHTER 6",
+        "ロール：アタッカー / サポート",
+        "スタイル：攻撃的",
+        "強み：連携力・チームワーク",
+        "他に好きなゲーム：APEX",
+      ],
+      message: "徳島にもっとゲームの輪を広げるために、できることは頑張ります。",
+    },
+    stats: {
+      aggression: 80,
+      patience: 55,
+      teamwork: 90,
+      strategy: 65,
+    },
+  },
+  {
+    name: "オフトンスキー",
+    division: "athlete",
+    game: "SF6",
+    role: "STREET FIGHTER 6 / 戦略型",
+    tagline: "戦略型。アドリブ力で局面を切り開く。",
+    bio: {
+      headline: "ストリートファイター6プレーヤー。戦略を基本に置きつつ、アドリブ力で局面を切り開くタイプ。",
+      paragraphs: [
+        "プレイスタイルは戦略型。読みと組み立てを基本にしつつ、その場のアドリブで予想外の手を打つ。",
+      ],
+      highlights: [
+        "主戦：STREET FIGHTER 6",
+        "スタイル：戦略型",
+        "強み：アドリブ力",
+        "他に好きなゲーム：対人ゲーム / RPG",
+      ],
+      message: "成長して、結果を残したいです。",
+    },
+    stats: {
+      aggression: 60,
+      patience: 75,
+      teamwork: 65,
+      strategy: 90,
+    },
+  },
+  {
     name: "EXE",
     division: "athlete",
     game: "PUYO",
