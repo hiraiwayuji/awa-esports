@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import ParticleBackground from "@/components/ParticleBackground";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://awa-esports.vercel.app"),
   title: "AWAKEN GLOW — 一人ひとりの輝きが目覚める場所。",
   description:
     "AWAKEN GLOW（A.G.）は徳島を拠点とするeスポーツチーム。経験や年齢に関係なく、挑戦したい人、仲間と成長したい人を歓迎します。",
@@ -17,6 +18,30 @@ export const metadata: Metadata = {
     "阿波",
     "Tokushima",
   ],
+  openGraph: {
+    title: "AWAKEN GLOW — 一人ひとりの輝きが目覚める場所。",
+    description:
+      "徳島を拠点とするeスポーツチーム。経験や年齢に関係なく、挑戦したい人、仲間と成長したい人を歓迎します。",
+    type: "website",
+    locale: "ja_JP",
+    siteName: "AWAKEN GLOW",
+    images: [
+      {
+        url: "/brand/AG-instagram-1080.png",
+        width: 1080,
+        height: 1080,
+        alt: "AWAKEN GLOW",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AWAKEN GLOW — 一人ひとりの輝きが目覚める場所。",
+    description: "徳島発のeスポーツチーム AWAKEN GLOW。",
+    site: "@awaken_glow",
+    creator: "@awaken_glow",
+    images: ["/brand/AG-instagram-1080.png"],
+  },
 };
 
 export default function RootLayout({

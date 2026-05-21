@@ -1,5 +1,17 @@
 import Link from "next/link";
-import { Twitter, Instagram, Youtube, Twitch } from "lucide-react";
+import { Twitter, Instagram } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+// 公式SNSは開設次第ここに追加。
+// YouTube / Twitch は未開設のため非表示。
+const socials: { Icon: LucideIcon; href: string; label: string }[] = [
+  { Icon: Twitter, href: "https://x.com/awaken_glow", label: "X (@awaken_glow)" },
+  {
+    Icon: Instagram,
+    href: "https://www.instagram.com/awakenglow2026/",
+    label: "Instagram (@awakenglow2026)",
+  },
+];
 
 export default function Footer() {
   return (
@@ -18,10 +30,14 @@ export default function Footer() {
             仲間とともに成長できる場所を目指します。
           </p>
           <div className="mt-6 flex gap-3">
-            {[Twitter, Instagram, Youtube, Twitch].map((Icon, i) => (
+            {socials.map(({ Icon, href, label }) => (
               <a
-                key={i}
-                href="#"
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                title={label}
                 className="w-10 h-10 grid place-items-center rounded-full border border-white/15 hover:border-neon-cyan hover:text-neon-cyan hover:shadow-neon transition-all"
               >
                 <Icon size={16} />
