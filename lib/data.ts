@@ -465,6 +465,29 @@ export const legendPlayers: Player[] = [
     },
   },
   {
+    name: "殺意ゆう",
+    division: "athlete",
+    game: "SF6",
+    role: "STREET FIGHTER 6",
+    tagline: "熱い心と、楽しむ心を両立する。",
+    bio: {
+      headline: "ストリートファイター6プレーヤー。冷静なプレイスタイルと「楽しむ心」を武器に、徳島SF6シーンに加わった新鋭。",
+      highlights: [
+        "主戦：STREET FIGHTER 6",
+        "スタイル：冷静型",
+        "強み：楽しむ心",
+        "好きなゲーム：数え切れないほど",
+      ],
+      message: "熱い心を持ちつつも、楽しむことを忘れないように頑張ります！",
+    },
+    stats: {
+      aggression: 65,
+      patience: 80,
+      teamwork: 60,
+      strategy: 75,
+    },
+  },
+  {
     name: "EXE",
     division: "athlete",
     game: "PUYO",
