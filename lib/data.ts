@@ -468,6 +468,7 @@ export const legendPlayers: Player[] = [
     name: "TKO",
     division: "athlete",
     game: "SF6",
+    avatarUrl: "/members/TKO.jpg",
     role: "STREET FIGHTER 6",
     tagline: "経験と独創性で、昨日の自分を超える。",
     bio: {
