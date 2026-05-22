@@ -472,6 +472,10 @@ export const legendPlayers: Player[] = [
     avatarUrl: "/members/TKO.jpg",
     role: "STREET FIGHTER 6",
     tagline: "経験と独創性で、昨日の自分を超える。",
+    socials: {
+      x: "https://x.com/TKO570707",
+      youtube: "https://youtube.com/@tko-gamegallery4917",
+    },
     bio: {
       headline: "KOF・バーチャファイター・ストリートファイターを渡り歩いてきたベテラン。経験と独創性を武器に徳島SF6シーンに加わる。",
       paragraphs: [
