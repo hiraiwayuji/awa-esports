@@ -465,6 +465,32 @@ export const legendPlayers: Player[] = [
     },
   },
   {
+    name: "TKO",
+    division: "athlete",
+    game: "SF6",
+    role: "STREET FIGHTER 6",
+    tagline: "経験と独創性で、昨日の自分を超える。",
+    bio: {
+      headline: "本名：石川 隆雄（いしかわ たかお）。KOF・バーチャファイター・ストリートファイターを渡り歩いてきたベテラン。経験と独創性を武器に徳島SF6シーンに加わる。",
+      paragraphs: [
+        "プレイスタイルは攻撃的。長年格闘ゲームに向き合ってきた経験値と、それを支える独創的な発想が最大の武器。",
+      ],
+      highlights: [
+        "主戦：STREET FIGHTER 6",
+        "スタイル：攻撃的",
+        "強み：年齢を経た経験 × 独創性",
+        "格ゲー遍歴：KOF / バーチャファイター / ストリートファイター",
+      ],
+      message: "昨日の自分より強くなりたいです、よろしくお願いします。",
+    },
+    stats: {
+      aggression: 80,
+      patience: 70,
+      teamwork: 60,
+      strategy: 85,
+    },
+  },
+  {
     name: "Evilyuu",
     division: "athlete",
     game: "SF6",
