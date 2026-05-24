@@ -642,6 +642,7 @@ export const legendPlayers: Player[] = [
         "強み：連携力・判断力・メンタルの強さ",
         "好きなゲーム：クロノトリガー",
       ],
+      message: "徳島eスポーツを盛り上げたい！",
     },
     stats: {
       aggression: 75,
