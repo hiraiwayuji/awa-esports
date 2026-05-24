@@ -294,6 +294,7 @@ export type PlayerBio = {
   headline?: string;
   paragraphs?: string[];
   highlights?: string[];
+  achievements?: string[];
   message?: string;
 };
 
@@ -668,6 +669,19 @@ export const legendPlayers: Player[] = [
         "スタイル：スピード型",
         "強み：連携力・判断力・メンタルの強さ",
         "好きなゲーム：クロノトリガー",
+      ],
+      achievements: [
+        "EVO Japan 2026 MBTL 3位",
+        "TGP 2025 GBVSR 3位",
+        "TGP 2025 MBTL 5位",
+        "KGP 2025 MBTL 7位",
+        "TGP 2024 MBTL 優勝",
+        "KGP 2024 MBTL 優勝",
+        "TGP 2023 MBTL 公認大会（オフライン）優勝",
+        "EVO Japan 2023 MBTL 7位",
+        "『MELTY BLOOD: TYPE LUMINA』Official Tournament Round 3 ベスト8",
+        "闘劇10 MBAACC 本戦出場",
+        "闘劇08 MBAC 本戦出場",
       ],
       message: "徳島eスポーツを盛り上げたい！",
     },

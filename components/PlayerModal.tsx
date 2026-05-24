@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Twitch, Youtube, Twitter, Instagram, User } from "lucide-react";
+import { X, Twitch, Youtube, Twitter, Instagram, User, Trophy } from "lucide-react";
 import type { Player } from "@/lib/data";
 
 export default function PlayerModal({
@@ -187,6 +187,33 @@ function PlayerModalContent({
                   ))}
                 </ul>
               </div>
+            )}
+
+            {bio.achievements && bio.achievements.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="pt-4 border-t border-white/10"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Trophy className="w-3.5 h-3.5 text-awa-glow drop-shadow-[0_0_6px_rgba(45,255,183,0.6)]" />
+                  <div className="text-[10px] tracking-[0.3em] font-display text-awa-glow">
+                    ACHIEVEMENTS / 主要戦績
+                  </div>
+                </div>
+                <ul className="space-y-2">
+                  {bio.achievements.map((a, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 text-sm text-white/85"
+                    >
+                      <span className="mt-1 text-awa-glow text-xs font-mono shrink-0">▸</span>
+                      <span>{a}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
             )}
 
             {bio.message && (
