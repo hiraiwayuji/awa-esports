@@ -625,7 +625,30 @@ export const legendPlayers: Player[] = [
     name: "てぃーる",
     division: "athlete",
     game: "MELTY",
-    role: "MELTY BLOOD",
+    role: "MELTY BLOOD / 選手・広報",
+    tagline: "スピードと判断で、空気を一気に変える。",
+    socials: {
+      x: "https://x.com/toba_mituru",
+    },
+    bio: {
+      headline: "MELTY BLOOD プレーヤー。選手としてだけでなく、チームの広報役も担う徳島のスピード型ファイター。",
+      paragraphs: [
+        "プレイスタイルはスピード型。連携力・判断力・メンタルの強さを武器に、相手の対応が追いつかない速度で局面を作る。",
+      ],
+      highlights: [
+        "主戦：MELTY BLOOD",
+        "役割：選手 / 広報",
+        "スタイル：スピード型",
+        "強み：連携力・判断力・メンタルの強さ",
+        "好きなゲーム：クロノトリガー",
+      ],
+    },
+    stats: {
+      aggression: 75,
+      patience: 70,
+      teamwork: 85,
+      strategy: 80,
+    },
   },
   {
     name: "ボールくん",
