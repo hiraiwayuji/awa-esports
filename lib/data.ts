@@ -194,6 +194,32 @@ export const staff: StaffMember[] = [
       ],
     },
   },
+  {
+    id: "STAFF-008",
+    role: "広報 / PR",
+    name: "てぃーる",
+    tagline: "スピードと判断で、徳島eスポーツの輪を広げる。",
+    icon: Megaphone,
+    accent: "cyan",
+    rank: "A+",
+    callsign: "TEAL",
+    bio: {
+      headline: "MELTY BLOOD 選手として AWAKEN GLOW に所属しつつ、チームの広報役も担う二刀流スタッフ。",
+      paragraphs: [
+        "プレーヤーとしてのスピード型・連携力・判断力を、そのままチームの広報・コミュニティ運営にも持ち込む。",
+        "MELTY BLOOD 部門の選手プロフィールは ROSTER 側にも掲載。",
+      ],
+      highlights: [
+        "AWAKEN GLOW 広報担当",
+        "MELTY BLOOD 部門 選手として在籍",
+        "強み：連携力・判断力・メンタルの強さ",
+        "好きなゲーム：クロノトリガー",
+      ],
+      links: [
+        { label: "X (@toba_mituru)", url: "https://x.com/toba_mituru" },
+      ],
+    },
+  },
 ];
 
 export const specialThanks: StaffMember[] = [
