@@ -287,7 +287,7 @@ export type PlayerStats = {
 
 export type PlayerDivision = "athlete" | "creator";
 export type PlayerRank = "S";
-export type PlayerGame = "SF6" | "PUYO";
+export type PlayerGame = "SF6" | "PUYO" | "VF" | "MELTY";
 
 export type Player = {
   name: string;
@@ -314,6 +314,16 @@ export const GAME_LABELS: Record<PlayerGame, { short: string; long: string; tagl
     short: "PUYO",
     long: "ぷよぷよeスポーツ 部門",
     tagline: "連鎖の美しさで魅せる、頭脳の競技。",
+  },
+  VF: {
+    short: "VF",
+    long: "VIRTUA FIGHTER 部門",
+    tagline: "3D格闘の礎、読み合いの極北。",
+  },
+  MELTY: {
+    short: "MELTY",
+    long: "MELTY BLOOD 部門",
+    tagline: "高速2D格闘、型月ファンタジーの系譜。",
   },
 };
 
@@ -578,6 +588,44 @@ export const legendPlayers: Player[] = [
       teamwork: 70,
       strategy: 85,
     },
+  },
+  {
+    name: "乱世の奸雄",
+    division: "athlete",
+    game: "VF",
+    role: "VIRTUA FIGHTER 5 REVO / 先鋒",
+    tagline: "おっさんの成長を、舐めんなよ。",
+    socials: {
+      x: "https://x.com/ransenokanyuu1",
+    },
+    bio: {
+      headline: "バーチャファイター5 REVO World Stage プレーヤー。団体戦先鋒固定の防御型ベテラン。大舞台でこそ真価を発揮する徳島の奸雄。",
+      paragraphs: [
+        "プレイスタイルは防御型。読み合いと我慢で相手の崩れを待ち、決定機で確実に仕留めるベテランの戦い方。",
+      ],
+      highlights: [
+        "本名：井村守男",
+        "主戦：バーチャファイター5 REVO World Stage",
+        "団体戦ポジション：先鋒（固定）",
+        "スタイル：防御型",
+        "強み：大舞台で強い",
+        "格ゲー遍歴：バーチャ / 餓狼伝説スペシャル ほか",
+        "好きなRPG：FF2 / ロマンシング サガ / スカイリム",
+      ],
+      message: "おっさんの成長、舐めんなよ？",
+    },
+    stats: {
+      aggression: 55,
+      patience: 90,
+      teamwork: 70,
+      strategy: 80,
+    },
+  },
+  {
+    name: "てぃーる",
+    division: "athlete",
+    game: "MELTY",
+    role: "MELTY BLOOD",
   },
   {
     name: "ボールくん",
