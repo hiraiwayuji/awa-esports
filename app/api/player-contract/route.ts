@@ -5,6 +5,7 @@ import {
   PLAYER_CONTRACT_VERSION,
   PLAYER_CONTRACT_TERMS,
 } from "@/lib/legal-text";
+import { appendToSheet } from "@/lib/sheets";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -297,6 +298,50 @@ export async function POST(req: Request) {
       { ok: false, error: "send_exception" },
       { status: 502 },
     );
+  }
+
+  // Sheets書き込みはベストエフォート
+  try {
+    await appendToSheet("player_contract", {
+      申請日時: agreedAt,
+      プレイヤー名: payload.playerName,
+      本名: payload.realName,
+      メール: payload.email,
+      "Discord ID": payload.discordId || "",
+      生年月日: payload.birthdate,
+      年齢: String(payload.age),
+      電話番号: payload.phone,
+      住所: payload.address,
+      所属部門タイトル: payload.mainGame,
+      活動区分: ROLE_LABEL[payload.roleType],
+      契約開始日: payload.contractStart,
+      契約期間: payload.contractDuration,
+      緊急連絡先: payload.emergencyContact,
+      SNSアカウント: payload.snsLinks || "",
+      大会実績: payload.achievements || "",
+      署名: payload.signature,
+      保護者氏名: payload.guardianName || "",
+      保護者メール: payload.guardianEmail || "",
+      保護者電話: payload.guardianPhone || "",
+      契約内容確認: payload.contractCheck ? "✅" : "",
+      無報酬同意: payload.unpaidCheck ? "✅" : "",
+      肖像権同意: payload.portraitCheck ? "✅" : "",
+      SNS配信同意: payload.snsCheck ? "✅" : "",
+      NDA同意: payload.ndaCheck ? "✅" : "",
+      チート禁止誓約: payload.cheatCheck ? "✅" : "",
+      反社会的勢力非該当誓約: payload.antiSocialCheck ? "✅" : "",
+      プライバシー同意: payload.privacyCheck ? "✅" : "",
+      保護者同意: payload.age < 18 ? (payload.guardianCheck ? "✅" : "") : "—",
+      契約バージョン: PLAYER_CONTRACT_VERSION,
+      IP: ip,
+      "User-Agent": userAgent,
+      ステータス: "申請中",
+      管理者メモ: "",
+      "誓約書/契約書URL": "",
+      "Discord メッセージURL": "",
+    });
+  } catch (e) {
+    console.error("contract_sheets_error", e);
   }
 
   return NextResponse.json({ ok: true });

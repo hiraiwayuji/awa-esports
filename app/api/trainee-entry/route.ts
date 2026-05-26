@@ -5,6 +5,7 @@ import {
   TRAINEE_AGREEMENT_VERSION,
   TRAINEE_AGREEMENT_TEXT,
 } from "@/lib/legal-text";
+import { appendToSheet } from "@/lib/sheets";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -219,6 +220,38 @@ export async function POST(req: Request) {
       { ok: false, error: "send_exception" },
       { status: 502 },
     );
+  }
+
+  // Sheets書き込みはベストエフォート（失敗してもメールは飛んでいるので成功扱い）
+  try {
+    await appendToSheet("trainee", {
+      申請日時: agreedAt,
+      プレイヤー名: payload.playerName,
+      本名: payload.realName,
+      メール: payload.email,
+      "Discord ID": payload.discordId || "",
+      生年月日: payload.birthdate,
+      年齢: String(payload.age),
+      電話番号: payload.phone,
+      住所: payload.address,
+      主なプレイタイトル: payload.mainGame,
+      参加希望理由: payload.joinReason,
+      保護者氏名: payload.guardianName || "",
+      保護者連絡先: payload.guardianContact || "",
+      規約同意: "✅",
+      プライバシー同意: "✅",
+      保護者同意: payload.age < 18 ? (payload.guardianCheck ? "✅" : "") : "—",
+      規約バージョン: TRAINEE_AGREEMENT_VERSION,
+      IP: ip,
+      "User-Agent": userAgent,
+      ステータス: "申請中",
+      管理者メモ: "",
+      "誓約書/契約書URL": "",
+      "Discord メッセージURL": "",
+    });
+  } catch (e) {
+    console.error("trainee_sheets_error", e);
+    // メールは飛んでいるので成功は返す
   }
 
   return NextResponse.json({ ok: true });
