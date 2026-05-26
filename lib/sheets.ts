@@ -68,3 +68,76 @@ export async function appendToSheet(
 
   await sheet.addRow(row);
 }
+
+/**
+ * 指定タブの全行を取得（ヘッダーをキーにしたobject配列で返す）。
+ * 戻り値には _rowIndex（0始まり、ヘッダー行を除いたデータ行のindex）を含める。
+ */
+export async function getSheetRows(
+  sheetName: SheetName,
+): Promise<Array<Record<string, string> & { _rowIndex: number }>> {
+  const doc = getDoc();
+  await doc.loadInfo();
+  const sheet = doc.sheetsByTitle[sheetName];
+  if (!sheet) return [];
+
+  try {
+    await sheet.loadHeaderRow();
+  } catch {
+    return [];
+  }
+
+  const rows = await sheet.getRows();
+  return rows.map((r, i) => {
+    const obj = r.toObject() as Record<string, string>;
+    // 型システムの index-signature 衝突を避けるため明示キャスト
+    return { ...obj, _rowIndex: i } as Record<string, string> & {
+      _rowIndex: number;
+    };
+  });
+}
+
+/**
+ * 指定行のフィールドを更新する。
+ * @param sheetName タブ名
+ * @param rowIndex データ行のindex（getSheetRows の _rowIndex）
+ * @param updates 更新したいキー/値
+ */
+export async function updateSheetRow(
+  sheetName: SheetName,
+  rowIndex: number,
+  updates: Record<string, string>,
+): Promise<void> {
+  const doc = getDoc();
+  await doc.loadInfo();
+  const sheet = doc.sheetsByTitle[sheetName];
+  if (!sheet) throw new Error(`sheet_not_found: ${sheetName}`);
+
+  await sheet.loadHeaderRow().catch(() => {});
+  const rows = await sheet.getRows();
+  if (rowIndex < 0 || rowIndex >= rows.length) {
+    throw new Error("row_index_out_of_range");
+  }
+
+  // ヘッダーに無いキーがあれば拡張
+  const currentHeaders = sheet.headerValues ?? [];
+  const newKeys = Object.keys(updates).filter(
+    (k) => !currentHeaders.includes(k),
+  );
+  if (newKeys.length > 0) {
+    await sheet.setHeaderRow([...currentHeaders, ...newKeys]);
+    // ヘッダー変更後は rows を取り直す
+    const refreshed = await sheet.getRows();
+    for (const [k, v] of Object.entries(updates)) {
+      refreshed[rowIndex].set(k, v);
+    }
+    await refreshed[rowIndex].save();
+    return;
+  }
+
+  for (const [k, v] of Object.entries(updates)) {
+    rows[rowIndex].set(k, v);
+  }
+  await rows[rowIndex].save();
+}
+
