@@ -60,6 +60,7 @@ export default function Footer() {
               ["/join", "Join Us"],
               ["/legal/operator", "運営者情報"],
               ["/legal/terms", "利用規約"],
+              ["/legal/team-rule", "チーム規約"],
               ["/legal/player-agreement", "選手登録規約"],
               ["/legal/privacy", "プライバシーポリシー"],
             ].map(([h, l]) => (
