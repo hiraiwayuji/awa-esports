@@ -58,6 +58,8 @@ export default function Footer() {
               ["/news", "News"],
               ["/partners", "Partners"],
               ["/join", "Join Us"],
+              ["/trainee-entry", "練習生登録"],
+              ["/player-contract", "正式選手登録"],
               ["/legal/operator", "運営者情報"],
               ["/legal/terms", "利用規約"],
               ["/legal/team-rule", "チーム規約"],
