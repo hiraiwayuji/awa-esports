@@ -62,6 +62,7 @@ export default function TraineeEntryPage() {
     if (!form.birthdate.trim()) return false;
     if (!Number.isFinite(age) || age < 1) return false;
     if (!form.phone.trim()) return false;
+    if (!form.address.trim()) return false;
     if (!form.mainGame.trim()) return false;
     if (!form.joinReason.trim()) return false;
     if (!form.agreementCheck) return false;
@@ -153,6 +154,10 @@ export default function TraineeEntryPage() {
               練習生は、まずコミュニティ活動への参加からスタートします。
               <span className="text-white/60">正式な選手登録ではありません。</span>
             </p>
+            <p className="text-white/70 text-[13px] pt-3 mt-3 border-t border-white/10">
+              ご記入いただいた個人情報は、AWAKEN GLOW 運営が責任をもって管理し、
+              チーム運営の目的以外には使用しません。
+            </p>
           </div>
         </div>
       </section>
@@ -229,7 +234,7 @@ export default function TraineeEntryPage() {
                     autoComplete="tel"
                   />
                 </Field>
-                <Field label="住所（任意）">
+                <Field label="住所" required>
                   <TextInput
                     value={form.address}
                     onChange={(v) => update("address", v)}

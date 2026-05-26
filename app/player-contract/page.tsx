@@ -204,6 +204,10 @@ export default function PlayerContractPage() {
               <br className="hidden md:block" />
               チーム運営の電子同意・誓約記録として運用しています。
             </p>
+            <p className="text-white/70 text-[13px] pt-3 mt-3 border-t border-white/10">
+              ご記入いただいた個人情報は、AWAKEN GLOW 運営が責任をもって管理し、
+              チーム運営の目的以外には使用しません。
+            </p>
           </div>
         </div>
       </section>

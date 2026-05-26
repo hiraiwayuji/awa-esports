@@ -18,7 +18,7 @@ const TraineeSchema = z
     birthdate: z.string().trim().max(20),
     age: z.coerce.number().int().min(1).max(120),
     phone: z.string().trim().min(1).max(40),
-    address: z.string().trim().max(200).optional().default(""),
+    address: z.string().trim().min(1).max(200),
     guardianName: z.string().trim().max(80).optional().default(""),
     guardianContact: z.string().trim().max(200).optional().default(""),
     mainGame: z.string().trim().min(1).max(120),
@@ -93,7 +93,7 @@ function buildHtml(
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">メール</th><td style="padding:8px;">${escapeHtml(p.email)}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">電話番号</th><td style="padding:8px;">${escapeHtml(p.phone)}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">Discord ID</th><td style="padding:8px;">${escapeHtml(p.discordId || "—")}</td></tr>
-    <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">住所</th><td style="padding:8px;">${escapeHtml(p.address || "—")}</td></tr>
+    <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">住所</th><td style="padding:8px;">${escapeHtml(p.address)}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">主なプレイタイトル</th><td style="padding:8px;">${escapeHtml(p.mainGame)}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;vertical-align:top;">参加希望理由</th><td style="padding:8px;white-space:pre-wrap;">${escapeHtml(p.joinReason)}</td></tr>
     ${guardian}
@@ -127,7 +127,7 @@ function buildText(
 メール: ${p.email}
 電話番号: ${p.phone}
 Discord ID: ${p.discordId || "—"}
-住所: ${p.address || "—"}
+住所: ${p.address}
 主なプレイタイトル: ${p.mainGame}
 
 参加希望理由:
