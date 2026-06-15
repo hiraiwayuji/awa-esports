@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import { appendToSheet } from "@/lib/sheets";
+import { AWA_SUPABASE_URL, awaSupabaseHeaders } from "@/lib/awa-supabase";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -199,23 +199,32 @@ export async function POST(req: Request) {
     );
   }
 
-  // Sheets書き込みはベストエフォート（"survey" タブが無ければ静かにスキップ）
+  // Supabase へ保存（HPの回答一覧ページ用）。失敗してもメールは送れているので
+  // 送信自体は成功扱いにし、エラーはログのみ残す。
   try {
-    await appendToSheet("survey", {
-      回答日時: agreedAt,
-      回答者: payload.name || "（無記名）",
-      練習日: PRACTICE_LABEL[payload.practiceDays],
-      練習日の希望: payload.practiceWish || "",
-      ガチ練習日: GACHI_LABEL[payload.gachiDays],
-      運営参加: OPS_LABEL[payload.ops],
-      運営でやりたい役割: payload.opsDetail || "",
-      選手登録希望: REGISTRATION_LABEL[payload.registration],
-      期待するイベント: eventsText(payload),
-      今後の期待要望: payload.expectations || "",
-      IP: ip,
+    const events = [...payload.events];
+    if (payload.eventsOther) events.push(`その他：${payload.eventsOther}`);
+    const res = await fetch(`${AWA_SUPABASE_URL}/rest/v1/awa_survey_responses`, {
+      method: "POST",
+      headers: awaSupabaseHeaders({ Prefer: "return=minimal" }),
+      body: JSON.stringify({
+        name: payload.name || "",
+        practice_days: PRACTICE_LABEL[payload.practiceDays],
+        practice_wish: payload.practiceWish || "",
+        gachi_days: GACHI_LABEL[payload.gachiDays],
+        ops: OPS_LABEL[payload.ops],
+        ops_detail: payload.opsDetail || "",
+        registration: REGISTRATION_LABEL[payload.registration],
+        events,
+        events_other: payload.eventsOther || "",
+        expectations: payload.expectations || "",
+      }),
     });
+    if (!res.ok) {
+      console.error("survey_supabase_error", res.status, await res.text());
+    }
   } catch (e) {
-    console.error("survey_sheets_error", e);
+    console.error("survey_supabase_exception", e);
   }
 
   return NextResponse.json({ ok: true });
