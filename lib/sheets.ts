@@ -39,9 +39,16 @@ export async function appendToSheet(
 ): Promise<void> {
   const doc = getDoc();
   await doc.loadInfo();
-  const sheet = doc.sheetsByTitle[sheetName];
+  let sheet = doc.sheetsByTitle[sheetName];
   if (!sheet) {
-    throw new Error(`sheet_not_found: ${sheetName}`);
+    // タブが無ければ自動作成し、ヘッダー付きで1行目を書き込む
+    // （survey など新規タブを手作業なしで使えるようにするため）
+    sheet = await doc.addSheet({
+      title: sheetName,
+      headerValues: Object.keys(row),
+    });
+    await sheet.addRow(row);
+    return;
   }
 
   // 既存ヘッダー取得（空シートだと load が失敗するので catch）
