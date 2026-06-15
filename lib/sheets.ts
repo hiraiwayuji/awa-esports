@@ -5,7 +5,7 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
 
-export type SheetName = "trainee" | "player_contract";
+export type SheetName = "trainee" | "player_contract" | "survey";
 
 function getDoc(): GoogleSpreadsheet {
   const sheetId = process.env.GOOGLE_SHEET_ID;
