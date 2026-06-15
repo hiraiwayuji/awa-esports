@@ -12,7 +12,7 @@ const OpsEnum = z.enum(["want", "maybe", "no"]);
 const RegistrationEnum = z.enum(["want", "considering", "trial", "no"]);
 
 const SurveySchema = z.object({
-  name: z.string().trim().max(80).optional().default(""),
+  name: z.string().trim().min(1).max(80),
   practiceDays: PracticeEnum,
   practiceWish: z.string().trim().max(1000).optional().default(""),
   gachiDays: GachiEnum,

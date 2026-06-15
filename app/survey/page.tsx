@@ -53,6 +53,7 @@ export default function SurveyPage() {
 
   const canSubmit = useMemo(() => {
     if (submitting) return false;
+    if (!form.name.trim()) return false;
     if (!form.practiceDays) return false;
     if (!form.gachiDays) return false;
     if (!form.ops) return false;
@@ -138,7 +139,7 @@ export default function SurveyPage() {
               練習やイベント、これからの活動について、
               みんなの本音を教えてください。
               <span className="text-white/60">
-                無記名でも大丈夫です。
+                お名前は必ずご記入ください。
               </span>
             </p>
           </div>
@@ -154,11 +155,11 @@ export default function SurveyPage() {
               onSubmit={onSubmit}
               className="grid gap-7 rounded-2xl border border-white/10 bg-awa-indigo-900/40 backdrop-blur-md p-6 md:p-8"
             >
-              <Field label="お名前 / プレイヤーネーム（任意）">
+              <Field label="お名前 / プレイヤーネーム" required>
                 <TextInput
                   value={form.name}
                   onChange={(v) => update("name", v)}
-                  placeholder="無記名でもOKです"
+                  placeholder="お名前またはプレイヤーネームを入力"
                 />
               </Field>
 
@@ -323,14 +324,19 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 
 function Field({
   label,
+  required,
   children,
 }: {
   label: string;
+  required?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-xs tracking-[0.15em] text-white/70">{label}</span>
+      <span className="text-xs tracking-[0.15em] text-white/70">
+        {label}
+        {required && <span className="text-awa-glow ml-1">*</span>}
+      </span>
       {children}
     </label>
   );
