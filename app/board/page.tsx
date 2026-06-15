@@ -1,15 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import PageTransition from "@/components/PageTransition";
 import SectionTitle from "@/components/SectionTitle";
 import { AWA_SUPABASE_URL, awaSupabaseHeaders } from "@/lib/awa-supabase";
 
-type Post = {
+type Notice = {
   id: string;
   created_at: string;
-  author: string;
+  category: "practice" | "tournament" | "supplies" | "other";
+  title: string;
   body: string;
+  event_date: string | null;
+};
+
+const CATEGORIES: {
+  key: Notice["category"];
+  label: string;
+  badge: string;
+}[] = [
+  { key: "practice", label: "練習日程", badge: "border-neon-cyan/50 text-neon-cyan bg-neon-cyan/10" },
+  { key: "tournament", label: "大会予定", badge: "border-awa-glow/50 text-awa-glow bg-awa-glow/10" },
+  { key: "supplies", label: "準備物・持ち物", badge: "border-amber-300/50 text-amber-200 bg-amber-300/10" },
+  { key: "other", label: "その他連絡", badge: "border-white/30 text-white/70 bg-white/5" },
+];
+
+const CAT_LABEL: Record<Notice["category"], string> = {
+  practice: "練習日程",
+  tournament: "大会予定",
+  supplies: "準備物・持ち物",
+  other: "その他連絡",
 };
 
 async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
@@ -22,21 +42,31 @@ async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
   return (await res.json()) as T;
 }
 
+function fmtDate(d: string | null): string {
+  if (!d) return "";
+  const dt = new Date(d + "T00:00:00");
+  const w = ["日", "月", "火", "水", "木", "金", "土"][dt.getDay()];
+  return `${dt.getMonth() + 1}/${dt.getDate()}（${w}）`;
+}
+
 export default function BoardPage() {
   const [memberPass, setMemberPass] = useState("");
   const [entered, setEntered] = useState(false);
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [notices, setNotices] = useState<Notice[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 投稿フォーム
-  const [author, setAuthor] = useState("");
-  const [body, setBody] = useState("");
-  const [posting, setPosting] = useState(false);
-
-  // 運営モード（投稿削除）
+  // 運営モード（投稿・削除）
   const [adminPass, setAdminPass] = useState("");
   const [adminOpen, setAdminOpen] = useState(false);
+  const adminMode = adminOpen && adminPass.trim().length > 0;
+
+  // 投稿フォーム
+  const [category, setCategory] = useState<Notice["category"]>("practice");
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [posting, setPosting] = useState(false);
 
   async function enter(e?: React.FormEvent) {
     e?.preventDefault();
@@ -44,10 +74,10 @@ export default function BoardPage() {
     setLoading(true);
     setError(null);
     try {
-      const data = await rpc<Post[]>("board_list", {
+      const data = await rpc<Notice[]>("board_list", {
         member_pass: memberPass.trim(),
       });
-      setPosts(data);
+      setNotices(data);
       setEntered(true);
     } catch {
       setError("合言葉が違うようです。もう一度お試しください。");
@@ -57,10 +87,10 @@ export default function BoardPage() {
 
   async function refresh() {
     try {
-      const data = await rpc<Post[]>("board_list", {
+      const data = await rpc<Notice[]>("board_list", {
         member_pass: memberPass.trim(),
       });
-      setPosts(data);
+      setNotices(data);
     } catch {
       /* noop */
     }
@@ -68,38 +98,47 @@ export default function BoardPage() {
 
   async function submitPost(e: React.FormEvent) {
     e.preventDefault();
-    if (!author.trim() || !body.trim() || posting) return;
+    if (!title.trim() || posting) return;
     setPosting(true);
     try {
       await rpc("board_post", {
-        member_pass: memberPass.trim(),
-        p_author: author.trim(),
+        admin_pass: adminPass.trim(),
+        p_category: category,
+        p_title: title.trim(),
         p_body: body.trim(),
+        p_event_date: eventDate || null,
       });
+      setTitle("");
       setBody("");
+      setEventDate("");
       await refresh();
     } catch {
-      window.alert("投稿に失敗しました。文字数や合言葉をご確認ください。");
+      window.alert(
+        "投稿に失敗しました。運営合言葉・件名（必須）をご確認ください。",
+      );
     }
     setPosting(false);
   }
 
-  async function removePost(id: string) {
-    if (!adminPass.trim()) {
-      window.alert("運営合言葉を入力してください。");
-      return;
-    }
-    if (!window.confirm("この投稿を削除します。よろしいですか？")) return;
+  async function removeNotice(id: string) {
+    if (!window.confirm("この連絡を削除します。よろしいですか？")) return;
     try {
       await rpc("board_delete", {
         admin_pass: adminPass.trim(),
         target_id: id,
       });
-      setPosts((prev) => prev.filter((p) => p.id !== id));
+      setNotices((prev) => prev.filter((n) => n.id !== id));
     } catch {
-      window.alert("削除できませんでした（運営合言葉が違うかもしれません）。");
+      window.alert("削除できませんでした（運営合言葉をご確認ください）。");
     }
   }
+
+  const grouped = useMemo(() => {
+    return CATEGORIES.map((c) => ({
+      ...c,
+      items: notices.filter((n) => n.category === c.key),
+    })).filter((g) => g.items.length > 0);
+  }, [notices]);
 
   return (
     <PageTransition>
@@ -115,7 +154,7 @@ export default function BoardPage() {
             <SectionTitle
               eyebrow="MEMBERS ONLY / メンバー連絡板"
               title="MEMBERS BOARD"
-              subtitle="AWAKEN GLOW メンバー専用の連絡板です。"
+              subtitle="練習日程・大会予定・準備物などの連絡を確認できます。"
             />
           </div>
         </div>
@@ -132,7 +171,7 @@ export default function BoardPage() {
               <p className="text-sm text-white/80 leading-relaxed">
                 ここは
                 <span className="text-white">メンバー専用</span>
-                のページです。合言葉を入れて入室してください。
+                の連絡板です。合言葉を入れて確認してください。
               </p>
               <input
                 type="password"
@@ -147,114 +186,151 @@ export default function BoardPage() {
                 disabled={loading || !memberPass.trim()}
                 className="w-full rounded-xl border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow font-display tracking-[0.25em] text-sm py-3 transition"
               >
-                {loading ? "確認中…" : "入室する"}
+                {loading ? "確認中…" : "確認する"}
               </button>
             </form>
           ) : (
             <div className="space-y-8">
-              {/* 安全のお願い */}
-              <div className="rounded-xl border border-awa-glow/30 bg-awa-glow/[0.04] px-5 py-4 text-[13px] text-awa-glow/90 leading-relaxed space-y-1">
-                <p className="font-bold text-awa-glow">
-                  📌 安全に使うためのお願い
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[12px] text-awa-glow/80">
+                  ※ 連絡はDiscordでも行います。ここは確認用です。
                 </p>
-                <ul className="list-disc ml-5 space-y-0.5 text-awa-glow/80">
-                  <li>
-                    本名・住所・学校名・電話番号など、個人が特定できる情報は書かないでください
-                  </li>
-                  <li>ニックネーム（ゲーマータグ）で大丈夫です</li>
-                  <li>
-                    ここはメンバー専用です。合言葉やURLを外部に共有しないでください
-                  </li>
-                  <li>
-                    不適切な投稿・困ったことがあれば運営（ぼーるくん）まで
-                  </li>
-                </ul>
+                <button
+                  onClick={refresh}
+                  className="text-xs text-neon-cyan/70 hover:text-neon-cyan transition shrink-0"
+                >
+                  最新に更新
+                </button>
               </div>
 
-              {/* 投稿フォーム */}
-              <form
-                onSubmit={submitPost}
-                className="rounded-2xl border border-white/10 bg-awa-indigo-900/40 backdrop-blur-md p-5 md:p-6 space-y-4"
-              >
-                <div className="text-[11px] font-display tracking-[0.3em] text-neon-cyan">
-                  NEW POST / 書き込む
-                </div>
-                <input
-                  type="text"
-                  value={author}
-                  onChange={(e) => setAuthor(e.target.value)}
-                  placeholder="ニックネーム"
-                  maxLength={40}
-                  className="w-full rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm placeholder-white/30 focus:outline-none focus:border-neon-cyan focus:shadow-[0_0_0_3px_rgba(0,240,255,0.15)] transition"
-                />
-                <textarea
-                  value={body}
-                  onChange={(e) => setBody(e.target.value)}
-                  placeholder="連絡・相談・雑談などを書いてね（個人情報は書かないでね）"
-                  rows={3}
-                  maxLength={2000}
-                  className="w-full rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm placeholder-white/30 focus:outline-none focus:border-neon-cyan focus:shadow-[0_0_0_3px_rgba(0,240,255,0.15)] transition resize-y"
-                />
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={posting || !author.trim() || !body.trim()}
-                    className="rounded-xl border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow font-display tracking-[0.2em] text-sm px-6 py-2.5 transition"
-                  >
-                    {posting ? "送信中…" : "書き込む"}
-                  </button>
-                </div>
-              </form>
-
-              {/* 投稿一覧 */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm tracking-[0.2em] text-white/70 font-display">
-                    みんなの書き込み（{posts.length}）
-                  </h3>
-                  <button
-                    onClick={refresh}
-                    className="text-xs text-neon-cyan/70 hover:text-neon-cyan transition"
-                  >
-                    最新に更新
-                  </button>
-                </div>
-
-                {posts.length === 0 ? (
-                  <p className="text-white/50 text-sm">
-                    まだ書き込みがありません。最初の一言をどうぞ！
-                  </p>
-                ) : (
-                  posts.map((p) => (
-                    <div
-                      key={p.id}
-                      className="rounded-xl border border-white/10 bg-awa-indigo-950/50 p-5"
+              {/* 運営の投稿フォーム */}
+              {adminMode && (
+                <form
+                  onSubmit={submitPost}
+                  className="rounded-2xl border border-awa-glow/30 bg-awa-glow/[0.04] p-5 md:p-6 space-y-4"
+                >
+                  <div className="text-[11px] font-display tracking-[0.3em] text-awa-glow">
+                    NEW NOTICE / 連絡を追加（運営）
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="flex flex-col gap-1.5">
+                      <span className="text-xs tracking-[0.15em] text-white/70">
+                        種別
+                      </span>
+                      <select
+                        value={category}
+                        onChange={(e) =>
+                          setCategory(e.target.value as Notice["category"])
+                        }
+                        className="rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm focus:outline-none focus:border-neon-cyan transition"
+                      >
+                        {CATEGORIES.map((c) => (
+                          <option key={c.key} value={c.key}>
+                            {c.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="flex flex-col gap-1.5">
+                      <span className="text-xs tracking-[0.15em] text-white/70">
+                        予定日（任意）
+                      </span>
+                      <input
+                        type="date"
+                        value={eventDate}
+                        onChange={(e) => setEventDate(e.target.value)}
+                        className="rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm focus:outline-none focus:border-neon-cyan transition"
+                      />
+                    </label>
+                  </div>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="件名（例：今週の練習／○○大会エントリー）"
+                    maxLength={120}
+                    className="w-full rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm placeholder-white/30 focus:outline-none focus:border-neon-cyan transition"
+                  />
+                  <textarea
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
+                    placeholder="詳細（時間・場所・持ち物・注意点など）"
+                    rows={3}
+                    maxLength={4000}
+                    className="w-full rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm placeholder-white/30 focus:outline-none focus:border-neon-cyan transition resize-y"
+                  />
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={posting || !title.trim()}
+                      className="rounded-xl border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow font-display tracking-[0.2em] text-sm px-6 py-2.5 transition"
                     >
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <span className="font-bold text-white text-sm">
-                          {p.author}
-                        </span>
-                        <span className="text-white/40 text-xs">
-                          {new Date(p.created_at).toLocaleString("ja-JP")}
-                        </span>
-                      </div>
-                      <p className="text-sm text-white/85 whitespace-pre-wrap leading-relaxed">
-                        {p.body}
-                      </p>
-                      {adminOpen && (
-                        <div className="mt-3 text-right">
-                          <button
-                            onClick={() => removePost(p.id)}
-                            className="text-xs text-rose-300/70 hover:text-rose-300 transition"
-                          >
-                            運営削除
-                          </button>
+                      {posting ? "追加中…" : "連絡を追加"}
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* 連絡一覧（種別ごと） */}
+              {notices.length === 0 ? (
+                <p className="text-white/50 text-sm">
+                  まだ連絡はありません。
+                </p>
+              ) : (
+                <div className="space-y-8">
+                  {grouped.map((g) => (
+                    <div key={g.key} className="space-y-3">
+                      <h3 className="text-sm tracking-[0.2em] text-white/70 font-display">
+                        {g.label}
+                      </h3>
+                      {g.items.map((n) => (
+                        <div
+                          key={n.id}
+                          className="rounded-xl border border-white/10 bg-awa-indigo-950/50 p-5"
+                        >
+                          <div className="flex items-start justify-between gap-3 mb-1.5">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span
+                                className={`text-[10px] tracking-wider rounded-full border px-2 py-0.5 ${g.badge}`}
+                              >
+                                {CAT_LABEL[n.category]}
+                              </span>
+                              {n.event_date && (
+                                <span className="text-sm font-bold text-awa-glow">
+                                  {fmtDate(n.event_date)}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-white/35 text-[11px] shrink-0">
+                              {new Date(n.created_at).toLocaleDateString(
+                                "ja-JP",
+                              )}
+                            </span>
+                          </div>
+                          <p className="text-white font-bold text-[15px] mb-1">
+                            {n.title}
+                          </p>
+                          {n.body && (
+                            <p className="text-sm text-white/80 whitespace-pre-wrap leading-relaxed">
+                              {n.body}
+                            </p>
+                          )}
+                          {adminMode && (
+                            <div className="mt-3 text-right">
+                              <button
+                                onClick={() => removeNotice(n.id)}
+                                className="text-xs text-rose-300/70 hover:text-rose-300 transition"
+                              >
+                                削除
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      )}
+                      ))}
                     </div>
-                  ))
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
 
               {/* 運営メニュー */}
               <div className="pt-6 border-t border-white/10">
@@ -263,7 +339,7 @@ export default function BoardPage() {
                     onClick={() => setAdminOpen(true)}
                     className="text-xs text-white/30 hover:text-white/60 transition"
                   >
-                    運営メニュー
+                    運営メニュー（連絡の追加・削除）
                   </button>
                 ) : (
                   <div className="flex flex-wrap items-center gap-3">
@@ -271,8 +347,8 @@ export default function BoardPage() {
                       type="password"
                       value={adminPass}
                       onChange={(e) => setAdminPass(e.target.value)}
-                      placeholder="運営合言葉（削除用）"
-                      className="grow rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2 text-sm focus:outline-none focus:border-rose-300/60 transition"
+                      placeholder="運営合言葉"
+                      className="grow rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2 text-sm focus:outline-none focus:border-awa-glow/60 transition"
                     />
                     <button
                       onClick={() => {
