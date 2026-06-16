@@ -75,6 +75,12 @@ export default function BoardPage() {
       : "",
   );
   const [attendance, setAttendance] = useState<Record<string, string[]>>({});
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [attendMsg, setAttendMsg] = useState<{
+    id: string;
+    text: string;
+    ok: boolean;
+  } | null>(null);
 
   function updateMyName(v: string) {
     setMyName(v);
@@ -97,10 +103,9 @@ export default function BoardPage() {
 
   async function joinEvent(postId: string) {
     const nm = myName.trim();
-    if (!nm) {
-      window.alert("先に「あなたのニックネーム」を入力してください。");
-      return;
-    }
+    if (!nm) return;
+    setBusyId(postId);
+    setAttendMsg(null);
     try {
       await rpc("attend_join", {
         member_pass: memberPass.trim(),
@@ -108,14 +113,22 @@ export default function BoardPage() {
         p_name: nm,
       });
       await loadAttendance(memberPass.trim());
+      setAttendMsg({ id: postId, text: "参加しました！", ok: true });
     } catch {
-      window.alert("参加の登録に失敗しました。");
+      setAttendMsg({
+        id: postId,
+        text: "登録できませんでした。通信環境を確認して、もう一度お試しください。",
+        ok: false,
+      });
     }
+    setBusyId(null);
   }
 
   async function cancelEvent(postId: string) {
     const nm = myName.trim();
     if (!nm) return;
+    setBusyId(postId);
+    setAttendMsg(null);
     try {
       await rpc("attend_cancel", {
         member_pass: memberPass.trim(),
@@ -123,9 +136,15 @@ export default function BoardPage() {
         p_name: nm,
       });
       await loadAttendance(memberPass.trim());
+      setAttendMsg({ id: postId, text: "参加を取り消しました。", ok: true });
     } catch {
-      window.alert("取り消しに失敗しました。");
+      setAttendMsg({
+        id: postId,
+        text: "取り消しできませんでした。もう一度お試しください。",
+        ok: false,
+      });
     }
+    setBusyId(null);
   }
 
   async function enter(e?: React.FormEvent) {
@@ -411,19 +430,35 @@ export default function BoardPage() {
                                 attendance[n.id]?.includes(myName.trim()) ? (
                                   <button
                                     onClick={() => cancelEvent(n.id)}
-                                    className="rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 text-xs px-4 py-1.5 transition"
+                                    disabled={busyId === n.id}
+                                    className="rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 disabled:opacity-40 text-xs px-4 py-1.5 transition"
                                   >
-                                    参加を取り消す
+                                    {busyId === n.id ? "処理中…" : "参加を取り消す"}
                                   </button>
                                 ) : (
-                                  <button
-                                    onClick={() => joinEvent(n.id)}
-                                    className="rounded-full border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 text-awa-glow text-xs font-bold px-5 py-1.5 transition"
-                                  >
-                                    参加する
-                                  </button>
+                                  <div className="flex items-center gap-2">
+                                    {!myName.trim() && (
+                                      <span className="text-[11px] text-awa-glow/70">
+                                        ← 先に上で名前を入れてね
+                                      </span>
+                                    )}
+                                    <button
+                                      onClick={() => joinEvent(n.id)}
+                                      disabled={!myName.trim() || busyId === n.id}
+                                      className="rounded-full border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 disabled:cursor-not-allowed text-awa-glow text-xs font-bold px-5 py-1.5 transition"
+                                    >
+                                      {busyId === n.id ? "登録中…" : "参加する"}
+                                    </button>
+                                  </div>
                                 )}
                               </div>
+                              {attendMsg?.id === n.id && (
+                                <p
+                                  className={`mt-2 text-[11px] ${attendMsg.ok ? "text-awa-glow" : "text-rose-300"}`}
+                                >
+                                  {attendMsg.text}
+                                </p>
+                              )}
                               {attendance[n.id]?.length ? (
                                 <div className="mt-2 flex flex-wrap gap-1.5">
                                   {attendance[n.id].map((nm) => (
