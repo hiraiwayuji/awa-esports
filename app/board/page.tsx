@@ -39,7 +39,9 @@ async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
     body: JSON.stringify(args),
   });
   if (!res.ok) throw new Error(String(res.status));
-  return (await res.json()) as T;
+  // 204 No Content（参加/取消/削除など）は本文が空なので JSON.parse しない
+  const text = await res.text();
+  return (text ? JSON.parse(text) : null) as T;
 }
 
 function fmtDate(d: string | null): string {
