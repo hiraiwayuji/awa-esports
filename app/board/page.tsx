@@ -68,6 +68,66 @@ export default function BoardPage() {
   const [eventDate, setEventDate] = useState("");
   const [posting, setPosting] = useState(false);
 
+  // 出欠（参加表明）
+  const [myName, setMyName] = useState<string>(() =>
+    typeof window !== "undefined"
+      ? localStorage.getItem("awa_board_name") || ""
+      : "",
+  );
+  const [attendance, setAttendance] = useState<Record<string, string[]>>({});
+
+  function updateMyName(v: string) {
+    setMyName(v);
+    if (typeof window !== "undefined") localStorage.setItem("awa_board_name", v);
+  }
+
+  async function loadAttendance(pass: string) {
+    try {
+      const rows = await rpc<{ post_id: string; name: string }[]>(
+        "attend_all",
+        { member_pass: pass },
+      );
+      const map: Record<string, string[]> = {};
+      for (const r of rows) (map[r.post_id] ??= []).push(r.name);
+      setAttendance(map);
+    } catch {
+      /* noop */
+    }
+  }
+
+  async function joinEvent(postId: string) {
+    const nm = myName.trim();
+    if (!nm) {
+      window.alert("先に「あなたのニックネーム」を入力してください。");
+      return;
+    }
+    try {
+      await rpc("attend_join", {
+        member_pass: memberPass.trim(),
+        p_post_id: postId,
+        p_name: nm,
+      });
+      await loadAttendance(memberPass.trim());
+    } catch {
+      window.alert("参加の登録に失敗しました。");
+    }
+  }
+
+  async function cancelEvent(postId: string) {
+    const nm = myName.trim();
+    if (!nm) return;
+    try {
+      await rpc("attend_cancel", {
+        member_pass: memberPass.trim(),
+        p_post_id: postId,
+        p_name: nm,
+      });
+      await loadAttendance(memberPass.trim());
+    } catch {
+      window.alert("取り消しに失敗しました。");
+    }
+  }
+
   async function enter(e?: React.FormEvent) {
     e?.preventDefault();
     if (!memberPass.trim()) return;
@@ -78,6 +138,7 @@ export default function BoardPage() {
         member_pass: memberPass.trim(),
       });
       setNotices(data);
+      await loadAttendance(memberPass.trim());
       setEntered(true);
     } catch {
       setError("合言葉が違うようです。もう一度お試しください。");
@@ -91,6 +152,7 @@ export default function BoardPage() {
         member_pass: memberPass.trim(),
       });
       setNotices(data);
+      await loadAttendance(memberPass.trim());
     } catch {
       /* noop */
     }
@@ -201,6 +263,24 @@ export default function BoardPage() {
                 >
                   最新に更新
                 </button>
+              </div>
+
+              {/* あなたのニックネーム（出欠用） */}
+              <div className="rounded-xl border border-white/10 bg-awa-indigo-900/40 p-4 flex flex-wrap items-center gap-3">
+                <span className="text-xs text-white/70 shrink-0">
+                  あなたのニックネーム
+                </span>
+                <input
+                  type="text"
+                  value={myName}
+                  onChange={(e) => updateMyName(e.target.value)}
+                  placeholder="例：たろう"
+                  maxLength={40}
+                  className="grow min-w-[140px] rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2 text-sm placeholder-white/30 focus:outline-none focus:border-neon-cyan transition"
+                />
+                <span className="text-[11px] text-white/40 w-full md:w-auto">
+                  ※「参加する」を押すと、この名前で参加表明されます
+                </span>
               </div>
 
               {/* 運営の投稿フォーム */}
@@ -315,6 +395,54 @@ export default function BoardPage() {
                               {n.body}
                             </p>
                           )}
+
+                          {/* 出欠（予定日のある連絡のみ） */}
+                          {n.event_date && (
+                            <div className="mt-3 pt-3 border-t border-white/10">
+                              <div className="flex items-center justify-between gap-3 flex-wrap">
+                                <div className="text-xs text-white/70">
+                                  参加：
+                                  <span className="text-awa-glow font-bold mx-1">
+                                    {attendance[n.id]?.length ?? 0}
+                                  </span>
+                                  人
+                                </div>
+                                {myName.trim() &&
+                                attendance[n.id]?.includes(myName.trim()) ? (
+                                  <button
+                                    onClick={() => cancelEvent(n.id)}
+                                    className="rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 text-xs px-4 py-1.5 transition"
+                                  >
+                                    参加を取り消す
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => joinEvent(n.id)}
+                                    className="rounded-full border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 text-awa-glow text-xs font-bold px-5 py-1.5 transition"
+                                  >
+                                    参加する
+                                  </button>
+                                )}
+                              </div>
+                              {attendance[n.id]?.length ? (
+                                <div className="mt-2 flex flex-wrap gap-1.5">
+                                  {attendance[n.id].map((nm) => (
+                                    <span
+                                      key={nm}
+                                      className="text-[11px] rounded-full border border-neon-cyan/30 bg-neon-cyan/5 text-neon-cyan/90 px-2 py-0.5"
+                                    >
+                                      {nm}
+                                    </span>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="mt-2 text-[11px] text-white/40">
+                                  まだ参加表明はありません。
+                                </p>
+                              )}
+                            </div>
+                          )}
+
                           {adminMode && (
                             <div className="mt-3 text-right">
                               <button
