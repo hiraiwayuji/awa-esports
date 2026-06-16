@@ -217,9 +217,36 @@ export default function BoardPage() {
   }
 
   const grouped = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const decorate = (items: Notice[]) =>
+      items
+        .map((n) => {
+          const ed = n.event_date
+            ? new Date(n.event_date + "T00:00:00")
+            : null;
+          return {
+            ...n,
+            isPast: ed ? ed.getTime() < today.getTime() : false,
+            _ed: ed,
+          };
+        })
+        .sort((a, b) => {
+          // これから（未来・日付なし）を上、終了を下
+          if (a.isPast !== b.isPast) return a.isPast ? 1 : -1;
+          if (a._ed && b._ed) {
+            // これから＝近い順（昇順）／終了＝最近終わった順
+            return a.isPast
+              ? b._ed.getTime() - a._ed.getTime()
+              : a._ed.getTime() - b._ed.getTime();
+          }
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+        });
     return CATEGORIES.map((c) => ({
       ...c,
-      items: notices.filter((n) => n.category === c.key),
+      items: decorate(notices.filter((n) => n.category === c.key)),
     })).filter((g) => g.items.length > 0);
   }, [notices]);
 
@@ -387,7 +414,9 @@ export default function BoardPage() {
                       {g.items.map((n) => (
                         <div
                           key={n.id}
-                          className="rounded-xl border border-white/10 bg-awa-indigo-950/50 p-5"
+                          className={`rounded-xl border border-white/10 bg-awa-indigo-950/50 p-5 transition ${
+                            n.isPast ? "opacity-45" : ""
+                          }`}
                         >
                           <div className="flex items-start justify-between gap-3 mb-1.5">
                             <div className="flex items-center gap-2 flex-wrap">
@@ -397,8 +426,15 @@ export default function BoardPage() {
                                 {CAT_LABEL[n.category]}
                               </span>
                               {n.event_date && (
-                                <span className="text-sm font-bold text-awa-glow">
+                                <span
+                                  className={`text-sm font-bold ${n.isPast ? "text-white/50 line-through" : "text-awa-glow"}`}
+                                >
                                   {fmtDate(n.event_date)}
+                                </span>
+                              )}
+                              {n.isPast && (
+                                <span className="text-[10px] rounded-full border border-white/20 text-white/50 px-2 py-0.5">
+                                  終了
                                 </span>
                               )}
                             </div>
@@ -428,8 +464,12 @@ export default function BoardPage() {
                                   </span>
                                   人
                                 </div>
-                                {myName.trim() &&
-                                attendance[n.id]?.includes(myName.trim()) ? (
+                                {n.isPast ? (
+                                  <span className="text-[11px] text-white/40">
+                                    受付終了
+                                  </span>
+                                ) : myName.trim() &&
+                                  attendance[n.id]?.includes(myName.trim()) ? (
                                   <button
                                     onClick={() => cancelEvent(n.id)}
                                     disabled={busyId === n.id}
