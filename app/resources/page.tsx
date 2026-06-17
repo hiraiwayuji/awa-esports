@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import PageTransition from "@/components/PageTransition";
 import SectionTitle from "@/components/SectionTitle";
@@ -110,20 +110,36 @@ export default function ResourcesPage() {
     if (Array.isArray(d.files)) setFiles(d.files as FileRow[]);
   }
 
-  async function enter(e?: React.FormEvent) {
+  async function enter(e?: React.FormEvent, passArg?: string) {
     e?.preventDefault();
-    if (!memberPass.trim()) return;
+    const p = (passArg ?? memberPass).trim();
+    if (!p) return;
     setLoading(true);
     setError(null);
-    const d = await fnCall({ action: "list", member_pass: memberPass.trim() });
+    const d = await fnCall({ action: "list", member_pass: p });
     if (Array.isArray(d.files)) {
       setFiles(d.files as FileRow[]);
+      if (typeof window !== "undefined")
+        sessionStorage.setItem("awa_member_pass", p);
       setEntered(true);
     } else {
       setError("合言葉が違うようです。もう一度お試しください。");
     }
     setLoading(false);
   }
+
+  // メンバールームで入れた合言葉を引き継いで自動入室
+  useEffect(() => {
+    const saved =
+      typeof window !== "undefined"
+        ? sessionStorage.getItem("awa_member_pass")
+        : null;
+    if (saved) {
+      setMemberPass(saved);
+      enter(undefined, saved);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function download(id: string) {
     const d = await fnCall({

@@ -15,6 +15,7 @@ const links = [
   { href: "/news", label: "NEWS" },
   { href: "/partners", label: "PARTNERS" },
   { href: "/join", label: "JOIN US" },
+  { href: "/member", label: "MEMBER ROOM", member: true },
 ];
 
 export default function Navbar() {
@@ -91,6 +92,22 @@ export default function Navbar() {
         <nav className="hidden md:flex items-center gap-1">
           {links.map((l) => {
             const active = pathname === l.href;
+            if (l.member) {
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className={clsx(
+                    "ml-2 rounded-full border px-4 py-1.5 text-xs font-display tracking-[0.25em] transition-colors",
+                    active
+                      ? "border-awa-glow bg-awa-glow/20 text-awa-glow"
+                      : "border-awa-glow/50 bg-awa-glow/10 text-awa-glow hover:bg-awa-glow/20",
+                  )}
+                >
+                  🔒 {l.label}
+                </Link>
+              );
+            }
             return (
               <Link
                 key={l.href}
@@ -144,12 +161,14 @@ export default function Navbar() {
                   href={l.href}
                   className={clsx(
                     "px-4 py-3 rounded-md font-display tracking-[0.25em] text-sm",
-                    pathname === l.href
-                      ? "text-neon-cyan bg-neon-cyan/5 border border-neon-cyan/30"
-                      : "text-white/80",
+                    l.member
+                      ? "text-awa-glow bg-awa-glow/10 border border-awa-glow/40"
+                      : pathname === l.href
+                        ? "text-neon-cyan bg-neon-cyan/5 border border-neon-cyan/30"
+                        : "text-white/80",
                   )}
                 >
-                  {l.label}
+                  {l.member ? `🔒 ${l.label}` : l.label}
                 </Link>
               ))}
             </div>
