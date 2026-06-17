@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import PageTransition from "@/components/PageTransition";
 import SectionTitle from "@/components/SectionTitle";
@@ -30,16 +30,14 @@ async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
 const yen = (n: number) => `¥${(n ?? 0).toLocaleString("ja-JP")}`;
 
 export default function LedgerPage() {
-  const [memberPass, setMemberPass] = useState("");
+  const [adminPass, setAdminPass] = useState("");
   const [entered, setEntered] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 運営モード
-  const [adminPass, setAdminPass] = useState("");
-  const [adminOpen, setAdminOpen] = useState(false);
-  const adminMode = adminOpen && adminPass.trim().length > 0;
+  // 入室したら常に管理モード
+  const adminMode = entered;
 
   // 記録フォーム
   const [date, setDate] = useState("");
@@ -52,40 +50,26 @@ export default function LedgerPage() {
 
   async function load(pass?: string) {
     const data = await rpc<Entry[]>("ledger_list", {
-      member_pass: (pass ?? memberPass).trim(),
+      member_pass: (pass ?? adminPass).trim(),
     });
     setEntries(data ?? []);
   }
 
-  async function enter(e?: React.FormEvent, passArg?: string) {
+  async function enter(e?: React.FormEvent) {
     e?.preventDefault();
-    const p = (passArg ?? memberPass).trim();
+    const p = adminPass.trim();
     if (!p) return;
     setLoading(true);
     setError(null);
     try {
       await load(p);
-      if (typeof window !== "undefined")
-        sessionStorage.setItem("awa_member_pass", p);
       setEntered(true);
     } catch {
-      setError("合言葉が違うようです。もう一度お試しください。");
+      setError("パスワードが違います。");
     }
     setLoading(false);
   }
 
-  // メンバールームで入れた合言葉を引き継いで自動入室
-  useEffect(() => {
-    const saved =
-      typeof window !== "undefined"
-        ? sessionStorage.getItem("awa_member_pass")
-        : null;
-    if (saved) {
-      setMemberPass(saved);
-      enter(undefined, saved);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   async function addEntry(e: React.FormEvent) {
     e.preventDefault();
@@ -167,20 +151,19 @@ export default function LedgerPage() {
               className="rounded-2xl border border-neon-cyan/30 bg-awa-indigo-900/40 backdrop-blur-md p-7 md:p-9 space-y-4"
             >
               <p className="text-sm text-white/80 leading-relaxed">
-                ここは<span className="text-white">メンバー専用</span>
-                の会計ページです。合言葉を入れて確認してください。
+                運営専用ページです。パスワードを入力してください。
               </p>
               <input
                 type="password"
-                value={memberPass}
-                onChange={(e) => setMemberPass(e.target.value)}
-                placeholder="メンバー合言葉"
+                value={adminPass}
+                onChange={(e) => setAdminPass(e.target.value)}
+                placeholder="パスワード"
                 className="w-full rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm focus:outline-none focus:border-neon-cyan focus:shadow-[0_0_0_3px_rgba(0,240,255,0.15)] transition"
               />
               {error && <p className="text-sm text-rose-300">{error}</p>}
               <button
                 type="submit"
-                disabled={loading || !memberPass.trim()}
+                disabled={loading || !adminPass.trim()}
                 className="w-full rounded-xl border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow font-display tracking-[0.25em] text-sm py-3 transition"
               >
                 {loading ? "確認中…" : "確認する"}
@@ -364,36 +347,6 @@ export default function LedgerPage() {
                 </div>
               )}
 
-              {/* 運営メニュー */}
-              <div className="pt-6 border-t border-white/10">
-                {!adminOpen ? (
-                  <button
-                    onClick={() => setAdminOpen(true)}
-                    className="text-xs text-white/30 hover:text-white/60 transition"
-                  >
-                    運営メニュー（記録の追加・削除）
-                  </button>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-3">
-                    <input
-                      type="password"
-                      value={adminPass}
-                      onChange={(e) => setAdminPass(e.target.value)}
-                      placeholder="運営合言葉"
-                      className="grow rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2 text-sm focus:outline-none focus:border-awa-glow/60 transition"
-                    />
-                    <button
-                      onClick={() => {
-                        setAdminOpen(false);
-                        setAdminPass("");
-                      }}
-                      className="text-xs text-white/40 hover:text-white/70 transition"
-                    >
-                      閉じる
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
           )}
         </div>
