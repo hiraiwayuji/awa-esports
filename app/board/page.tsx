@@ -356,12 +356,20 @@ export default function BoardPage() {
                 </button>
               </div>
 
-              <Link
-                href="/resources"
-                className="block rounded-xl border border-neon-cyan/30 bg-awa-indigo-900/40 px-4 py-3 text-sm text-white/85 hover:border-neon-cyan/60 transition"
-              >
-                📁 ミーティング議事録・資料はこちら →
-              </Link>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Link
+                  href="/resources"
+                  className="block rounded-xl border border-neon-cyan/30 bg-awa-indigo-900/40 px-4 py-3 text-sm text-white/85 hover:border-neon-cyan/60 transition"
+                >
+                  📁 議事録・資料はこちら →
+                </Link>
+                <Link
+                  href="/ledger"
+                  className="block rounded-xl border border-neon-cyan/30 bg-awa-indigo-900/40 px-4 py-3 text-sm text-white/85 hover:border-neon-cyan/60 transition"
+                >
+                  💰 経理（会計）はこちら →
+                </Link>
+              </div>
 
               {/* あなたのニックネーム（出欠用） */}
               <div className="rounded-xl border border-white/10 bg-awa-indigo-900/40 p-4 flex flex-wrap items-center gap-3">
