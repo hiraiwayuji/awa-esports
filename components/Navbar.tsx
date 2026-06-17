@@ -15,7 +15,7 @@ const links = [
   { href: "/news", label: "NEWS" },
   { href: "/partners", label: "PARTNERS" },
   { href: "/join", label: "JOIN US" },
-  { href: "/member", label: "MEMBER ROOM", member: true },
+  { href: "/board", label: "MEMBER ROOM", member: true },
 ];
 
 export default function Navbar() {
