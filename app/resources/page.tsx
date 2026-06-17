@@ -56,6 +56,9 @@ export default function ResourcesPage() {
   const [adminOpen, setAdminOpen] = useState(false);
   const adminMode = adminOpen && adminPass.trim().length > 0;
 
+  // 一覧の開いている項目（アコーディオン）
+  const [openId, setOpenId] = useState<string | null>(null);
+
   // 入力モード（テキスト議事録 / ファイル）
   const [inputMode, setInputMode] = useState<"text" | "file">("text");
 
@@ -422,57 +425,68 @@ export default function ResourcesPage() {
                       </h3>
                       {g.items.map((f) => {
                         const isText = !f.file_path;
+                        const open = openId === f.id;
                         return (
                           <div
                             key={f.id}
-                            className="rounded-xl border border-white/10 bg-awa-indigo-950/50 p-4"
+                            className="rounded-xl border border-white/10 bg-awa-indigo-950/50 overflow-hidden"
                           >
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                                  <span
-                                    className={`text-[10px] tracking-wider rounded-full border px-2 py-0.5 ${g.badge}`}
-                                  >
-                                    {CAT_LABEL[f.category]}
+                            {/* タイトル行（クリックで開閉） */}
+                            <button
+                              onClick={() => setOpenId(open ? null : f.id)}
+                              className="w-full text-left flex items-center justify-between gap-3 p-4 hover:bg-white/[0.03] transition"
+                            >
+                              <span className="min-w-0 flex items-center gap-2 flex-wrap">
+                                <span
+                                  className={`text-[10px] tracking-wider rounded-full border px-2 py-0.5 ${g.badge}`}
+                                >
+                                  {CAT_LABEL[f.category]}
+                                </span>
+                                {f.meeting_date && (
+                                  <span className="text-xs text-awa-glow font-bold">
+                                    {f.meeting_date}
                                   </span>
-                                  {f.meeting_date && (
-                                    <span className="text-xs text-awa-glow font-bold">
-                                      {f.meeting_date}
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-white font-bold text-sm">
-                                  {f.title}
-                                </p>
-                                {!isText && (
-                                  <p className="text-white/40 text-[11px] truncate">
-                                    {f.file_name}
-                                  </p>
                                 )}
-                              </div>
-                              <div className="flex flex-col items-end gap-1.5 shrink-0">
-                                {!isText && (
-                                  <button
-                                    onClick={() => download(f.id)}
-                                    className="rounded-lg border border-neon-cyan/60 text-neon-cyan text-xs px-4 py-1.5 hover:bg-neon-cyan/10 transition"
-                                  >
-                                    ダウンロード
-                                  </button>
+                                <span className="text-white font-bold text-sm">
+                                  {f.title}
+                                </span>
+                              </span>
+                              <span className="text-white/40 text-xs shrink-0">
+                                {open ? "▲" : "▼"}
+                              </span>
+                            </button>
+
+                            {/* 中身（開いたとき） */}
+                            {open && (
+                              <div className="px-4 pb-4 border-t border-white/10 pt-3">
+                                {isText ? (
+                                  <p className="text-sm text-white/85 whitespace-pre-wrap leading-relaxed">
+                                    {f.body}
+                                  </p>
+                                ) : (
+                                  <div className="flex items-center justify-between gap-3">
+                                    <span className="text-white/50 text-[11px] truncate">
+                                      {f.file_name}
+                                    </span>
+                                    <button
+                                      onClick={() => download(f.id)}
+                                      className="rounded-lg border border-neon-cyan/60 text-neon-cyan text-xs px-4 py-1.5 hover:bg-neon-cyan/10 transition shrink-0"
+                                    >
+                                      ダウンロード
+                                    </button>
+                                  </div>
                                 )}
                                 {adminMode && (
-                                  <button
-                                    onClick={() => deleteFile(f.id)}
-                                    className="text-[11px] text-rose-300/70 hover:text-rose-300 transition"
-                                  >
-                                    削除
-                                  </button>
+                                  <div className="text-right mt-3">
+                                    <button
+                                      onClick={() => deleteFile(f.id)}
+                                      className="text-[11px] text-rose-300/70 hover:text-rose-300 transition"
+                                    >
+                                      削除
+                                    </button>
+                                  </div>
                                 )}
                               </div>
-                            </div>
-                            {isText && f.body && (
-                              <p className="mt-3 pt-3 border-t border-white/10 text-sm text-white/85 whitespace-pre-wrap leading-relaxed">
-                                {f.body}
-                              </p>
                             )}
                           </div>
                         );
