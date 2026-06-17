@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import PageTransition from "@/components/PageTransition";
 import SectionTitle from "@/components/SectionTitle";
 import { AWA_SUPABASE_URL, awaSupabaseHeaders } from "@/lib/awa-supabase";
@@ -354,6 +355,13 @@ export default function BoardPage() {
                   最新に更新
                 </button>
               </div>
+
+              <Link
+                href="/resources"
+                className="block rounded-xl border border-neon-cyan/30 bg-awa-indigo-900/40 px-4 py-3 text-sm text-white/85 hover:border-neon-cyan/60 transition"
+              >
+                📁 ミーティング議事録・資料はこちら →
+              </Link>
 
               {/* あなたのニックネーム（出欠用） */}
               <div className="rounded-xl border border-white/10 bg-awa-indigo-900/40 p-4 flex flex-wrap items-center gap-3">
