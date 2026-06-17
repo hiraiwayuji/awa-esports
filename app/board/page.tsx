@@ -77,6 +77,7 @@ export default function BoardPage() {
       : "",
   );
   const [attendance, setAttendance] = useState<Record<string, string[]>>({});
+  const [proxyName, setProxyName] = useState<Record<string, string>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [attendMsg, setAttendMsg] = useState<{
     id: string;
@@ -147,6 +148,47 @@ export default function BoardPage() {
       });
     }
     setBusyId(null);
+  }
+
+  // 運営が他のメンバーを代理で参加追加
+  async function proxyAdd(postId: string) {
+    const nm = (proxyName[postId] ?? "").trim();
+    if (!nm) return;
+    setBusyId(postId);
+    setAttendMsg(null);
+    try {
+      await rpc("attend_join", {
+        member_pass: memberPass.trim(),
+        p_post_id: postId,
+        p_name: nm,
+      });
+      await loadAttendance(memberPass.trim());
+      setProxyName((p) => ({ ...p, [postId]: "" }));
+      setAttendMsg({ id: postId, text: `「${nm}」を追加しました`, ok: true });
+    } catch {
+      setAttendMsg({
+        id: postId,
+        text: "追加できませんでした。もう一度お試しください。",
+        ok: false,
+      });
+    }
+    setBusyId(null);
+  }
+
+  // 運営が参加者を取り消す（間違い修正用）
+  async function proxyRemove(postId: string, name: string) {
+    if (!window.confirm(`「${name}」の参加を取り消します。よろしいですか？`))
+      return;
+    try {
+      await rpc("attend_cancel", {
+        member_pass: memberPass.trim(),
+        p_post_id: postId,
+        p_name: name,
+      });
+      await loadAttendance(memberPass.trim());
+    } catch {
+      window.alert("取り消しできませんでした。");
+    }
   }
 
   async function enter(e?: React.FormEvent) {
@@ -506,9 +548,18 @@ export default function BoardPage() {
                                   {attendance[n.id].map((nm) => (
                                     <span
                                       key={nm}
-                                      className="text-[11px] rounded-full border border-neon-cyan/30 bg-neon-cyan/5 text-neon-cyan/90 px-2 py-0.5"
+                                      className="text-[11px] rounded-full border border-neon-cyan/30 bg-neon-cyan/5 text-neon-cyan/90 px-2 py-0.5 inline-flex items-center gap-1"
                                     >
                                       {nm}
+                                      {adminMode && (
+                                        <button
+                                          onClick={() => proxyRemove(n.id, nm)}
+                                          aria-label={`${nm} を取り消す`}
+                                          className="text-rose-300/70 hover:text-rose-300 leading-none font-bold"
+                                        >
+                                          ×
+                                        </button>
+                                      )}
                                     </span>
                                   ))}
                                 </div>
@@ -516,6 +567,35 @@ export default function BoardPage() {
                                 <p className="mt-2 text-[11px] text-white/40">
                                   まだ参加表明はありません。
                                 </p>
+                              )}
+
+                              {/* 運営：代理で参加追加 */}
+                              {adminMode && !n.isPast && (
+                                <div className="mt-3 flex items-center gap-2">
+                                  <input
+                                    type="text"
+                                    value={proxyName[n.id] ?? ""}
+                                    onChange={(e) =>
+                                      setProxyName((p) => ({
+                                        ...p,
+                                        [n.id]: e.target.value,
+                                      }))
+                                    }
+                                    placeholder="メンバー名を入れて代理で追加"
+                                    maxLength={40}
+                                    className="grow rounded-lg border border-awa-glow/30 bg-awa-indigo-950/60 text-white px-3 py-2 text-xs placeholder-white/30 focus:outline-none focus:border-awa-glow transition"
+                                  />
+                                  <button
+                                    onClick={() => proxyAdd(n.id)}
+                                    disabled={
+                                      busyId === n.id ||
+                                      !(proxyName[n.id] ?? "").trim()
+                                    }
+                                    className="rounded-lg border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow text-xs font-bold px-4 py-2 transition shrink-0"
+                                  >
+                                    追加
+                                  </button>
+                                </div>
                               )}
                             </div>
                           )}
