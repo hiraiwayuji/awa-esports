@@ -12,8 +12,10 @@ type FileRow = {
   category: "minutes" | "doc" | "photo" | "other";
   title: string;
   file_name: string;
+  file_path: string;
   mime: string;
   meeting_date: string | null;
+  body: string;
 };
 
 const CATEGORIES: { key: FileRow["category"]; label: string; badge: string }[] =
@@ -54,13 +56,51 @@ export default function ResourcesPage() {
   const [adminOpen, setAdminOpen] = useState(false);
   const adminMode = adminOpen && adminPass.trim().length > 0;
 
-  // アップロードフォーム
-  const [file, setFile] = useState<File | null>(null);
+  // 入力モード（テキスト議事録 / ファイル）
+  const [inputMode, setInputMode] = useState<"text" | "file">("text");
+
+  // 共通フォーム項目
   const [upTitle, setUpTitle] = useState("");
   const [upCategory, setUpCategory] = useState<FileRow["category"]>("minutes");
   const [upDate, setUpDate] = useState("");
-  const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+
+  // テキスト議事録
+  const [textBody, setTextBody] = useState("");
+  const [savingText, setSavingText] = useState(false);
+
+  // ファイルアップロード
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  async function saveText(e: React.FormEvent) {
+    e.preventDefault();
+    if (!upTitle.trim() || !textBody.trim() || savingText) return;
+    setSavingText(true);
+    setMsg(null);
+    try {
+      const r = await fnCall({
+        action: "create_text",
+        admin_pass: adminPass.trim(),
+        category: upCategory,
+        title: upTitle.trim(),
+        body: textBody.trim(),
+        meeting_date: upDate || null,
+      });
+      if (!r.ok) throw new Error("failed");
+      setUpTitle("");
+      setTextBody("");
+      setUpDate("");
+      await loadFiles();
+      setMsg({ text: "保存しました", ok: true });
+    } catch {
+      setMsg({
+        text: "保存できませんでした。運営合言葉・タイトル・本文をご確認ください。",
+        ok: false,
+      });
+    }
+    setSavingText(false);
+  }
 
   async function loadFiles(pass?: string) {
     const d = await fnCall({
@@ -230,15 +270,29 @@ export default function ResourcesPage() {
                 </button>
               </div>
 
-              {/* 運営アップロード */}
+              {/* 運営：追加（テキスト or ファイル） */}
               {adminMode && (
-                <form
-                  onSubmit={handleUpload}
-                  className="rounded-2xl border border-awa-glow/30 bg-awa-glow/[0.04] p-5 md:p-6 space-y-4"
-                >
+                <div className="rounded-2xl border border-awa-glow/30 bg-awa-glow/[0.04] p-5 md:p-6 space-y-4">
                   <div className="text-[11px] font-display tracking-[0.3em] text-awa-glow">
-                    UPLOAD / 資料を追加（運営）
+                    ADD / 追加（運営）
                   </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setInputMode("text")}
+                      className={`flex-1 rounded-lg border px-3 py-2 text-xs font-bold transition ${inputMode === "text" ? "border-awa-glow bg-awa-glow/15 text-awa-glow" : "border-white/15 text-white/60 hover:border-white/30"}`}
+                    >
+                      ✍️ テキストで書く
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setInputMode("file")}
+                      className={`flex-1 rounded-lg border px-3 py-2 text-xs font-bold transition ${inputMode === "file" ? "border-awa-glow bg-awa-glow/15 text-awa-glow" : "border-white/15 text-white/60 hover:border-white/30"}`}
+                    >
+                      📎 ファイルをアップ
+                    </button>
+                  </div>
+
                   <div className="grid gap-4 md:grid-cols-2">
                     <label className="flex flex-col gap-1.5">
                       <span className="text-xs tracking-[0.15em] text-white/70">
@@ -278,32 +332,66 @@ export default function ResourcesPage() {
                     maxLength={200}
                     className="w-full rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm placeholder-white/30 focus:outline-none focus:border-neon-cyan transition"
                   />
-                  <input
-                    id="file-input"
-                    type="file"
-                    onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                    className="w-full text-sm text-white/80 file:mr-3 file:rounded-lg file:border-0 file:bg-awa-glow/15 file:text-awa-glow file:px-4 file:py-2 file:text-sm file:font-bold hover:file:bg-awa-glow/25"
-                  />
-                  <p className="text-[11px] text-white/40">
-                    PDF・Word・写真などOK（25MBまで）
-                  </p>
-                  {msg && (
-                    <p
-                      className={`text-[12px] ${msg.ok ? "text-awa-glow" : "text-rose-300"}`}
-                    >
-                      {msg.text}
-                    </p>
+
+                  {inputMode === "text" ? (
+                    <form onSubmit={saveText} className="space-y-4">
+                      <textarea
+                        value={textBody}
+                        onChange={(e) => setTextBody(e.target.value)}
+                        placeholder="議事録の本文をここに書いてください（改行OK）&#10;例）&#10;・決定事項：…&#10;・次回：7/5（日）14:00〜"
+                        rows={8}
+                        maxLength={20000}
+                        className="w-full rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm placeholder-white/30 focus:outline-none focus:border-neon-cyan transition resize-y leading-relaxed"
+                      />
+                      {msg && (
+                        <p
+                          className={`text-[12px] ${msg.ok ? "text-awa-glow" : "text-rose-300"}`}
+                        >
+                          {msg.text}
+                        </p>
+                      )}
+                      <div className="flex justify-end">
+                        <button
+                          type="submit"
+                          disabled={
+                            savingText || !upTitle.trim() || !textBody.trim()
+                          }
+                          className="rounded-xl border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow font-display tracking-[0.2em] text-sm px-6 py-2.5 transition"
+                        >
+                          {savingText ? "保存中…" : "保存する"}
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <form onSubmit={handleUpload} className="space-y-4">
+                      <input
+                        id="file-input"
+                        type="file"
+                        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                        className="w-full text-sm text-white/80 file:mr-3 file:rounded-lg file:border-0 file:bg-awa-glow/15 file:text-awa-glow file:px-4 file:py-2 file:text-sm file:font-bold hover:file:bg-awa-glow/25"
+                      />
+                      <p className="text-[11px] text-white/40">
+                        PDF・Word・写真などOK（25MBまで）
+                      </p>
+                      {msg && (
+                        <p
+                          className={`text-[12px] ${msg.ok ? "text-awa-glow" : "text-rose-300"}`}
+                        >
+                          {msg.text}
+                        </p>
+                      )}
+                      <div className="flex justify-end">
+                        <button
+                          type="submit"
+                          disabled={uploading || !file || !upTitle.trim()}
+                          className="rounded-xl border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow font-display tracking-[0.2em] text-sm px-6 py-2.5 transition"
+                        >
+                          {uploading ? "アップロード中…" : "アップロード"}
+                        </button>
+                      </div>
+                    </form>
                   )}
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      disabled={uploading || !file || !upTitle.trim()}
-                      className="rounded-xl border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow font-display tracking-[0.2em] text-sm px-6 py-2.5 transition"
-                    >
-                      {uploading ? "アップロード中…" : "アップロード"}
-                    </button>
-                  </div>
-                </form>
+                </div>
               )}
 
               {/* 一覧 */}
@@ -316,49 +404,63 @@ export default function ResourcesPage() {
                       <h3 className="text-sm tracking-[0.2em] text-white/70 font-display">
                         {g.label}
                       </h3>
-                      {g.items.map((f) => (
-                        <div
-                          key={f.id}
-                          className="rounded-xl border border-white/10 bg-awa-indigo-950/50 p-4 flex items-center justify-between gap-3"
-                        >
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                              <span
-                                className={`text-[10px] tracking-wider rounded-full border px-2 py-0.5 ${g.badge}`}
-                              >
-                                {CAT_LABEL[f.category]}
-                              </span>
-                              {f.meeting_date && (
-                                <span className="text-xs text-awa-glow font-bold">
-                                  {f.meeting_date}
-                                </span>
-                              )}
+                      {g.items.map((f) => {
+                        const isText = !f.file_path;
+                        return (
+                          <div
+                            key={f.id}
+                            className="rounded-xl border border-white/10 bg-awa-indigo-950/50 p-4"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                                  <span
+                                    className={`text-[10px] tracking-wider rounded-full border px-2 py-0.5 ${g.badge}`}
+                                  >
+                                    {CAT_LABEL[f.category]}
+                                  </span>
+                                  {f.meeting_date && (
+                                    <span className="text-xs text-awa-glow font-bold">
+                                      {f.meeting_date}
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-white font-bold text-sm">
+                                  {f.title}
+                                </p>
+                                {!isText && (
+                                  <p className="text-white/40 text-[11px] truncate">
+                                    {f.file_name}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex flex-col items-end gap-1.5 shrink-0">
+                                {!isText && (
+                                  <button
+                                    onClick={() => download(f.id)}
+                                    className="rounded-lg border border-neon-cyan/60 text-neon-cyan text-xs px-4 py-1.5 hover:bg-neon-cyan/10 transition"
+                                  >
+                                    ダウンロード
+                                  </button>
+                                )}
+                                {adminMode && (
+                                  <button
+                                    onClick={() => deleteFile(f.id)}
+                                    className="text-[11px] text-rose-300/70 hover:text-rose-300 transition"
+                                  >
+                                    削除
+                                  </button>
+                                )}
+                              </div>
                             </div>
-                            <p className="text-white font-bold text-sm truncate">
-                              {f.title}
-                            </p>
-                            <p className="text-white/40 text-[11px] truncate">
-                              {f.file_name}
-                            </p>
-                          </div>
-                          <div className="flex flex-col items-end gap-1.5 shrink-0">
-                            <button
-                              onClick={() => download(f.id)}
-                              className="rounded-lg border border-neon-cyan/60 text-neon-cyan text-xs px-4 py-1.5 hover:bg-neon-cyan/10 transition"
-                            >
-                              ダウンロード
-                            </button>
-                            {adminMode && (
-                              <button
-                                onClick={() => deleteFile(f.id)}
-                                className="text-[11px] text-rose-300/70 hover:text-rose-300 transition"
-                              >
-                                削除
-                              </button>
+                            {isText && f.body && (
+                              <p className="mt-3 pt-3 border-t border-white/10 text-sm text-white/85 whitespace-pre-wrap leading-relaxed">
+                                {f.body}
+                              </p>
                             )}
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   ))}
                 </div>
