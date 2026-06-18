@@ -143,41 +143,51 @@ export default function OpsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-awa-indigo-950 text-white">
-      <header className="sticky top-0 z-20 bg-awa-indigo-950/90 backdrop-blur-xl border-b border-white/10 px-5 md:px-8 h-14 flex items-center justify-between">
-        <span className="font-display font-black text-sm tracking-[0.2em] text-white">
-          AG <span className="text-neon-cyan">OPS</span>
-        </span>
-        <div className="flex gap-1">
+    <div className="min-h-screen bg-awa-indigo-950 text-white flex">
+      {/* 左サイドバー */}
+      <aside className="fixed top-0 left-0 h-screen w-44 z-20 flex flex-col bg-awa-indigo-950/95 backdrop-blur-xl border-r border-white/10 py-6 px-3">
+        <div className="px-2 mb-8">
+          <div className="font-display font-black text-sm tracking-[0.2em] text-white">
+            AG <span className="text-neon-cyan">OPS</span>
+          </div>
+          <div className="text-[10px] text-white/40 mt-0.5 tracking-wider">運営管理画面</div>
+        </div>
+
+        <nav className="flex flex-col gap-1 flex-1">
           {TABS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-display tracking-[0.15em] transition ${
+              className={`flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-display tracking-[0.1em] transition text-left ${
                 tab === t.key
-                  ? "bg-neon-cyan/10 border border-neon-cyan/50 text-neon-cyan"
-                  : "text-white/50 hover:text-white/80"
+                  ? "bg-neon-cyan/10 border border-neon-cyan/40 text-neon-cyan"
+                  : "text-white/55 hover:text-white/90 hover:bg-white/5"
               }`}
             >
-              {t.emoji} {t.label}
+              <span className="text-base leading-none">{t.emoji}</span>
+              <span>{t.label}</span>
             </button>
           ))}
-        </div>
+        </nav>
+
         <button
           onClick={() => setAdminPass("")}
-          className="text-[11px] text-white/30 hover:text-white/60 transition"
+          className="mx-2 text-[11px] text-white/25 hover:text-white/55 transition text-left"
         >
           ログアウト
         </button>
-      </header>
+      </aside>
 
-      <div className="mx-auto max-w-4xl px-5 md:px-8 py-8">
-        {tab === "board"     && <BoardTab adminPass={adminPass} />}
-        {tab === "survey"    && <SurveyTab adminPass={adminPass} />}
-        {tab === "ledger"    && <LedgerTab adminPass={adminPass} />}
-        {tab === "resources" && <ResourcesTab adminPass={adminPass} />}
-      </div>
-    </main>
+      {/* メインコンテンツ（サイドバー分オフセット） */}
+      <main className="flex-1 min-w-0 ml-44">
+        <div className="max-w-4xl px-5 md:px-8 py-10">
+          {tab === "board"     && <BoardTab adminPass={adminPass} />}
+          {tab === "survey"    && <SurveyTab adminPass={adminPass} />}
+          {tab === "ledger"    && <LedgerTab adminPass={adminPass} />}
+          {tab === "resources" && <ResourcesTab adminPass={adminPass} />}
+        </div>
+      </main>
+    </div>
   );
 }
 
