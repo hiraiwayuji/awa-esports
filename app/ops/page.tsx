@@ -213,7 +213,13 @@ function BoardTab({ adminPass }: { adminPass: string }) {
       rpc<BoardPost[]>("board_list", { member_pass: MEMBER_PASS }),
       rpc<AttendRow[]>("attend_all", { member_pass: MEMBER_PASS }),
     ]);
-    setPosts(p ?? []);
+    const sorted = (p ?? []).slice().sort((a, b) => {
+      if (!a.event_date && !b.event_date) return 0;
+      if (!a.event_date) return 1;
+      if (!b.event_date) return -1;
+      return a.event_date < b.event_date ? -1 : a.event_date > b.event_date ? 1 : 0;
+    });
+    setPosts(sorted);
     setAttend(a ?? []);
     setLoading(false);
   }
