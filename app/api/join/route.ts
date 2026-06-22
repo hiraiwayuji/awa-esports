@@ -181,7 +181,8 @@ export async function POST(req: Request) {
 
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.JOIN_NOTIFY_TO;
-  const from = process.env.JOIN_NOTIFY_FROM ?? "onboarding@resend.dev";
+  // 空文字Envでも安全に既定値へフォールバックするよう `||` を使用（`??` は空文字を素通りさせる）。
+  const from = process.env.JOIN_NOTIFY_FROM || "AWAKEN GLOW <onboarding@resend.dev>";
 
   if (!apiKey || !to) {
     return NextResponse.json(
