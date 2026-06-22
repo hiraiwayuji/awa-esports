@@ -13,7 +13,7 @@ const links = [
   { href: "/members", label: "MEMBERS" },
   { href: "/schedule", label: "SCHEDULE" },
   { href: "/news", label: "NEWS" },
-  { href: "/partners", label: "PARTNERS" },
+  { href: "/sponsor", label: "SPONSOR" },
   { href: "/join", label: "JOIN US" },
   { href: "/board", label: "MEMBER ROOM", member: true },
 ];

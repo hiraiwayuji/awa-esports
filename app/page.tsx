@@ -294,6 +294,38 @@ export default function HomePage() {
       {/* PARTNERS */}
       <PartnersStrip />
 
+      {/* SPONSOR 導線 */}
+      <section className="relative pb-8">
+        <div className="mx-auto max-w-7xl px-5 md:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-5 rounded-2xl border border-awa-glow-deep/30 bg-awa-indigo-900/40 backdrop-blur-md px-7 py-7 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-radial-glow opacity-20 pointer-events-none" />
+            <div className="relative z-10">
+              <p className="text-[11px] font-display tracking-[0.3em] text-awa-glow-deep mb-2">
+                SPONSOR / 応援パートナー募集
+              </p>
+              <h3 className="text-xl md:text-2xl font-bold text-white">
+                徳島から、全国へ。
+                <span className="text-awa-glow">一緒に応援しませんか。</span>
+              </h3>
+              <p className="mt-2 text-sm text-white/60">
+                チームの活動を支えてくださる企業・個人の皆さまを募集しています。
+              </p>
+            </div>
+            <Link
+              href="/sponsor"
+              className="relative z-10 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-awa-glow-deep/50 text-awa-glow-deep font-display tracking-[0.2em] text-xs uppercase hover:bg-awa-glow-deep/10 transition-colors whitespace-nowrap"
+            >
+              応援メニューを見る →
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="relative py-32">
         <div className="mx-auto max-w-5xl px-5 md:px-8 text-center">

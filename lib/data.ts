@@ -840,6 +840,119 @@ export const partnerPlans = [
   },
 ];
 
+// スポンサー・応援メニュー（年額・口数）。
+// 金額・特典の出典は営業資料。HP掲載用にやわらかい表現へ調整。
+export type SponsorTier = {
+  code: string;
+  title: string;
+  price: string; // 例: "200,000円"
+  period: string; // 例: "1年" / "1口"
+  placement: string; // 掲載位置などの短い説明
+  summary: string;
+  benefits: string[];
+  note?: string;
+  accent: "magenta" | "cyan" | "warmth";
+  featured?: boolean;
+};
+
+export const sponsorTiers: SponsorTier[] = [
+  {
+    code: "S-01",
+    title: "胸スポンサー",
+    price: "200,000円",
+    period: "1年",
+    placement: "ユニフォーム胸",
+    summary:
+      "最も目立つ場所への掲載となる、メインスポンサー枠です。",
+    benefits: [
+      "ユニフォーム胸部分へのロゴ掲載",
+      "公式HPへの企業ロゴ・企業名掲載",
+      "SNSでの紹介",
+      "活動報告での紹介",
+      "イベント時の紹介",
+      "業種カテゴリーの優先枠",
+    ],
+    note: "チームの顔となる一番の応援枠です。",
+    accent: "magenta",
+    featured: true,
+  },
+  {
+    code: "S-02",
+    title: "背中スポンサー",
+    price: "100,000円",
+    period: "1年",
+    placement: "ユニフォーム背中",
+    summary:
+      "ユニフォームの背中で、しっかり目に留まる応援枠です。",
+    benefits: [
+      "ユニフォーム背中部分へのロゴ掲載",
+      "公式HPへの企業ロゴ・企業名掲載",
+      "SNSでの紹介",
+      "活動報告での紹介",
+    ],
+    accent: "cyan",
+  },
+  {
+    code: "S-03",
+    title: "袖スポンサー",
+    price: "50,000円",
+    period: "1年",
+    placement: "ユニフォーム袖",
+    summary:
+      "ユニフォームの袖で、チームと一緒に名前を届けられる枠です。",
+    benefits: [
+      "ユニフォーム袖部分へのロゴ掲載",
+      "公式HPへの企業ロゴ・企業名掲載",
+      "SNSでの紹介",
+      "活動報告での紹介",
+    ],
+    accent: "cyan",
+  },
+  {
+    code: "S-04",
+    title: "応援企業",
+    price: "5,000円",
+    period: "1年",
+    placement: "公式HP・SNS",
+    summary:
+      "少額から参加できる、地域応援企業としての枠です。",
+    benefits: [
+      "公式HPへの企業名掲載",
+      "SNSや活動報告での紹介",
+      "地域応援企業として紹介",
+    ],
+    accent: "warmth",
+  },
+  {
+    code: "S-05",
+    title: "大会・遠征応援枠",
+    price: "3,000円",
+    period: "1口",
+    placement: "短期応援",
+    summary:
+      "大会参加、遠征、ユニフォーム制作に向けた短期の応援枠です。",
+    benefits: [
+      "大会参加・遠征・ユニフォーム制作に向けた短期応援枠",
+      "企業名掲載は、制作スケジュールに間に合う範囲で対応",
+    ],
+    accent: "warmth",
+  },
+  {
+    code: "S-06",
+    title: "協力個人",
+    price: "1,000円",
+    period: "1口",
+    placement: "個人サポーター",
+    summary:
+      "個人の方が、お名前やニックネームでチームの背中を押せる枠です。",
+    benefits: [
+      "応援者名またはニックネーム掲載",
+      "活動報告",
+    ],
+    accent: "warmth",
+  },
+];
+
 export type PartnerCompany = {
   id: string;
   name: string;

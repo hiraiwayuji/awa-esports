@@ -56,7 +56,7 @@ export default function Footer() {
               ["/members", "Members"],
               ["/schedule", "Schedule"],
               ["/news", "News"],
-              ["/partners", "Partners"],
+              ["/sponsor", "スポンサー募集"],
               ["/join", "Join Us"],
               ["/trainee-entry", "練習生登録"],
               ["/player-contract", "正式選手登録"],
@@ -87,7 +87,7 @@ export default function Footer() {
             <li>✉️ contact@awakenglow.jp</li>
             <li>
               <Link
-                href="/partners"
+                href="/sponsor"
                 className="text-awa-glow-deep hover:text-awa-glow transition"
               >
                 スポンサー募集中 →

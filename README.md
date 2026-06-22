@@ -43,7 +43,8 @@ npm run start
 | `/members` | Members — Staff 7名 ID Card、Roster 8名 |
 | `/news` | News & Events — カテゴリフィルタ + ダミー4件 |
 | `/join` | Join Us — Cockpit UI form、ダミー送信 |
-| `/partners` | Partners — 眉山SVG + 提灯背景、3プラン、Contact Form |
+| `/sponsor` | スポンサー・応援パートナー募集 — 眉山SVG + 提灯背景、6つの応援メニュー（年額・口数）、支援金の使い道、企業メリット、CTA |
+| `/partners` | （旧URL）`/sponsor` へリダイレクト |
 
 ---
 
