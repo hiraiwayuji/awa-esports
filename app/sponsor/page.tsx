@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useRef, FormEvent } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
   Building2,
@@ -13,10 +14,12 @@ import {
   TrendingUp,
   Star,
   Check,
-  Mail,
+  Send,
   MessageCircle,
   Info,
   ArrowRight,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
 import SectionTitle from "@/components/SectionTitle";
 import PageTransition from "@/components/PageTransition";
@@ -24,12 +27,9 @@ import AwaBackdrop from "@/components/AwaBackdrop";
 import PartnersStrip from "@/components/PartnersStrip";
 import { sponsorTiers } from "@/lib/data";
 
-// TODO: 問い合わせ先メールアドレスは仮（Footer掲載の contact@awakenglow.jp を使用）。
-// 正式な受付先 or 専用フォームが決まったら差し替える。
-const CONTACT_EMAIL = "contact@awakenglow.jp";
+// 公式X（問い合わせ導線の予備）。メールアドレスは画面に出さず、
+// フォーム送信→サーバー(Resend)経由で運営の受信箱へ直接届く。
 const X_URL = "https://x.com/awaken_glow";
-const mailto = (subject: string) =>
-  `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`;
 
 const accentMap = {
   magenta: {
@@ -51,6 +51,14 @@ const accentMap = {
     grad: "from-awa-glow-deep/20 via-awa-glow/5 to-transparent",
   },
 } as const;
+
+const inquiryOptions = [
+  { value: "sponsor", label: "スポンサーについて" },
+  { value: "supporter", label: "応援企業として相談" },
+  { value: "goods", label: "物品協賛" },
+  { value: "event", label: "イベント協賛" },
+  { value: "other", label: "その他" },
+] as const;
 
 const useOfFunds = [
   "ユニフォーム制作費",
@@ -102,6 +110,75 @@ const futurePlans = [
 ];
 
 export default function SponsorPage() {
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const [inquiryType, setInquiryType] =
+    useState<(typeof inquiryOptions)[number]["value"]>("sponsor");
+  const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
+  const [email, setEmail] = useState("");
+  const [menu, setMenu] = useState("");
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">(
+    "idle",
+  );
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const scrollToForm = () =>
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  // CTAボタンから「種別」を指定してフォームへ誘導
+  const openForm = (
+    type: (typeof inquiryOptions)[number]["value"],
+    menuTitle?: string,
+  ) => {
+    setInquiryType(type);
+    if (menuTitle) setMenu(menuTitle);
+    scrollToForm();
+  };
+
+  const valid =
+    name.trim().length > 0 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) &&
+    message.trim().length > 0;
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!valid || status === "loading") return;
+    setStatus("loading");
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/sponsor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          inquiryType,
+          name: name.trim(),
+          company: company.trim(),
+          email: email.trim(),
+          menu: menu.trim(),
+          message: message.trim(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setStatus("done");
+      } else {
+        setStatus("error");
+        setErrorMsg(
+          data?.error === "rate_limited"
+            ? "送信が続いたため一時的に制限されています。少し時間をおいてお試しください。"
+            : "送信に失敗しました。お手数ですが時間をおいて再度お試しください。",
+        );
+      }
+    } catch {
+      setStatus("error");
+      setErrorMsg(
+        "通信エラーが発生しました。電波の良い場所で再度お試しください。",
+      );
+    }
+  };
+
   return (
     <PageTransition>
       <AwaBackdrop />
@@ -153,20 +230,20 @@ export default function SponsorPage() {
             transition={{ delay: 0.3 }}
             className="mt-10 flex flex-col sm:flex-row gap-3"
           >
-            <a
-              href={mailto("スポンサーについてのお問い合わせ")}
+            <button
+              onClick={() => openForm("sponsor")}
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-awa-glow-deep via-awa-glow to-awa-glow-deep text-white font-display tracking-[0.2em] text-xs uppercase shadow-glow hover:scale-[1.03] transition-transform"
             >
-              <Mail size={15} />
+              <Send size={15} />
               スポンサーについて問い合わせる
-            </a>
-            <a
-              href={mailto("応援企業についてのご相談")}
+            </button>
+            <button
+              onClick={() => openForm("supporter")}
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-awa-glow-deep/50 text-awa-glow-deep font-display tracking-[0.2em] text-xs uppercase hover:bg-awa-glow-deep/10 transition-colors"
             >
               <HeartHandshake size={15} />
               応援企業として相談する
-            </a>
+            </button>
           </motion.div>
 
           {/* キーワードチップ */}
@@ -272,6 +349,9 @@ export default function SponsorPage() {
           <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             {sponsorTiers.map((t, i) => {
               const a = accentMap[t.accent];
+              const ctaType = t.accent === "magenta" || t.code === "S-02" || t.code === "S-03"
+                ? "sponsor"
+                : "supporter";
               return (
                 <motion.div
                   key={t.code}
@@ -344,13 +424,13 @@ export default function SponsorPage() {
                       </p>
                     )}
 
-                    <a
-                      href={mailto(`【${t.title}】についてのお問い合わせ`)}
+                    <button
+                      onClick={() => openForm(ctaType, `${t.title}（${t.price} / ${t.period}）`)}
                       className={`mt-6 inline-flex items-center justify-center gap-2 py-3 rounded-full border ${a.border} ${a.text} text-xs font-display tracking-[0.25em] uppercase hover:bg-white/5 transition-colors`}
                     >
                       このメニューで相談する
                       <ArrowRight size={13} />
-                    </a>
+                    </button>
                   </div>
                 </motion.div>
               );
@@ -531,82 +611,236 @@ export default function SponsorPage() {
         </div>
       </section>
 
-      {/* ===== 8. お問い合わせ・申込み（下部CTA） ===== */}
-      <section className="relative py-24">
-        <div className="mx-auto max-w-5xl px-5 md:px-8">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative rounded-3xl border border-awa-glow-deep/40 bg-awa-indigo-900/55 backdrop-blur-xl p-10 md:p-16 overflow-hidden text-center"
-          >
-            <div className="absolute inset-0 bg-radial-glow opacity-40 pointer-events-none" />
-            <div className="relative z-10">
-              <p className="text-xs tracking-[0.35em] font-display text-awa-glow-deep mb-4">
-                CONTACT / お問い合わせ
-              </p>
-              <h2 className="font-display font-black text-3xl md:text-5xl leading-tight text-white">
+      {/* ===== 8. お問い合わせ・申込み（下部CTA＋フォーム） ===== */}
+      <section ref={formRef} id="contact-form" className="relative py-24 scroll-mt-24">
+        <div className="mx-auto max-w-3xl px-5 md:px-8">
+          <SectionTitle
+            eyebrow="CONTACT / お問い合わせ"
+            title={
+              <>
                 スポンサー・応援パートナーに
-                <br className="hidden md:block" />
+                <br />
                 関するお問い合わせ
-              </h2>
-              <p className="mt-7 text-sm md:text-base text-white/75 leading-relaxed max-w-2xl mx-auto">
+              </>
+            }
+            subtitle={
+              <>
                 スポンサー、応援企業、物品協賛、イベント協賛など、
                 AWAKEN GLOWの活動にご興味のある企業・個人の方は、
                 お気軽にお問い合わせください。
-              </p>
+              </>
+            }
+            tone="warm"
+            align="center"
+          />
 
-              <div className="mt-10 flex flex-col sm:flex-row justify-center gap-3">
-                <a
-                  href={mailto("スポンサーについてのお問い合わせ")}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-awa-glow-deep via-awa-glow to-awa-glow-deep text-white font-display tracking-[0.2em] text-xs uppercase shadow-glow hover:scale-[1.03] transition-transform"
-                >
-                  <Mail size={15} />
-                  スポンサーについて問い合わせる
-                </a>
-                <a
-                  href={mailto("応援企業についてのご相談")}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-awa-glow-deep/50 text-awa-glow-deep font-display tracking-[0.2em] text-xs uppercase hover:bg-awa-glow-deep/10 transition-colors"
-                >
-                  <HeartHandshake size={15} />
-                  応援企業として相談する
-                </a>
-              </div>
-
-              {/* 問い合わせ導線 */}
-              <div className="mt-10 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-x-8 gap-y-3 text-sm">
-                <a
-                  href={X_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-white/70 hover:text-neon-cyan transition-colors"
-                >
-                  <MessageCircle size={15} />
-                  X（旧Twitter）公式アカウント
-                </a>
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
-                  className="inline-flex items-center gap-2 text-white/70 hover:text-awa-glow transition-colors"
-                >
-                  <Mail size={15} />
-                  {CONTACT_EMAIL}
-                </a>
-              </div>
-              <p className="mt-4 text-[11px] text-white/35">
-                {/* TODO: 専用問い合わせフォーム or 正式メールが決まったらここを差し替え */}
-                ※ メールアドレスは仮掲載です。専用の申込みフォームは準備中です。
-              </p>
-
-              <div className="mt-8">
-                <Link
-                  href="/join"
-                  className="text-xs text-white/55 hover:text-neon-cyan underline-offset-4 hover:underline font-display tracking-[0.2em]"
-                >
-                  選手・メンバーとして参加したい方はこちら →
-                </Link>
-              </div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 rounded-3xl border border-awa-glow-deep/30 bg-awa-indigo-900/60 backdrop-blur-xl p-2"
+          >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-awa-glow-deep/20">
+              <span className="text-[10px] font-mono tracking-[0.3em] text-white/50">
+                AWA-CONTACT / SPONSOR INTAKE
+              </span>
+              <span className="w-2 h-2 rounded-full bg-awa-glow-deep animate-pulse" />
             </div>
+
+            <AnimatePresence mode="wait">
+              {status !== "done" ? (
+                <motion.form
+                  key="form"
+                  onSubmit={handleSubmit}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="px-6 md:px-10 py-10 space-y-6"
+                >
+                  <div>
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                      お問い合わせ種別 *
+                    </label>
+                    <select
+                      value={inquiryType}
+                      onChange={(e) =>
+                        setInquiryType(
+                          e.target.value as (typeof inquiryOptions)[number]["value"],
+                        )
+                      }
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white transition-all"
+                    >
+                      {inquiryOptions.map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                      お名前 *
+                    </label>
+                    <input
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="例：山田 太郎"
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                      企業名・店名（任意）
+                    </label>
+                    <input
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                      placeholder="例：株式会社○○ / △△商店"
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                      返信先メールアドレス *
+                    </label>
+                    <input
+                      required
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="example@your-company.jp"
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all"
+                    />
+                    <p className="mt-1.5 text-[11px] text-white/40">
+                      ご返信用です。いただいたアドレスへ運営からご連絡します。
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                      気になるメニュー（任意）
+                    </label>
+                    <select
+                      value={menu}
+                      onChange={(e) => setMenu(e.target.value)}
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white transition-all"
+                    >
+                      <option value="">選択しない / まずは相談したい</option>
+                      {sponsorTiers.map((t) => (
+                        <option
+                          key={t.code}
+                          value={`${t.title}（${t.price} / ${t.period}）`}
+                        >
+                          {t.title}（{t.price} / {t.period}）
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                      お問い合わせ内容 *
+                    </label>
+                    <textarea
+                      required
+                      rows={5}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="ご質問・ご提案・ご予算など、ご自由にお書きください。"
+                      className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white placeholder:text-white/30 transition-all resize-none"
+                    />
+                  </div>
+
+                  {status === "error" && (
+                    <p className="text-xs text-red-300 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3">
+                      {errorMsg}
+                    </p>
+                  )}
+
+                  <div className="pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-white/10">
+                    <p className="text-[11px] text-white/50">
+                      送信内容はAWAKEN GLOW運営に直接届きます
+                    </p>
+                    <motion.button
+                      type="submit"
+                      disabled={!valid || status === "loading"}
+                      whileHover={valid ? { scale: 1.03 } : undefined}
+                      whileTap={valid ? { scale: 0.97 } : undefined}
+                      className={`relative inline-flex items-center justify-center gap-3 px-8 py-3.5 rounded-full font-display tracking-[0.3em] text-xs uppercase overflow-hidden transition-all ${
+                        valid
+                          ? "bg-gradient-to-r from-awa-glow-deep via-awa-glow to-awa-glow-deep text-white shadow-glow"
+                          : "bg-white/5 text-white/30 cursor-not-allowed"
+                      }`}
+                    >
+                      {status === "loading" ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          SENDING...
+                        </>
+                      ) : (
+                        <>
+                          <Send size={14} />
+                          送信する
+                        </>
+                      )}
+                    </motion.button>
+                  </div>
+                </motion.form>
+              ) : (
+                <motion.div
+                  key="done"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="px-8 py-16 text-center"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    className="mx-auto w-20 h-20 grid place-items-center rounded-full bg-awa-glow-deep/10 border border-awa-glow-deep shadow-glow mb-6"
+                  >
+                    <CheckCircle2 className="w-10 h-10 text-awa-glow-deep" />
+                  </motion.div>
+                  <h3 className="font-display font-black text-3xl text-white mb-4">
+                    ありがとうございます。
+                  </h3>
+                  <p className="text-sm text-white/70 leading-relaxed max-w-md mx-auto">
+                    お問い合わせを受け付けました。
+                    <br />
+                    内容を確認の上、いただいたメールアドレスへ
+                    <br />
+                    AWAKEN GLOW運営よりご連絡いたします。
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
+
+          {/* 予備の問い合わせ導線（X） */}
+          <div className="mt-8 text-center">
+            <a
+              href={X_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-neon-cyan transition-colors"
+            >
+              <MessageCircle size={15} />
+              X（旧Twitter）からのDMでもご相談いただけます
+            </a>
+          </div>
+
+          <div className="mt-6 text-center">
+            <Link
+              href="/join"
+              className="text-xs text-white/55 hover:text-neon-cyan underline-offset-4 hover:underline font-display tracking-[0.2em]"
+            >
+              選手・メンバーとして参加したい方はこちら →
+            </Link>
+          </div>
         </div>
       </section>
     </PageTransition>
