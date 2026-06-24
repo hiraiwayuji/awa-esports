@@ -16,7 +16,12 @@ type FileRow = {
   mime: string;
   meeting_date: string | null;
   body: string;
+  parent_id: string | null;
+  signed_url?: string | null;
 };
+
+const isImage = (f: FileRow) =>
+  !!f.file_path && (f.mime?.startsWith("image/") ?? false);
 
 const CATEGORIES: { key: FileRow["category"]; label: string; badge: string }[] =
   [
@@ -75,6 +80,82 @@ export default function ResourcesPage() {
   // ファイルアップロード
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  // 議事録の編集
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editBody, setEditBody] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  // 個別カードへの写真添付
+  const [attachingId, setAttachingId] = useState<string | null>(null);
+
+  function startEdit(f: FileRow) {
+    setEditId(f.id);
+    setEditTitle(f.title);
+    setEditDate(f.meeting_date ?? "");
+    setEditBody(f.body ?? "");
+    setMsg(null);
+  }
+
+  async function saveEdit() {
+    if (!editId || !editTitle.trim() || savingEdit) return;
+    setSavingEdit(true);
+    setMsg(null);
+    try {
+      const r = await fnCall({
+        action: "update_text",
+        admin_pass: adminPass.trim(),
+        id: editId,
+        title: editTitle.trim(),
+        body: editBody,
+        meeting_date: editDate || null,
+      });
+      if (!r.ok) throw new Error("failed");
+      setEditId(null);
+      await loadFiles();
+      setMsg({ text: "更新しました", ok: true });
+    } catch {
+      setMsg({
+        text: "更新できませんでした。運営合言葉・タイトルをご確認ください。",
+        ok: false,
+      });
+    }
+    setSavingEdit(false);
+  }
+
+  // 既存の議事録（親）に写真を添付
+  async function attachPhoto(parentId: string, fl: File) {
+    setAttachingId(parentId);
+    setMsg(null);
+    try {
+      const cu = await fnCall({
+        action: "create_upload",
+        admin_pass: adminPass.trim(),
+        category: "photo",
+        title: fl.name,
+        file_name: fl.name,
+        mime: fl.type,
+        parent_id: parentId,
+      });
+      if (!cu.signedUrl) throw new Error("create_upload failed");
+      const put = await fetch(cu.signedUrl as string, {
+        method: "PUT",
+        headers: { "Content-Type": fl.type || "application/octet-stream" },
+        body: fl,
+      });
+      if (!put.ok) throw new Error("put failed");
+      await loadFiles();
+      setMsg({ text: "写真を追加しました", ok: true });
+    } catch {
+      setMsg({
+        text: "写真の追加に失敗しました。運営合言葉・ファイルをご確認ください。",
+        ok: false,
+      });
+    }
+    setAttachingId(null);
+  }
 
   async function saveText(e: React.FormEvent) {
     e.preventDefault();
@@ -216,14 +297,24 @@ export default function ResourcesPage() {
     }
   }
 
+  // 議事録などの「親」だけを一覧表示（添付写真は親カード内に表示するので除外）
   const grouped = useMemo(
     () =>
       CATEGORIES.map((c) => ({
         ...c,
-        items: files.filter((f) => f.category === c.key),
+        items: files.filter((f) => f.category === c.key && !f.parent_id),
       })).filter((g) => g.items.length > 0),
     [files],
   );
+
+  // 親IDごとの添付写真
+  const childrenOf = useMemo(() => {
+    const map: Record<string, FileRow[]> = {};
+    for (const f of files) {
+      if (f.parent_id) (map[f.parent_id] ??= []).push(f);
+    }
+    return map;
+  }, [files]);
 
   return (
     <PageTransition>
@@ -459,32 +550,157 @@ export default function ResourcesPage() {
                             {/* 中身（開いたとき） */}
                             {open && (
                               <div className="px-4 pb-4 border-t border-white/10 pt-3">
-                                {isText ? (
-                                  <p className="text-sm text-white/85 whitespace-pre-wrap leading-relaxed">
-                                    {f.body}
-                                  </p>
+                                {editId === f.id ? (
+                                  /* ── 編集フォーム（運営） ── */
+                                  <div className="space-y-3">
+                                    <input
+                                      type="text"
+                                      value={editTitle}
+                                      onChange={(e) => setEditTitle(e.target.value)}
+                                      placeholder="タイトル"
+                                      maxLength={200}
+                                      className="w-full rounded-lg border border-awa-glow/40 bg-awa-indigo-950/60 text-white px-3 py-2 text-sm focus:outline-none focus:border-awa-glow transition"
+                                    />
+                                    <input
+                                      type="date"
+                                      value={editDate}
+                                      onChange={(e) => setEditDate(e.target.value)}
+                                      className="w-full rounded-lg border border-awa-glow/40 bg-awa-indigo-950/60 text-white px-3 py-2 text-sm focus:outline-none focus:border-awa-glow transition"
+                                    />
+                                    <textarea
+                                      value={editBody}
+                                      onChange={(e) => setEditBody(e.target.value)}
+                                      rows={10}
+                                      maxLength={20000}
+                                      className="w-full rounded-lg border border-awa-glow/40 bg-awa-indigo-950/60 text-white px-3 py-2 text-sm focus:outline-none focus:border-awa-glow transition resize-y leading-relaxed"
+                                    />
+                                    <div className="flex justify-end gap-2">
+                                      <button
+                                        onClick={() => setEditId(null)}
+                                        className="text-xs text-white/50 hover:text-white/80 px-4 py-2 transition"
+                                      >
+                                        キャンセル
+                                      </button>
+                                      <button
+                                        onClick={saveEdit}
+                                        disabled={savingEdit || !editTitle.trim()}
+                                        className="rounded-xl border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow font-display tracking-[0.2em] text-sm px-6 py-2 transition"
+                                      >
+                                        {savingEdit ? "保存中…" : "保存する"}
+                                      </button>
+                                    </div>
+                                  </div>
                                 ) : (
-                                  <div className="flex items-center justify-between gap-3">
-                                    <span className="text-white/50 text-[11px] truncate">
-                                      {f.file_name}
-                                    </span>
-                                    <button
-                                      onClick={() => download(f.id)}
-                                      className="rounded-lg border border-neon-cyan/60 text-neon-cyan text-xs px-4 py-1.5 hover:bg-neon-cyan/10 transition shrink-0"
-                                    >
-                                      ダウンロード
-                                    </button>
-                                  </div>
-                                )}
-                                {adminMode && (
-                                  <div className="text-right mt-3">
-                                    <button
-                                      onClick={() => deleteFile(f.id)}
-                                      className="text-[11px] text-rose-300/70 hover:text-rose-300 transition"
-                                    >
-                                      削除
-                                    </button>
-                                  </div>
+                                  <>
+                                    {isText ? (
+                                      <p className="text-sm text-white/85 whitespace-pre-wrap leading-relaxed">
+                                        {f.body}
+                                      </p>
+                                    ) : isImage(f) && f.signed_url ? (
+                                      <a
+                                        href={f.signed_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block"
+                                      >
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                          src={f.signed_url}
+                                          alt={f.title}
+                                          className="w-full max-h-[420px] object-contain rounded-lg border border-white/10 bg-black/30"
+                                        />
+                                      </a>
+                                    ) : (
+                                      <div className="flex items-center justify-between gap-3">
+                                        <span className="text-white/50 text-[11px] truncate">
+                                          {f.file_name}
+                                        </span>
+                                        <button
+                                          onClick={() => download(f.id)}
+                                          className="rounded-lg border border-neon-cyan/60 text-neon-cyan text-xs px-4 py-1.5 hover:bg-neon-cyan/10 transition shrink-0"
+                                        >
+                                          ダウンロード
+                                        </button>
+                                      </div>
+                                    )}
+
+                                    {/* 添付写真サムネ */}
+                                    {(childrenOf[f.id] ?? []).length > 0 && (
+                                      <div className="mt-4">
+                                        <div className="text-[11px] tracking-[0.15em] text-white/50 mb-2">
+                                          📷 写真（{(childrenOf[f.id] ?? []).length}）
+                                        </div>
+                                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                          {(childrenOf[f.id] ?? []).map((ph) => (
+                                            <div key={ph.id} className="relative group">
+                                              <a
+                                                href={ph.signed_url ?? "#"}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="block aspect-square rounded-lg overflow-hidden border border-white/10 bg-black/30"
+                                              >
+                                                {ph.signed_url ? (
+                                                  // eslint-disable-next-line @next/next/no-img-element
+                                                  <img
+                                                    src={ph.signed_url}
+                                                    alt={ph.title}
+                                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                                  />
+                                                ) : (
+                                                  <span className="grid place-items-center w-full h-full text-[10px] text-white/40">
+                                                    画像
+                                                  </span>
+                                                )}
+                                              </a>
+                                              {adminMode && (
+                                                <button
+                                                  onClick={() => deleteFile(ph.id)}
+                                                  title="この写真を削除"
+                                                  className="absolute top-1 right-1 w-6 h-6 grid place-items-center rounded-full bg-black/70 text-rose-300 text-xs opacity-0 group-hover:opacity-100 transition"
+                                                >
+                                                  ×
+                                                </button>
+                                              )}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {/* 運営アクション */}
+                                    {adminMode && (
+                                      <div className="flex flex-wrap items-center justify-end gap-3 mt-4 pt-3 border-t border-white/5">
+                                        {isText && (
+                                          <button
+                                            onClick={() => startEdit(f)}
+                                            className="text-[11px] text-awa-glow/80 hover:text-awa-glow transition"
+                                          >
+                                            ✏️ 編集
+                                          </button>
+                                        )}
+                                        <label className="text-[11px] text-neon-cyan/80 hover:text-neon-cyan transition cursor-pointer">
+                                          {attachingId === f.id ? "追加中…" : "📷 写真を追加"}
+                                          <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            disabled={attachingId === f.id}
+                                            onChange={(e) => {
+                                              const fl = e.target.files?.[0];
+                                              if (fl) attachPhoto(f.id, fl);
+                                              e.target.value = "";
+                                            }}
+                                          />
+                                        </label>
+                                        <button
+                                          onClick={() => deleteFile(f.id)}
+                                          className="text-[11px] text-rose-300/70 hover:text-rose-300 transition"
+                                        >
+                                          🗑 削除
+                                        </button>
+                                      </div>
+                                    )}
+                                  </>
                                 )}
                               </div>
                             )}
