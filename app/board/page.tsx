@@ -59,10 +59,33 @@ export default function BoardPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 運営モード（投稿・削除）
+  // 運営モード（投稿・削除）— 合言葉はサーバーで検証してから有効化する
   const [adminPass, setAdminPass] = useState("");
   const [adminOpen, setAdminOpen] = useState(false);
-  const adminMode = adminOpen && adminPass.trim().length > 0;
+  const [adminVerified, setAdminVerified] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [adminError, setAdminError] = useState<string | null>(null);
+  const adminMode = adminOpen && adminVerified;
+
+  async function verifyAdmin() {
+    const p = adminPass.trim();
+    if (!p || verifying) return;
+    setVerifying(true);
+    setAdminError(null);
+    try {
+      const ok = await rpc<boolean>("verify_admin", { pass: p });
+      if (ok) {
+        setAdminVerified(true);
+      } else {
+        setAdminVerified(false);
+        setAdminError("運営合言葉が違います。");
+      }
+    } catch {
+      setAdminVerified(false);
+      setAdminError("確認に失敗しました。通信環境をご確認ください。");
+    }
+    setVerifying(false);
+  }
 
   // 投稿フォーム
   const [category, setCategory] = useState<Notice["category"]>("practice");
@@ -656,24 +679,60 @@ export default function BoardPage() {
                   >
                     運営メニュー（連絡の追加・削除）
                   </button>
-                ) : (
+                ) : adminVerified ? (
                   <div className="flex flex-wrap items-center gap-3">
-                    <input
-                      type="password"
-                      value={adminPass}
-                      onChange={(e) => setAdminPass(e.target.value)}
-                      placeholder="運営合言葉"
-                      className="grow rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2 text-sm focus:outline-none focus:border-awa-glow/60 transition"
-                    />
+                    <span className="text-xs text-awa-glow">✓ 運営モード中</span>
                     <button
                       onClick={() => {
                         setAdminOpen(false);
                         setAdminPass("");
+                        setAdminVerified(false);
+                        setAdminError(null);
                       }}
                       className="text-xs text-white/40 hover:text-white/70 transition"
                     >
-                      閉じる
+                      運営モードを終了
                     </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <input
+                        type="password"
+                        value={adminPass}
+                        onChange={(e) => {
+                          setAdminPass(e.target.value);
+                          setAdminVerified(false);
+                          setAdminError(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") verifyAdmin();
+                        }}
+                        placeholder="運営合言葉"
+                        className="grow rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2 text-sm focus:outline-none focus:border-awa-glow/60 transition"
+                      />
+                      <button
+                        onClick={verifyAdmin}
+                        disabled={verifying || !adminPass.trim()}
+                        className="rounded-lg border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow text-sm px-5 py-2 transition"
+                      >
+                        {verifying ? "確認中…" : "確認"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setAdminOpen(false);
+                          setAdminPass("");
+                          setAdminVerified(false);
+                          setAdminError(null);
+                        }}
+                        className="text-xs text-white/40 hover:text-white/70 transition"
+                      >
+                        閉じる
+                      </button>
+                    </div>
+                    {adminError && (
+                      <p className="text-xs text-rose-300">{adminError}</p>
+                    )}
                   </div>
                 )}
               </div>
