@@ -557,6 +557,7 @@ export const legendPlayers: Player[] = [
       strategy: 75,
     },
   },
+  { name: "ゲンチ", division: "athlete", game: "SF6" },
   {
     name: "EXE",
     division: "athlete",
@@ -614,6 +615,37 @@ export const legendPlayers: Player[] = [
       aggression: 50,
       patience: 75,
       teamwork: 70,
+      strategy: 85,
+    },
+  },
+  {
+    name: "isikoro",
+    division: "athlete",
+    game: "PUYO",
+    role: "ぷよぷよ / 中盤重視型",
+    tagline: "本線を壊してでも、対応で勝ち切る。",
+    socials: {
+      x: "https://x.com/IsikoroPuyo",
+    },
+    bio: {
+      headline:
+        "ぷよぷよプレーヤー。中盤の攻防を重視し、本線を破壊してでも相手に合わせにいく対応力が持ち味。",
+      paragraphs: [
+        "プレイスタイルは中盤重視型。決め打ちに頼らず、相手の動きを見て局面ごとに最善手を選ぶ。",
+        "最大の強みは「本線を破壊してでも対応する勇気」。組み上げた連鎖をためらわず崩し、その場の正解を取りにいく判断力で戦う。",
+      ],
+      highlights: [
+        "主戦：ぷよぷよ",
+        "プレイスタイル：中盤重視型",
+        "強み：本線を破壊してでも対応する勇気",
+        "好きなゲーム：ぷよぷよ / Backpack Battles / Oxygen Not Included",
+      ],
+      message: "切磋琢磨して参ります。",
+    },
+    stats: {
+      aggression: 70,
+      patience: 65,
+      teamwork: 60,
       strategy: 85,
     },
   },
