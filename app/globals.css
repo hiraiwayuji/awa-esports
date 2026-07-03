@@ -30,6 +30,11 @@ body {
   background-attachment: fixed;
 }
 
+/* 日本語をフレーズ単位で折り返す（対応ブラウザのみ・意味の切れ目ルール） */
+h1, h2, h3, h4, h5, h6, p {
+  word-break: auto-phrase;
+}
+
 ::selection {
   background: rgba(45, 255, 183, 0.4);
   color: #fff;
@@ -114,4 +119,230 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
+}
+
+/* ============================================
+   PREMIUM LAYERS — noise / aurora / scanlines
+   ============================================ */
+
+/* Film grain (SVG feTurbulence, data URI) */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* CRT scanlines — 非常に薄く */
+.scanline-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  pointer-events: none;
+  opacity: 0.35;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.12) 3px,
+    rgba(0, 0, 0, 0.12) 4px
+  );
+}
+
+/* Aurora drifting blobs */
+.aurora-layer {
+  position: fixed;
+  inset: -20%;
+  z-index: -15;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.5;
+}
+.aurora-blob {
+  position: absolute;
+  border-radius: 9999px;
+  mix-blend-mode: screen;
+}
+.aurora-a {
+  width: 55vw;
+  height: 55vw;
+  left: -10%;
+  top: -5%;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.28), transparent 65%);
+  animation: aurora-drift-a 26s ease-in-out infinite alternate;
+}
+.aurora-b {
+  width: 48vw;
+  height: 48vw;
+  right: -8%;
+  top: 20%;
+  background: radial-gradient(circle, rgba(45, 255, 183, 0.25), transparent 65%);
+  animation: aurora-drift-b 32s ease-in-out infinite alternate;
+}
+.aurora-c {
+  width: 60vw;
+  height: 40vw;
+  left: 20%;
+  bottom: -15%;
+  background: radial-gradient(circle, rgba(40, 61, 161, 0.35), transparent 65%);
+  animation: aurora-drift-c 38s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift-a {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(12vw, 8vh) scale(1.15); }
+}
+@keyframes aurora-drift-b {
+  from { transform: translate(0, 0) scale(1.1); }
+  to { transform: translate(-10vw, -6vh) scale(0.95); }
+}
+@keyframes aurora-drift-c {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(-8vw, -10vh) scale(1.2); }
+}
+
+/* Cursor spotlight（JSで --mx / --my を更新） */
+.cursor-glow {
+  position: fixed;
+  inset: 0;
+  z-index: -14;
+  pointer-events: none;
+  background: radial-gradient(
+    600px circle at var(--mx, 50%) var(--my, 30%),
+    rgba(0, 240, 255, 0.07),
+    transparent 70%
+  );
+}
+
+/* ============================================
+   HUD / esports details
+   ============================================ */
+
+/* HUDコーナーブラケット */
+.hud-corners {
+  position: relative;
+}
+.hud-corners::before,
+.hud-corners::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transition: all 0.4s ease;
+}
+.hud-corners::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid rgba(0, 240, 255, 0.8);
+  border-left: 2px solid rgba(0, 240, 255, 0.8);
+}
+.hud-corners::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid rgba(45, 255, 183, 0.8);
+  border-right: 2px solid rgba(45, 255, 183, 0.8);
+}
+.hud-corners:hover::before,
+.hud-corners:hover::after {
+  width: 32px;
+  height: 32px;
+}
+
+/* アウトライン（縁取り）テキスト */
+.text-stroke-cyan {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(0, 240, 255, 0.35);
+}
+.text-stroke-white {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.18);
+}
+
+/* 回転する光の枠（conic gradient） */
+.spin-border {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.spin-border::before {
+  content: "";
+  position: absolute;
+  inset: -150%;
+  z-index: -1;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 300deg,
+    #00f0ff 330deg,
+    #2dffb7 345deg,
+    transparent 360deg
+  );
+  animation: border-spin 5s linear infinite;
+}
+.spin-border::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: rgba(7, 11, 31, 0.92);
+}
+@keyframes border-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* シャインスイープ（ボタン等） */
+.shine-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.shine-sweep::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  bottom: -50%;
+  left: -80%;
+  width: 40%;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 80%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+.shine-sweep:hover::after {
+  left: 140%;
+}
+
+/* グリッチ点滅（ホバーで再生） */
+@keyframes glitch-shift {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-3px, 1px); }
+  40% { transform: translate(3px, -1px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+}
+.glitch-hover:hover::before {
+  animation: glitch-shift 0.35s steps(2) infinite;
+}
+.glitch-hover:hover::after {
+  animation: glitch-shift 0.35s steps(2) infinite reverse;
+}
+
+/* motion配慮 */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-a,
+  .aurora-b,
+  .aurora-c,
+  .spin-border::before,
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none !important;
+  }
 }

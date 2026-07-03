@@ -27,7 +27,7 @@ export default function NeonButton({
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.97 }}
       className={clsx(
-        "relative inline-flex items-center gap-3 px-7 py-3.5 font-display tracking-[0.25em] text-xs uppercase rounded-full overflow-hidden neon-border group",
+        "relative inline-flex items-center gap-3 px-7 py-3.5 font-display tracking-[0.25em] text-xs uppercase rounded-full overflow-hidden neon-border shine-sweep group",
         variant === "primary" &&
           "bg-awa-indigo-900/60 text-white hover:shadow-neon",
         variant === "ghost" && "bg-transparent text-neon-cyan",

@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ParticleBackground from "@/components/ParticleBackground";
+import CursorGlow from "@/components/CursorGlow";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://awa-esports.vercel.app"),
@@ -61,7 +62,15 @@ export default function RootLayout({
       </head>
       <body className="relative overflow-x-hidden">
         <ParticleBackground />
+        <div className="aurora-layer" aria-hidden>
+          <div className="aurora-blob aurora-a" />
+          <div className="aurora-blob aurora-b" />
+          <div className="aurora-blob aurora-c" />
+        </div>
+        <CursorGlow />
         <div className="fixed inset-0 -z-10 cyber-grid" />
+        <div className="noise-overlay" aria-hidden />
+        <div className="scanline-overlay" aria-hidden />
         <Navbar />
         <main className="relative z-10">{children}</main>
         <Footer />

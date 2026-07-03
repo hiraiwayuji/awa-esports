@@ -14,6 +14,53 @@ const stats = [
   { icon: Flame, label: "BASE", value: "TOKUSHIMA" },
 ];
 
+/** #00F0FF → #2DFFB7 を文字数で補間 */
+function lerpGlow(t: number) {
+  const a = [0x00, 0xf0, 0xff];
+  const b = [0x2d, 0xff, 0xb7];
+  const c = a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+/** 1文字ずつ跳ね上がるステガー見出し */
+function StaggerChars({
+  text,
+  delay = 0,
+  gradient = false,
+  className = "",
+}: {
+  text: string;
+  delay?: number;
+  gradient?: boolean;
+  className?: string;
+}) {
+  const chars = Array.from(text);
+  return (
+    <span className={`inline-block ${className}`}>
+      {chars.map((ch, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0, y: 34, rotateX: 80 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{
+            duration: 0.55,
+            delay: delay + i * 0.055,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="inline-block"
+          style={
+            gradient
+              ? { color: lerpGlow(chars.length > 1 ? i / (chars.length - 1) : 0) }
+              : undefined
+          }
+        >
+          {ch}
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
 export default function HomePage() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -83,6 +130,40 @@ export default function HomePage() {
           </motion.svg>
         </motion.div>
 
+        {/* Diagonal light beams */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+          <motion.div
+            initial={{ x: "-120%" }}
+            animate={{ x: "220%" }}
+            transition={{ duration: 7, repeat: Infinity, ease: "linear", delay: 1 }}
+            className="absolute top-0 bottom-0 left-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-neon-cyan/[0.05] to-transparent"
+          />
+          <motion.div
+            initial={{ x: "-120%" }}
+            animate={{ x: "220%" }}
+            transition={{ duration: 11, repeat: Infinity, ease: "linear", delay: 3.5 }}
+            className="absolute top-0 bottom-0 left-0 w-1/4 -skew-x-12 bg-gradient-to-r from-transparent via-awa-glow/[0.05] to-transparent"
+          />
+        </div>
+
+        {/* 縦書きアクセント */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4, duration: 1 }}
+          className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-4 pointer-events-none"
+          aria-hidden
+        >
+          <span className="h-16 w-px bg-gradient-to-b from-transparent to-neon-cyan/50" />
+          <span
+            className="text-[10px] font-display tracking-[0.5em] text-white/30"
+            style={{ writingMode: "vertical-rl" }}
+          >
+            TOKUSHIMA — JAPAN
+          </span>
+          <span className="h-16 w-px bg-gradient-to-t from-transparent to-awa-glow/50" />
+        </motion.div>
+
         <div className="relative z-10 mx-auto max-w-7xl px-5 md:px-8 pt-20 pb-32 grid lg:grid-cols-12 gap-8 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -97,28 +178,19 @@ export default function HomePage() {
               </span>
             </div>
 
-            <h1 className="font-display font-black leading-[0.95] text-[8vw] md:text-[5.8vw] lg:text-[5rem] tracking-tight">
+            <h1 className="font-display font-black leading-[0.95] text-[8vw] md:text-[5.8vw] lg:text-[5rem] tracking-tight [perspective:600px]">
+              <span className="block text-white whitespace-nowrap">
+                <StaggerChars text="眠れる輝きを" delay={0.1} />
+              </span>
+              <span className="block whitespace-nowrap">
+                <StaggerChars text="目覚めさせる" delay={0.45} gradient />
+              </span>
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.7, delay: 0.1 }}
-                className="block text-white whitespace-nowrap"
-              >
-                眠れる輝きを
-              </motion.span>
-              <motion.span
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.7, delay: 0.25 }}
-                className="block whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-neon-cyan to-awa-glow"
-              >
-                目覚めさせる
-              </motion.span>
-              <motion.span
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.7, delay: 0.4 }}
-                className="block text-white/30 text-[6vw] md:text-[3.5vw] lg:text-5xl mt-3 tracking-[0.1em]"
+                transition={{ duration: 0.7, delay: 0.9 }}
+                data-text="AWAKEN YOUR GLOW."
+                className="glitch glitch-hover block text-white/30 text-[6vw] md:text-[3.5vw] lg:text-5xl mt-3 tracking-[0.1em] cursor-default"
               >
                 AWAKEN YOUR GLOW.
               </motion.span>
@@ -156,8 +228,17 @@ export default function HomePage() {
             transition={{ delay: 0.4, duration: 1 }}
             className="md:col-span-4 relative"
           >
-            <div className="relative aspect-square rounded-2xl border border-neon-cyan/30 bg-awa-indigo-900/40 backdrop-blur-md p-6 overflow-hidden neon-border">
-              <div className="text-[10px] font-display tracking-[0.3em] text-neon-cyan mb-4">
+            <div className="hud-corners relative aspect-square rounded-2xl border border-neon-cyan/30 bg-awa-indigo-900/40 backdrop-blur-md p-6 overflow-hidden neon-border">
+              {/* スキャンライン */}
+              <div
+                aria-hidden
+                className="absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-neon-cyan/10 to-transparent animate-scan-line pointer-events-none"
+              />
+              <div className="flex items-center gap-2 text-[10px] font-display tracking-[0.3em] text-neon-cyan mb-4">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-awa-glow opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-awa-glow" />
+                </span>
                 SYSTEM STATUS / ONLINE
               </div>
               <div className="space-y-3">
@@ -187,6 +268,7 @@ export default function HomePage() {
                 {">"} CONNECTING TO 阿波.NETWORK
                 <br />
                 {">"} READY.
+                <span className="inline-block w-2 h-3 ml-1 bg-awa-glow/70 align-middle animate-pulse" />
               </div>
             </div>
           </motion.div>
@@ -203,8 +285,8 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* MARQUEE */}
-      <section className="relative py-12 border-y border-white/10 overflow-hidden bg-awa-indigo-900/30">
+      {/* MARQUEE — 2段逆走 */}
+      <section className="relative py-10 border-y border-white/10 overflow-hidden bg-awa-indigo-900/30">
         <div className="flex whitespace-nowrap animate-marquee">
           {Array.from({ length: 2 }).map((_, k) => (
             <div key={k} className="flex items-center gap-12 pr-12">
@@ -232,6 +314,29 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+        <div className="mt-3 flex whitespace-nowrap animate-marquee-reverse" aria-hidden>
+          {Array.from({ length: 2 }).map((_, k) => (
+            <div key={k} className="flex items-center gap-12 pr-12">
+              {[
+                "眠れる輝きを目覚めさせる",
+                "◆",
+                "AWAKEN YOUR GLOW",
+                "◆",
+                "徳島発 eスポーツチーム",
+                "◆",
+                "挑戦する全ての人へ",
+                "◆",
+              ].map((t, i) => (
+                <span
+                  key={i}
+                  className="font-display font-black text-2xl md:text-4xl tracking-[0.15em] text-stroke-cyan hover:text-neon-cyan/60 transition-colors"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* PILLARS */}
@@ -241,7 +346,7 @@ export default function HomePage() {
             {[
               {
                 title: "OPEN DOOR",
-                jp: "誰でもメンバーになれる",
+                jp: ["誰でも", "メンバーに", "なれる"],
                 desc: "経験ゼロでも、年齢に関係なく。徳島で挑戦したい全ての人へ門戸を開く。",
                 textClass: "text-neon-cyan",
                 bgClass: "bg-neon-cyan",
@@ -249,7 +354,7 @@ export default function HomePage() {
               },
               {
                 title: "RANK SYSTEM",
-                jp: "成長を後押しするランク制度",
+                jp: ["成長を", "後押しする", "ランク制度"],
                 desc: "プレースキル・貢献度・人柄。多面的な評価で伸びるランク制度を導入。",
                 textClass: "text-awa-glow",
                 bgClass: "bg-awa-glow",
@@ -257,7 +362,7 @@ export default function HomePage() {
               },
               {
                 title: "LOCAL ROOTED",
-                jp: "徳島と共に育つ",
+                jp: ["徳島と共に", "育つ"],
                 desc: "祭りも、自然も、文化も。徳島の魅力と、新しい競技を結びつける。",
                 textClass: "text-awa-glow-deep",
                 bgClass: "bg-awa-glow-deep",
@@ -271,15 +376,26 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -8 }}
-                className={`group relative rounded-2xl border border-white/10 bg-awa-indigo-900/40 backdrop-blur p-8 ${p.hoverBorder} transition-all duration-500`}
+                className={`group relative rounded-2xl border border-white/10 bg-awa-indigo-900/40 backdrop-blur p-8 overflow-hidden ${p.hoverBorder} transition-all duration-500`}
               >
+                {/* ゴースト数字 */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -top-6 -right-3 font-display font-black text-[7rem] leading-none text-white/5 group-hover:text-white/10 transition-colors duration-500 select-none"
+                >
+                  {`0${i + 1}`}
+                </span>
                 <div
                   className={`text-[11px] font-display tracking-[0.3em] mb-4 ${p.textClass}`}
                 >
                   {`0${i + 1}`} / {p.title}
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                  {p.jp}
+                  {p.jp.map((seg) => (
+                    <span key={seg} className="inline-block">
+                      {seg}
+                    </span>
+                  ))}
                 </h3>
                 <p className="text-sm text-white/60 leading-relaxed">{p.desc}</p>
                 <span
@@ -333,7 +449,7 @@ export default function HomePage() {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative rounded-3xl border border-neon-cyan/30 bg-awa-indigo-900/50 backdrop-blur-md p-12 md:p-16 overflow-hidden neon-border"
+            className="spin-border relative rounded-3xl border border-neon-cyan/30 bg-awa-indigo-900/50 backdrop-blur-md p-12 md:p-16"
           >
             <div className="absolute inset-0 bg-radial-glow opacity-50" />
             <div className="relative z-10">

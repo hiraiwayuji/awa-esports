@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import clsx from "clsx";
@@ -22,6 +22,12 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 30);
@@ -43,6 +49,11 @@ export default function Navbar() {
           : "bg-transparent",
       )}
     >
+      {/* スクロール進捗バー */}
+      <motion.div
+        style={{ scaleX: progress }}
+        className="absolute top-0 left-0 right-0 h-[2px] origin-left bg-gradient-to-r from-neon-cyan via-awa-glow to-neon-cyan"
+      />
       <div className="mx-auto max-w-7xl px-5 md:px-8 h-16 md:h-20 flex items-center justify-between">
         <Link href="/" className="group flex items-center gap-3">
           <motion.div

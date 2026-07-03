@@ -64,6 +64,10 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        "marquee-reverse": {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0)" },
+        },
       },
       animation: {
         "pulse-slow": "pulse-slow 3s ease-in-out infinite",
@@ -71,6 +75,7 @@ const config: Config = {
         "float": "float 4s ease-in-out infinite",
         "shimmer": "shimmer 6s linear infinite",
         "marquee": "marquee 30s linear infinite",
+        "marquee-reverse": "marquee-reverse 36s linear infinite",
       },
     },
   },

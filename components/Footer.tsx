@@ -15,8 +15,15 @@ const socials: { Icon: LucideIcon; href: string; label: string }[] = [
 
 export default function Footer() {
   return (
-    <footer className="relative z-10 mt-32 border-t border-neon-cyan/20 bg-awa-indigo-950/80 backdrop-blur-md">
+    <footer className="relative z-10 mt-32 border-t border-neon-cyan/20 bg-awa-indigo-950/80 backdrop-blur-md overflow-hidden">
       <div className="divider-neon" />
+      {/* 透かしロゴ */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-display font-black text-[13vw] leading-none text-stroke-white select-none"
+      >
+        AWAKEN GLOW
+      </div>
       <div className="mx-auto max-w-7xl px-5 md:px-8 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div className="md:col-span-2">
           <div className="font-display font-black tracking-[0.2em] text-lg text-white">
