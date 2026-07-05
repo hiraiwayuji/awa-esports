@@ -563,6 +563,9 @@ export const legendPlayers: Player[] = [
     game: "SF6",
     role: "STREET FIGHTER 6 / ぷよぷよ",
     tagline: "崩して攻める、徳島eスポーツの力に。",
+    socials: {
+      x: "https://x.com/genchi_sf_puyo",
+    },
     bio: {
       headline: "ストリートファイター6とぷよぷよの二刀流プレーヤー。格ゲーは攻め、ぷよは大連鎖と、攻撃的なスタイルで徳島シーンに立つ。",
       paragraphs: [
