@@ -60,6 +60,14 @@ const mdxComponents = {
     <strong className="text-white font-bold" {...props} />
   ),
   hr: () => <hr className="my-8 border-white/10" />,
+  img: (props: React.ComponentProps<"img">) => (
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+    <img
+      className="my-6 w-full rounded-xl border border-neon-cyan/20 shadow-[0_0_30px_rgba(0,240,255,0.12)]"
+      loading="lazy"
+      {...props}
+    />
+  ),
 };
 
 export async function generateStaticParams() {
@@ -125,6 +133,17 @@ export default async function NewsDetailPage({ params }: Props) {
           <p className="text-base md:text-lg text-white/60 leading-relaxed border-l-2 border-neon-cyan/50 pl-4">
             {article.excerpt}
           </p>
+
+          {article.cover && (
+            <div className="mt-8 overflow-hidden rounded-2xl border border-neon-cyan/20 shadow-[0_0_40px_rgba(0,240,255,0.15)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={article.cover}
+                alt={article.title}
+                className="w-full object-cover"
+              />
+            </div>
+          )}
 
           {(article.participants || article.partners) && (
             <div className="mt-8 flex flex-wrap gap-3 text-xs text-white/50">
