@@ -557,7 +557,31 @@ export const legendPlayers: Player[] = [
       strategy: 75,
     },
   },
-  { name: "ゲンチ", division: "athlete", game: "SF6" },
+  {
+    name: "ゲンチ",
+    division: "athlete",
+    game: "SF6",
+    role: "STREET FIGHTER 6 / ぷよぷよ",
+    tagline: "崩して攻める、徳島eスポーツの力に。",
+    bio: {
+      headline: "ストリートファイター6とぷよぷよの二刀流プレーヤー。格ゲーは攻め、ぷよは大連鎖と、攻撃的なスタイルで徳島シーンに立つ。",
+      paragraphs: [
+        "格闘ゲームは相手の防御を崩すプレイが好きな攻め重視型。ぷよぷよでは大連鎖タイプ寄りに組み立てる、二つの顔を持つプレーヤー。",
+      ],
+      highlights: [
+        "主戦：STREET FIGHTER 6 / ぷよぷよ",
+        "スタイル：攻め重視（格ゲー）／大連鎖タイプ寄り（ぷよぷよ）",
+        "好きなゲーム：ストリートファイター6 / ぷよぷよ / 北斗の拳 / アルカナハートシリーズ",
+      ],
+      message: "徳島のeスポーツ業界の力になれればと思います。",
+    },
+    stats: {
+      aggression: 80,
+      patience: 60,
+      teamwork: 60,
+      strategy: 75,
+    },
+  },
   {
     name: "EXE",
     division: "athlete",
