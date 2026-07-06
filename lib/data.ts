@@ -224,12 +224,13 @@ export const staff: StaffMember[] = [
   {
     id: "STAFF-009",
     role: "専属パフォーマンスアナリスト / COGNITIVE PERFORMANCE ANALYST",
-    name: "かけはし",
+    name: "eSPAかけはし",
     tagline: "勝ち筋を、データで調律する。",
     icon: BrainCircuit,
     accent: "violet",
     rank: "S",
     callsign: "ESPA",
+    avatarUrl: "/members/ESPA.jpg",
     bio: {
       headline:
         "eSPA 代表。15年の臨床知 × データサイエンスで、選手のコンディションをロジカルに調律する AWAKEN GLOW 専属アナリスト。",
