@@ -18,6 +18,8 @@ type Row = {
   events: string[];
   events_other: string;
   expectations: string;
+  memo: string;
+  photo_ng: boolean;
 };
 
 const SINGLE_QUESTIONS: { key: keyof Row; label: string }[] = [
@@ -122,6 +124,8 @@ export default function SurveyAdminPage() {
       "④選手登録希望",
       "⑤期待イベント",
       "⑥期待・要望",
+      "⑦写真掲載NG",
+      "⑧メモ",
     ];
     const esc = (s: string) => `"${(s ?? "").replace(/"/g, '""')}"`;
     const lines = rows.map((r) =>
@@ -136,6 +140,8 @@ export default function SurveyAdminPage() {
         r.registration,
         (r.events ?? []).join(" / "),
         r.expectations,
+        r.photo_ng ? "NG" : "OK",
+        r.memo,
       ]
         .map(esc)
         .join(","),
@@ -196,13 +202,20 @@ export default function SurveyAdminPage() {
             <div className="mt-8 space-y-8">
               {/* サマリー */}
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-white/85 text-sm">
-                  回答数：
-                  <span className="text-awa-glow font-display text-xl mx-1.5">
-                    {rows.length}
-                  </span>
-                  件
-                </p>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <p className="text-white/85 text-sm">
+                    回答数：
+                    <span className="text-awa-glow font-display text-xl mx-1.5">
+                      {rows.length}
+                    </span>
+                    件
+                  </p>
+                  {rows.some((r) => r.photo_ng) && (
+                    <span className="rounded-full border border-rose-400/50 bg-rose-500/10 text-rose-200 px-3 py-1 text-xs">
+                      📷 写真NG：{rows.filter((r) => r.photo_ng).length}名
+                    </span>
+                  )}
+                </div>
                 {rows.length > 0 && (
                   <button
                     onClick={downloadCsv}
@@ -275,8 +288,15 @@ export default function SurveyAdminPage() {
                         className="rounded-xl border border-white/10 bg-awa-indigo-950/50 p-5 text-sm"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                          <span className="font-bold text-white">
-                            {r.name || "（無記名）"}
+                          <span className="flex items-center gap-2">
+                            <span className="font-bold text-white">
+                              {r.name || "（無記名）"}
+                            </span>
+                            {r.photo_ng && (
+                              <span className="rounded-full border border-rose-400/50 bg-rose-500/10 text-rose-200 px-2 py-0.5 text-[10px] tracking-wide">
+                                📷 写真NG
+                              </span>
+                            )}
                           </span>
                           <span className="text-white/40 text-xs">
                             {new Date(r.created_at).toLocaleString("ja-JP")}
@@ -299,6 +319,10 @@ export default function SurveyAdminPage() {
                           {r.expectations && (
                             <Item label="⑥ 期待・要望">{r.expectations}</Item>
                           )}
+                          <Item label="⑦ 写真掲載">
+                            {r.photo_ng ? "掲載NG（載せないで）" : "OK"}
+                          </Item>
+                          {r.memo && <Item label="⑧ メモ">{r.memo}</Item>}
                         </dl>
                         <div className="mt-3 text-right">
                           <button

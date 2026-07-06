@@ -30,6 +30,8 @@ type FormState = {
   events: string[];
   eventsOther: string;
   expectations: string;
+  photoNg: boolean;
+  memo: string;
 };
 
 const INITIAL: FormState = {
@@ -43,6 +45,8 @@ const INITIAL: FormState = {
   events: [],
   eventsOther: "",
   expectations: "",
+  photoNg: false,
+  memo: "",
 };
 
 export default function SurveyPage() {
@@ -264,6 +268,32 @@ export default function SurveyPage() {
                   onChange={(v) => update("expectations", v)}
                   rows={4}
                   placeholder="ポジティブなことも、こうしてほしいという要望も大歓迎です。"
+                />
+              </Field>
+
+              <div>
+                <FieldLabel>
+                  <span className="text-awa-glow mr-1.5">⑦</span>
+                  写真の掲載について
+                </FieldLabel>
+                <p className="text-[11px] text-white/45 -mt-1 mb-2">
+                  練習会やイベントの写真を、SNS・公式サイトに掲載することがあります。
+                  掲載してほしくない方はチェックしてください（チェックがなければ掲載OKとします）。
+                </p>
+                <CheckRow
+                  checked={form.photoNg}
+                  onChange={(v) => update("photoNg", v)}
+                >
+                  自分が写った写真の掲載はNG（SNS・HPに載せないでほしい）
+                </CheckRow>
+              </div>
+
+              <Field label="⑧ メモ・自由記入（任意）">
+                <TextArea
+                  value={form.memo}
+                  onChange={(v) => update("memo", v)}
+                  rows={3}
+                  placeholder="運営に伝えたいこと・連絡事項など、何でもどうぞ。"
                 />
               </Field>
 

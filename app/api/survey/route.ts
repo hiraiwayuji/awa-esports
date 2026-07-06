@@ -22,6 +22,8 @@ const SurveySchema = z.object({
   events: z.array(z.string().trim().max(80)).max(20).optional().default([]),
   eventsOther: z.string().trim().max(500).optional().default(""),
   expectations: z.string().trim().max(4000).optional().default(""),
+  memo: z.string().trim().max(4000).optional().default(""),
+  photoNg: z.boolean().optional().default(false),
 });
 
 type SurveyPayload = z.infer<typeof SurveySchema>;
@@ -103,6 +105,8 @@ function buildHtml(p: SurveyPayload, agreedAt: string): string {
     ${row("④ 選手登録を希望するか", REGISTRATION_LABEL[p.registration])}
     ${row("⑤ 期待するイベント", eventsText(p))}
     ${row("⑥ 今後の期待・要望", p.expectations || "—")}
+    ${row("⑦ 写真の掲載", p.photoNg ? "⚠ 掲載NG（載せないでほしい）" : "OK")}
+    ${row("⑧ メモ・自由記入", p.memo || "—")}
   </table>
   <p style="margin-top:16px;font-size:12px;color:#666;">回答日時：${escapeHtml(agreedAt)} (JST)</p>
 </body></html>
@@ -123,6 +127,9 @@ function buildText(p: SurveyPayload, agreedAt: string): string {
 ⑤ 期待するイベント: ${eventsText(p)}
 ⑥ 今後の期待・要望:
 ${p.expectations || "—"}
+⑦ 写真の掲載: ${p.photoNg ? "掲載NG（載せないでほしい）" : "OK"}
+⑧ メモ・自由記入:
+${p.memo || "—"}
 
 回答日時: ${agreedAt} (JST)
 `;
@@ -218,6 +225,8 @@ export async function POST(req: Request) {
         events,
         events_other: payload.eventsOther || "",
         expectations: payload.expectations || "",
+        memo: payload.memo || "",
+        photo_ng: payload.photoNg,
       }),
     });
     if (!res.ok) {
