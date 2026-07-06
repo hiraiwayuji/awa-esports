@@ -230,7 +230,7 @@ export const staff: StaffMember[] = [
     accent: "violet",
     rank: "S",
     callsign: "ESPA",
-    avatarUrl: "/members/ESPA.jpg",
+    avatarUrl: "/members/KAKEHASHI.jpg",
     bio: {
       headline:
         "eSPA 代表。15年の臨床知 × データサイエンスで、選手のコンディションをロジカルに調律する AWAKEN GLOW 専属アナリスト。",
