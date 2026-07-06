@@ -8,6 +8,7 @@ import {
   Mic2,
   Shield,
   Rocket,
+  BrainCircuit,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -217,6 +218,31 @@ export const staff: StaffMember[] = [
       ],
       links: [
         { label: "X (@toba_mituru)", url: "https://x.com/toba_mituru" },
+      ],
+    },
+  },
+  {
+    id: "STAFF-009",
+    role: "専属パフォーマンスアナリスト / COGNITIVE PERFORMANCE ANALYST",
+    name: "かけはし",
+    tagline: "勝ち筋を、データで調律する。",
+    icon: BrainCircuit,
+    accent: "violet",
+    rank: "S",
+    callsign: "ESPA",
+    bio: {
+      headline:
+        "eSPA 代表。15年の臨床知 × データサイエンスで、選手のコンディションをロジカルに調律する AWAKEN GLOW 専属アナリスト。",
+      paragraphs: [
+        "既存のデバイス操作ログから精密測定を行い、本人も自覚していない脳疲労やメンタルスタックを先回りして検知。エイム・フリックの吸い付き、盤面把握、立ち回りIQ、極限状態でのタイム予測などを数値で可視化する。",
+        "根性論でミスをカバーするのではなく、データを武器に、選手が大事な試合で120%のベストコンディションを叩き出せるよう影から徹底サポート。AWAKEN GLOW の限界突破を、ロジックで後押しする存在。",
+      ],
+      highlights: [
+        "eSPA 代表",
+        "15年の臨床知 × データサイエンス",
+        "操作ログから脳疲労・メンタルスタックを先回り検知",
+        "エイム / 盤面把握 / 立ち回りIQ / タイム予測を数値化",
+        "スト6特化のパフォーマンス解析システムを提供",
       ],
     },
   },
