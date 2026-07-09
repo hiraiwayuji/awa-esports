@@ -141,12 +141,12 @@ export default function SchedulePage() {
                           </p>
                         )}
                       </div>
-                      {ev.newsSlug && (
+                      {(ev.link || ev.newsSlug) && (
                         <Link
-                          href={`/news/${ev.newsSlug}`}
+                          href={ev.link ?? `/news/${ev.newsSlug}`}
                           className="shrink-0 text-[11px] font-display tracking-[0.3em] text-neon-cyan hover:text-awa-glow transition self-start"
                         >
-                          詳細 →
+                          {ev.linkLabel ?? "詳細 →"}
                         </Link>
                       )}
                     </div>

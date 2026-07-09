@@ -10,6 +10,10 @@ export type ActivityEvent = {
   title: string;
   note?: string;
   newsSlug?: string;
+  /** 詳細・募集ページへのリンク（newsSlug より優先） */
+  link?: string;
+  /** リンクのラベル（既定は「詳細 →」） */
+  linkLabel?: string;
 };
 
 export const DIVISION_LABEL: Record<
@@ -43,16 +47,17 @@ export const monthlyPolicy = {
 
 export const upcomingEvents: ActivityEvent[] = [
   {
-    id: "2026-05-18-practice-1",
-    date: "2026-05-18",
-    startTime: "—",
-    endTime: "—",
+    id: "2026-08-02-practice",
+    date: "2026-08-02",
+    startTime: "10:00",
+    endTime: "18:00",
     division: "JOINT",
-    venue: "徳島市内 eスポーツスペース",
-    title: "第1回 徳島練習会",
+    venue: "CyberSheeep 徳島中央校",
+    title: "8月 徳島練習会（参加者募集中）",
     note:
-      "プレタイトル：VALORANT / Apex Legends / Street Fighter 6（合同回）。詳細は運営から個別にご案内します。",
-    newsSlug: "2026-05-18-tokushima-practice-1",
+      "2部制／午前(10-14時)はロケットリーグ・オーバーウォッチなどをワイワイ、午後(14-18時)はスト6ガチ対戦。参加費：1枠2,000円/一日通し3,000円（高校生以下は各1,000円引）。初参加・観戦のみOK。",
+    link: "/events/0802",
+    linkLabel: "参加する →",
   },
 ];
 
