@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { AWA_SUPABASE_URL, awaSupabaseHeaders } from "@/lib/awa-supabase";
+import { practiceEventLabel } from "@/lib/practice-events";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,7 +12,7 @@ const TimeSlotEnum = z.enum(["morning", "afternoon", "full"]);
 
 const EventEntrySchema = z
   .object({
-    eventDate: z.string().trim().max(20).optional().default("2026-08-02"),
+    eventDate: z.string().trim().max(20),
     name: z.string().trim().min(1).max(80),
     contact: z.string().trim().min(1).max(200),
     attendType: AttendEnum,
@@ -84,7 +85,7 @@ function buildHtml(p: EventEntryPayload, meta: { agreedAt: string }): string {
     `<tr><th style="text-align:left;padding:8px;background:#f6f8fb;width:180px;vertical-align:top;">${escapeHtml(label)}</th><td style="padding:8px;white-space:pre-wrap;">${escapeHtml(value)}</td></tr>`;
   return `
 <!doctype html><html lang="ja"><body style="font-family:system-ui,'Hiragino Sans','Yu Gothic UI',sans-serif;color:#0a0e22;">
-  <h2 style="margin:0 0 12px;">AWAKEN GLOW — 8/2 練習会 参加申込</h2>
+  <h2 style="margin:0 0 12px;">AWAKEN GLOW — ${escapeHtml(practiceEventLabel(p.eventDate))} 練習会 参加申込</h2>
   <div style="background:#0a0e22;color:#fff;padding:14px 16px;border-radius:10px;margin:12px 0;">
     <div style="font-size:12px;letter-spacing:0.2em;color:#2DFFB7;">ENTRY</div>
     <div style="font-size:18px;font-weight:700;margin-top:4px;">${escapeHtml(p.name)}</div>
@@ -105,7 +106,7 @@ function buildHtml(p: EventEntryPayload, meta: { agreedAt: string }): string {
 }
 
 function buildText(p: EventEntryPayload, meta: { agreedAt: string }): string {
-  return `AWAKEN GLOW — 8/2 練習会 参加申込
+  return `AWAKEN GLOW — ${practiceEventLabel(p.eventDate)} 練習会 参加申込
 
 お名前: ${p.name}
 開催日: ${p.eventDate}
@@ -174,7 +175,7 @@ export async function POST(req: Request) {
     const { error } = await resend.emails.send({
       from,
       to,
-      subject: `[AWAKEN GLOW] 8/2 練習会 参加申込 — ${payload.name}`,
+      subject: `[AWAKEN GLOW] ${practiceEventLabel(payload.eventDate)} 練習会 参加申込 — ${payload.name}`,
       html: buildHtml(payload, { agreedAt }),
       text: buildText(payload, { agreedAt }),
     });
