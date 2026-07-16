@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const AttendEnum = z.enum(["first", "again", "watch"]);
+const TimeSlotEnum = z.enum(["morning", "afternoon", "full"]);
 
 const EventEntrySchema = z
   .object({
@@ -14,6 +15,9 @@ const EventEntrySchema = z
     name: z.string().trim().min(1).max(80),
     contact: z.string().trim().min(1).max(200),
     attendType: AttendEnum,
+    // 古いページを開いたままの人が送っても弾かれないよう任意にし、
+    // 未選択なら通知メールに「未選択」と出して運営が拾えるようにする。
+    timeSlot: TimeSlotEnum.optional(),
     titles: z.array(z.string().trim().max(80)).max(20).optional().default([]),
     titlesOther: z.string().trim().max(200).optional().default(""),
     isMinor: z.boolean().optional().default(false),
@@ -33,6 +37,16 @@ const ATTEND_LABEL: Record<EventEntryPayload["attendType"], string> = {
   again: "参加したことがある",
   watch: "観戦・見学だけ",
 };
+
+const SLOT_LABEL: Record<z.infer<typeof TimeSlotEnum>, string> = {
+  morning: "午前だけ（10:00–14:00）",
+  afternoon: "午後だけ（14:00–18:00）",
+  full: "一日通し（10:00–18:00）",
+};
+
+function slotText(p: EventEntryPayload): string {
+  return p.timeSlot ? SLOT_LABEL[p.timeSlot] : "未選択";
+}
 
 const rateBucket = new Map<string, number[]>();
 const WINDOW_MS = 5 * 60 * 1000;
@@ -79,6 +93,7 @@ function buildHtml(p: EventEntryPayload, meta: { agreedAt: string }): string {
     ${row("開催日", p.eventDate)}
     ${row("連絡先", p.contact)}
     ${row("参加のかたち", ATTEND_LABEL[p.attendType])}
+    ${row("参加する時間帯", slotText(p))}
     ${row("プレイしたいタイトル", titlesText(p))}
     ${row("18歳未満", p.isMinor ? `はい（保護者同意：${p.guardianConsent ? "✅" : "未"}）` : "いいえ")}
     ${row("ひとこと・質問", p.message || "—")}
@@ -96,6 +111,7 @@ function buildText(p: EventEntryPayload, meta: { agreedAt: string }): string {
 開催日: ${p.eventDate}
 連絡先: ${p.contact}
 参加のかたち: ${ATTEND_LABEL[p.attendType]}
+参加する時間帯: ${slotText(p)}
 プレイしたいタイトル: ${titlesText(p)}
 18歳未満: ${p.isMinor ? `はい（保護者同意：${p.guardianConsent ? "✅" : "未"}）` : "いいえ"}
 ひとこと・質問:
@@ -190,6 +206,7 @@ export async function POST(req: Request) {
         name: payload.name,
         contact: payload.contact,
         attend_type: ATTEND_LABEL[payload.attendType],
+        time_slot: payload.timeSlot ? SLOT_LABEL[payload.timeSlot] : "",
         titles,
         titles_other: payload.titlesOther || "",
         is_minor: payload.isMinor,

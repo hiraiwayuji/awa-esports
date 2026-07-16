@@ -59,6 +59,41 @@ const TIMETABLE = [
 ];
 
 type AttendType = "first" | "again" | "watch";
+type TimeSlot = "morning" | "afternoon" | "full";
+
+/**
+ * 参加時間帯の選択肢。ラベルは TIMETABLE / FEE と表記を揃えています。
+ * note / fee は語の途中で折り返らないよう、意味のかたまりごとに分けて持ちます。
+ */
+const SLOT_OPTIONS: {
+  value: TimeSlot;
+  title: string;
+  time: string;
+  note: string;
+  fee: string[];
+}[] = [
+  {
+    value: "morning",
+    title: "午前だけ参加",
+    time: "10:00 – 14:00",
+    note: "みんなでワイワイ枠",
+    fee: ["1枠 2,000円", "高校生以下 1,000円"],
+  },
+  {
+    value: "afternoon",
+    title: "午後だけ参加",
+    time: "14:00 – 18:00",
+    note: "スト6 ガチ対戦枠",
+    fee: ["1枠 2,000円", "高校生以下 1,000円"],
+  },
+  {
+    value: "full",
+    title: "一日通しで参加",
+    time: "10:00 – 18:00",
+    note: "午前＋午後",
+    fee: ["3,000円", "高校生以下 2,000円"],
+  },
+];
 
 const TITLE_OPTIONS = [
   "ストリートファイター6",
@@ -73,6 +108,7 @@ type FormState = {
   name: string;
   contact: string;
   attendType: AttendType | "";
+  timeSlot: TimeSlot | "";
   titles: string[];
   titlesOther: string;
   isMinor: boolean;
@@ -85,6 +121,7 @@ const INITIAL: FormState = {
   name: "",
   contact: "",
   attendType: "",
+  timeSlot: "",
   titles: [],
   titlesOther: "",
   isMinor: false,
@@ -104,6 +141,7 @@ export default function Event0802Page() {
     if (!form.name.trim()) return false;
     if (!form.contact.trim()) return false;
     if (!form.attendType) return false;
+    if (!form.timeSlot) return false;
     if (form.isMinor && !form.guardianConsent) return false;
     return true;
   }, [form, submitting]);
@@ -349,6 +387,26 @@ export default function Event0802Page() {
               />
 
               <div>
+                <FieldLabel>
+                  参加する時間帯
+                  <span className="text-awa-glow ml-1">*</span>
+                </FieldLabel>
+                <p className="text-[11px] text-white/45 -mt-1 mb-2">
+                  午前だけ・午後だけの参加もOKです。
+                </p>
+                <div className="grid gap-2.5">
+                  {SLOT_OPTIONS.map((s) => (
+                    <SlotRow
+                      key={s.value}
+                      option={s}
+                      active={form.timeSlot === s.value}
+                      onSelect={() => update("timeSlot", s.value)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div>
                 <FieldLabel>プレイしたいタイトル（いくつでも・任意）</FieldLabel>
                 <div className="grid gap-2.5 mt-1 sm:grid-cols-2">
                   {TITLE_OPTIONS.map((label) => (
@@ -480,6 +538,58 @@ function TimeBlock({
       </div>
       <p className={`mt-4 text-[12px] ${accentText}`}>{block.foot}</p>
     </div>
+  );
+}
+
+function SlotRow({
+  option,
+  active,
+  onSelect,
+}: {
+  option: (typeof SLOT_OPTIONS)[number];
+  active: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <label
+      className={`flex items-start gap-3 rounded-lg border px-4 py-3 cursor-pointer transition ${
+        active
+          ? "border-neon-cyan bg-neon-cyan/10 shadow-[0_0_0_3px_rgba(0,240,255,0.12)]"
+          : "border-white/15 bg-awa-indigo-950/60 hover:border-white/30"
+      }`}
+    >
+      <input
+        type="radio"
+        name="timeSlot"
+        checked={active}
+        onChange={onSelect}
+        className="mt-1 w-4 h-4 accent-neon-cyan cursor-pointer shrink-0"
+      />
+      <span className="min-w-0">
+        <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+          <span
+            className={`text-sm ${active ? "text-white" : "text-white/80"}`}
+          >
+            {option.title}
+          </span>
+          <span
+            className={`font-display font-bold text-[13px] ${
+              active ? "text-neon-cyan" : "text-white/50"
+            }`}
+          >
+            {option.time}
+          </span>
+        </span>
+        <span className="flex flex-wrap gap-x-2 text-[11px] text-white/45 mt-0.5 leading-relaxed">
+          <span className="whitespace-nowrap">{option.note}</span>
+          {option.fee.map((f) => (
+            <span key={f} className="whitespace-nowrap">
+              {f}
+            </span>
+          ))}
+        </span>
+      </span>
+    </label>
   );
 }
 
