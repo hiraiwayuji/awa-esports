@@ -373,6 +373,8 @@ function BoardTab({ adminPass }: { adminPass: string }) {
         posts.map((post) => {
           const names = attendMap[post.id] ?? [];
           const isEditing = editingId === post.id;
+          // 2部制なのは練習会だけ。大会・対戦会などは枠の概念を出さない。
+          const isTwoPart = post.category === "practice";
           return (
             <div key={post.id} className="rounded-xl border border-white/10 bg-awa-indigo-950/50 overflow-hidden">
               {isEditing ? (
@@ -416,7 +418,8 @@ function BoardTab({ adminPass }: { adminPass: string }) {
                     <div className="mt-3 pt-3 border-t border-white/10">
                       {names.length > 0 && (
                         <div className="text-[11px] text-white/50 mb-1.5">
-                          参加 {names.length}人（{partBreakdown(names)}）
+                          参加 {names.length}人
+                          {isTwoPart && `（${partBreakdown(names)}）`}
                         </div>
                       )}
                       <div className="flex flex-wrap gap-1.5 mb-2">
@@ -425,9 +428,11 @@ function BoardTab({ adminPass }: { adminPass: string }) {
                           : names.map((a) => (
                             <span key={a.name} className="flex items-center gap-1 text-[11px] bg-neon-cyan/10 border border-neon-cyan/30 text-neon-cyan rounded-full px-2.5 py-0.5">
                               {a.name}
-                              <span className="text-neon-cyan/60">
-                                / {a.part ? PART_LABEL[a.part] : "部未選択"}
-                              </span>
+                              {isTwoPart && (
+                                <span className="text-neon-cyan/60">
+                                  / {a.part ? PART_LABEL[a.part] : "部未選択"}
+                                </span>
+                              )}
                               <button onClick={() => proxyCancel(post.id, a.name)} className="text-neon-cyan/50 hover:text-rose-300 transition ml-0.5">×</button>
                             </span>
                           ))
@@ -443,25 +448,28 @@ function BoardTab({ adminPass }: { adminPass: string }) {
                         />
                         <button onClick={() => proxyJoin(post.id)} className="text-xs border border-neon-cyan/50 text-neon-cyan rounded-lg px-3 hover:bg-neon-cyan/10 transition">追加</button>
                       </div>
-                      <div className="flex flex-wrap gap-1.5 mt-2">
-                        {PART_ORDER.map((pt) => {
-                          const active = (proxyPart[post.id] ?? "both") === pt;
-                          return (
-                            <button
-                              key={pt}
-                              type="button"
-                              onClick={() => setProxyPart((p) => ({ ...p, [post.id]: pt }))}
-                              className={`rounded-full border text-[11px] px-3 py-1 transition ${
-                                active
-                                  ? "border-neon-cyan bg-neon-cyan/10 text-neon-cyan"
-                                  : "border-white/20 text-white/55 hover:border-white/40"
-                              }`}
-                            >
-                              {PART_LABEL[pt]}
-                            </button>
-                          );
-                        })}
-                      </div>
+                      {/* 枠の選択は2部制（練習会）のときだけ */}
+                      {isTwoPart && (
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {PART_ORDER.map((pt) => {
+                            const active = (proxyPart[post.id] ?? "both") === pt;
+                            return (
+                              <button
+                                key={pt}
+                                type="button"
+                                onClick={() => setProxyPart((p) => ({ ...p, [post.id]: pt }))}
+                                className={`rounded-full border text-[11px] px-3 py-1 transition ${
+                                  active
+                                    ? "border-neon-cyan bg-neon-cyan/10 text-neon-cyan"
+                                    : "border-white/20 text-white/55 hover:border-white/40"
+                                }`}
+                              >
+                                {PART_LABEL[pt]}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

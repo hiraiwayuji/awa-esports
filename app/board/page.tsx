@@ -569,6 +569,10 @@ export default function BoardPage() {
                             )
                           : undefined;
                         const myPart = myEntry?.part ?? null;
+                        // 枠を出すのは「これからの練習会」だけ。
+                        // 大会・対戦会は1枠だし、終わった回に枠を出しても意味がない
+                        // （2部制より前の回は全員が「部未選択」になってしまう）。
+                        const isTwoPart = n.category === "practice" && !n.isPast;
                         return (
                         <div
                           key={n.id}
@@ -621,7 +625,7 @@ export default function BoardPage() {
                                     {attendance[n.id]?.length ?? 0}
                                   </span>
                                   人
-                                  {n.category === "practice" &&
+                                  {isTwoPart &&
                                     (attendance[n.id]?.length ?? 0) > 0 && (
                                       <span className="text-white/45 ml-1.5">
                                         （{partBreakdown(attendance[n.id] ?? [])}）
@@ -642,7 +646,8 @@ export default function BoardPage() {
                                     <p className="text-[11px] text-awa-glow/70">
                                       ← 先に上で名前を入れてね
                                     </p>
-                                  ) : (
+                                  ) : isTwoPart ? (
+                                    /* 練習会は2部制なので、参加する枠を選んでもらう */
                                     <>
                                       <div className="flex flex-wrap gap-2">
                                         {PART_ORDER.map((pt) => {
@@ -690,6 +695,34 @@ export default function BoardPage() {
                                         </p>
                                       )}
                                     </>
+                                  ) : (
+                                    /* 練習会以外（大会・対戦会など）は1枠なので、参加するかどうかだけ */
+                                    <div className="flex items-center gap-3 flex-wrap">
+                                      {myEntry ? (
+                                        <>
+                                          <span className="text-[11px] text-white/55">
+                                            参加予定です。
+                                          </span>
+                                          <button
+                                            onClick={() => cancelEvent(n.id)}
+                                            disabled={busyId === n.id}
+                                            className="rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 disabled:opacity-40 text-[11px] px-3 py-1 transition"
+                                          >
+                                            {busyId === n.id
+                                              ? "処理中…"
+                                              : "参加を取り消す"}
+                                          </button>
+                                        </>
+                                      ) : (
+                                        <button
+                                          onClick={() => joinEvent(n.id, "both")}
+                                          disabled={busyId === n.id}
+                                          className="rounded-full border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow text-xs font-bold px-5 py-1.5 transition"
+                                        >
+                                          {busyId === n.id ? "登録中…" : "参加する"}
+                                        </button>
+                                      )}
+                                    </div>
                                   )}
                                 </div>
                               )}
@@ -706,15 +739,18 @@ export default function BoardPage() {
                                     <span
                                       key={a.name}
                                       className={`text-[11px] rounded-full border px-2 py-0.5 inline-flex items-center gap-1 ${
-                                        a.part
+                                        isTwoPart && a.part
                                           ? PART_LABEL[a.part].badge
-                                          : "border-white/25 bg-white/5 text-white/70"
+                                          : "border-neon-cyan/30 bg-neon-cyan/5 text-neon-cyan/90"
                                       }`}
                                     >
                                       {a.name}
-                                      <span className="opacity-70">
-                                        / {a.part ? PART_LABEL[a.part].short : "部未選択"}
-                                      </span>
+                                      {/* 枠の表示は2部制（練習会）のときだけ */}
+                                      {isTwoPart && (
+                                        <span className="opacity-70">
+                                          / {a.part ? PART_LABEL[a.part].short : "部未選択"}
+                                        </span>
+                                      )}
                                       {adminMode && (
                                         <button
                                           onClick={() => proxyRemove(n.id, a.name)}
