@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { updateSheetRow, type SheetName } from "@/lib/sheets";
+import { isAdminAuthed } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,6 +19,11 @@ export async function PATCH(
   req: Request,
   { params }: { params: { name: string; index: string } },
 ) {
+  // middleware に加え、この API 自身でも認証を再確認する（多層防御）。
+  if (!isAdminAuthed(req)) {
+    return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+  }
+
   const name = params.name as SheetName;
   if (!VALID.includes(name)) {
     return NextResponse.json({ ok: false, error: "invalid_sheet" }, { status: 400 });

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import SectionTitle from "@/components/SectionTitle";
 import PageTransition from "@/components/PageTransition";
+import { newSubmissionId } from "@/lib/submission-id";
 
 type Practice = "more" | "keep" | "less" | "either";
 type Gachi = "want" | "monthly" | "enough" | "no";
@@ -54,6 +55,7 @@ export default function SurveyPage() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [submissionId] = useState(newSubmissionId);
 
   const canSubmit = useMemo(() => {
     if (submitting) return false;
@@ -86,7 +88,7 @@ export default function SurveyPage() {
       const res = await fetch("/api/survey", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, submissionId }),
       });
       const json = (await res.json().catch(() => ({}))) as { ok?: boolean };
       if (!res.ok || !json.ok) {

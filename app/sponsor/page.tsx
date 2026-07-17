@@ -658,10 +658,11 @@ export default function SponsorPage() {
                   className="px-6 md:px-10 py-10 space-y-6"
                 >
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                    <label htmlFor="sponsor-type" className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       お問い合わせ種別 *
                     </label>
                     <select
+                      id="sponsor-type"
                       value={inquiryType}
                       onChange={(e) =>
                         setInquiryType(
@@ -679,10 +680,11 @@ export default function SponsorPage() {
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                    <label htmlFor="sponsor-name" className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       お名前 *
                     </label>
                     <input
+                      id="sponsor-name"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -692,10 +694,11 @@ export default function SponsorPage() {
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                    <label htmlFor="sponsor-company" className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       企業名・店名（任意）
                     </label>
                     <input
+                      id="sponsor-company"
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       placeholder="例：株式会社○○ / △△商店"
@@ -704,10 +707,11 @@ export default function SponsorPage() {
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                    <label htmlFor="sponsor-email" className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       返信先メールアドレス *
                     </label>
                     <input
+                      id="sponsor-email"
                       required
                       type="email"
                       value={email}
@@ -721,10 +725,11 @@ export default function SponsorPage() {
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                    <label htmlFor="sponsor-menu" className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       気になるメニュー（任意）
                     </label>
                     <select
+                      id="sponsor-menu"
                       value={menu}
                       onChange={(e) => setMenu(e.target.value)}
                       className="mt-2 w-full bg-awa-indigo-950/60 border border-white/10 focus:border-awa-glow-deep focus:shadow-glow rounded-lg px-4 py-3 text-white transition-all"
@@ -742,10 +747,11 @@ export default function SponsorPage() {
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
+                    <label htmlFor="sponsor-message" className="text-[10px] font-display tracking-[0.3em] text-awa-glow-deep">
                       お問い合わせ内容 *
                     </label>
                     <textarea
+                      id="sponsor-message"
                       required
                       rows={5}
                       value={message}

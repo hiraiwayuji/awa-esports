@@ -65,6 +65,8 @@ export type PracticeEvent = {
   slots: SlotOption[];
   intro: IntroSegment[][];
   introFoot: string;
+  /** SCHEDULE ページのカードに出す一文（この設定が唯一の出典） */
+  scheduleNote: string;
 };
 
 /** 徳島練習会の定番会場 */
@@ -136,6 +138,9 @@ const STANDARD_SLOTS: SlotOption[] = [
   },
 ];
 
+const STANDARD_SCHEDULE_NOTE =
+  "2部制／午前(10-14時)はロケットリーグ・オーバーウォッチなどをワイワイ、午後(14-18時)はスト6ガチ対戦。参加費：1枠2,000円/一日通し3,000円（高校生以下は各1,000円引）。初参加・観戦のみOK。";
+
 const STANDARD_INTRO: IntroSegment[][] = [
   [
     { text: "AWAKEN GLOW の練習会は、勝ち負けだけでなく" },
@@ -172,6 +177,7 @@ export const PRACTICE_EVENTS: PracticeEvent[] = [
     intro: STANDARD_INTRO,
     introFoot:
       "下のフォームからお申込みいただくと、会場・持ち物など当日の詳しいご案内をお送りします。",
+    scheduleNote: STANDARD_SCHEDULE_NOTE,
   },
   {
     slug: "0906",
@@ -195,6 +201,7 @@ export const PRACTICE_EVENTS: PracticeEvent[] = [
     intro: STANDARD_INTRO,
     introFoot:
       "下のフォームからお申込みいただくと、会場・持ち物など当日の詳しいご案内をお送りします。",
+    scheduleNote: STANDARD_SCHEDULE_NOTE,
   },
 ];
 
@@ -207,4 +214,38 @@ export function practiceEventLabel(isoDate: string): string {
   return (
     PRACTICE_EVENTS.find((e) => e.date === isoDate)?.shortLabel ?? isoDate
   );
+}
+
+/**
+ * SCHEDULE ページ用のデータを PRACTICE_EVENTS から生成する。
+ * これにより日時・会場・参加費・説明文の出典は practice-events.ts の1か所だけになる。
+ */
+export type PracticeScheduleItem = {
+  id: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  venue: string;
+  title: string;
+  note: string;
+  link: string;
+  linkLabel: string;
+};
+
+export function practiceScheduleItems(): PracticeScheduleItem[] {
+  return PRACTICE_EVENTS.map((e) => {
+    const [startTime, endTime] = e.timeLabel.split("〜");
+    const month = Number(e.date.split("-")[1]);
+    return {
+      id: `${e.date}-practice`,
+      date: e.date,
+      startTime: startTime ?? "",
+      endTime: endTime ?? "",
+      venue: e.venueLabel,
+      title: `${month}月 徳島練習会（参加者募集中）`,
+      note: e.scheduleNote,
+      link: `/events/${e.slug}`,
+      linkLabel: "参加する →",
+    };
+  });
 }

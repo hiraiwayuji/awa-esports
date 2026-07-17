@@ -3,6 +3,13 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { AWA_SUPABASE_URL, awaSupabaseHeaders } from "@/lib/awa-supabase";
 import { practiceEventLabel } from "@/lib/practice-events";
+import { createRateLimiter, clientIp } from "@/lib/rate-limit";
+import {
+  type SaveResult,
+  subjectPrefix,
+  htmlWarning,
+  textWarning,
+} from "@/lib/notify";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,6 +32,8 @@ const EventEntrySchema = z
     guardianConsent: z.boolean().optional().default(false),
     message: z.string().trim().max(2000).optional().default(""),
     photoNg: z.boolean().optional().default(false),
+    // 二重送信対策。クライアントが1送信ごとに採番するUUID。
+    submissionId: z.string().uuid().optional(),
   })
   .refine((v) => (v.isMinor ? v.guardianConsent === true : true), {
     message: "未成年の場合は保護者同意チェックが必須です。",
@@ -49,21 +58,7 @@ function slotText(p: EventEntryPayload): string {
   return p.timeSlot ? SLOT_LABEL[p.timeSlot] : "未選択";
 }
 
-const rateBucket = new Map<string, number[]>();
-const WINDOW_MS = 5 * 60 * 1000;
-const MAX_PER_WINDOW = 5;
-
-function rateLimit(ip: string): boolean {
-  const now = Date.now();
-  const arr = (rateBucket.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (arr.length >= MAX_PER_WINDOW) {
-    rateBucket.set(ip, arr);
-    return false;
-  }
-  arr.push(now);
-  rateBucket.set(ip, arr);
-  return true;
-}
+const limiter = createRateLimiter(5, 5 * 60 * 1000);
 
 function escapeHtml(s: string): string {
   return s
@@ -124,12 +119,9 @@ ${p.message || "—"}
 }
 
 export async function POST(req: Request) {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
+  const ip = clientIp(req);
 
-  if (!rateLimit(ip)) {
+  if (limiter.isLimited(ip)) {
     return NextResponse.json(
       { ok: false, error: "rate_limited" },
       { status: 429 },
@@ -154,6 +146,9 @@ export async function POST(req: Request) {
     );
   }
 
+  // 検証を通ったリクエストだけをカウントする（不正リクエストで枠を消費しない）。
+  limiter.record(ip);
+
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.JOIN_NOTIFY_TO;
   const from = process.env.JOIN_NOTIFY_FROM ?? "onboarding@resend.dev";
@@ -171,13 +166,52 @@ export async function POST(req: Request) {
     timeZone: "Asia/Tokyo",
   });
 
+  // まず Supabase へ保存（この結果を通知メールに反映する）。
+  // submission_id で二重送信は無視される。
+  let save: SaveResult = "failed";
+  try {
+    const titles = [...payload.titles];
+    if (payload.titlesOther) titles.push(`その他：${payload.titlesOther}`);
+    const res = await fetch(
+      `${AWA_SUPABASE_URL}/rest/v1/awa_event_entries?on_conflict=submission_id`,
+      {
+        method: "POST",
+        headers: awaSupabaseHeaders({
+          Prefer: "return=minimal,resolution=ignore-duplicates",
+        }),
+        body: JSON.stringify({
+          submission_id: payload.submissionId ?? null,
+          event_date: payload.eventDate,
+          name: payload.name,
+          contact: payload.contact,
+          attend_type: ATTEND_LABEL[payload.attendType],
+          time_slot: payload.timeSlot ? SLOT_LABEL[payload.timeSlot] : "",
+          titles,
+          titles_other: payload.titlesOther || "",
+          is_minor: payload.isMinor,
+          guardian_consent: payload.guardianConsent,
+          message: payload.message || "",
+          photo_ng: payload.photoNg,
+        }),
+      },
+    );
+    if (res.ok) {
+      save = "ok";
+    } else {
+      console.error("event_entry_supabase_error", res.status, await res.text());
+    }
+  } catch (e) {
+    console.error("event_entry_supabase_exception", e);
+  }
+
+  // 通知メール（保存の成否を反映して送る）。
   try {
     const { error } = await resend.emails.send({
       from,
       to,
-      subject: `[AWAKEN GLOW] ${practiceEventLabel(payload.eventDate)} 練習会 参加申込 — ${payload.name}`,
-      html: buildHtml(payload, { agreedAt }),
-      text: buildText(payload, { agreedAt }),
+      subject: `${subjectPrefix(save)}[AWAKEN GLOW] ${practiceEventLabel(payload.eventDate)} 練習会 参加申込 — ${payload.name}`,
+      html: htmlWarning(save) + buildHtml(payload, { agreedAt }),
+      text: textWarning(save) + buildText(payload, { agreedAt }),
     });
     if (error) {
       console.error("event_entry_send_error", error);
@@ -192,35 +226,6 @@ export async function POST(req: Request) {
       { ok: false, error: "send_exception" },
       { status: 502 },
     );
-  }
-
-  // Supabase へ保存（管理用）。失敗してもメールは送れているので成功扱いにし、
-  // エラーはログのみ残す。
-  try {
-    const titles = [...payload.titles];
-    if (payload.titlesOther) titles.push(`その他：${payload.titlesOther}`);
-    const res = await fetch(`${AWA_SUPABASE_URL}/rest/v1/awa_event_entries`, {
-      method: "POST",
-      headers: awaSupabaseHeaders({ Prefer: "return=minimal" }),
-      body: JSON.stringify({
-        event_date: payload.eventDate,
-        name: payload.name,
-        contact: payload.contact,
-        attend_type: ATTEND_LABEL[payload.attendType],
-        time_slot: payload.timeSlot ? SLOT_LABEL[payload.timeSlot] : "",
-        titles,
-        titles_other: payload.titlesOther || "",
-        is_minor: payload.isMinor,
-        guardian_consent: payload.guardianConsent,
-        message: payload.message || "",
-        photo_ng: payload.photoNg,
-      }),
-    });
-    if (!res.ok) {
-      console.error("event_entry_supabase_error", res.status, await res.text());
-    }
-  } catch (e) {
-    console.error("event_entry_supabase_exception", e);
   }
 
   return NextResponse.json({ ok: true });

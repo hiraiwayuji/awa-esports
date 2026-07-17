@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import SectionTitle from "@/components/SectionTitle";
 import PageTransition from "@/components/PageTransition";
+import { ageOnDate } from "@/lib/age";
 import {
   PLAYER_CONTRACT_VERSION,
   PLAYER_CONTRACT_TERMS,
@@ -24,7 +25,6 @@ type FormState = {
   email: string;
   discordId: string;
   birthdate: string;
-  age: string;
   phone: string;
   address: string;
   guardianName: string;
@@ -56,7 +56,6 @@ const INITIAL: FormState = {
   email: "",
   discordId: "",
   birthdate: "",
-  age: "",
   phone: "",
   address: "",
   guardianName: "",
@@ -87,8 +86,9 @@ export default function PlayerContractPage() {
   const [done, setDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const age = Number.parseInt(form.age, 10);
-  const isMinor = Number.isFinite(age) && age < 18;
+  // 年齢は生年月日から自動算出（手入力させない）。
+  const age = ageOnDate(form.birthdate);
+  const isMinor = age !== null && age < 18;
 
   const requiredChecks: Array<keyof FormState> = [
     "contractCheck",
@@ -107,7 +107,7 @@ export default function PlayerContractPage() {
     if (!form.realName.trim()) return false;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) return false;
     if (!form.birthdate.trim()) return false;
-    if (!Number.isFinite(age) || age < 1) return false;
+    if (age === null) return false;
     if (!form.phone.trim()) return false;
     if (!form.address.trim()) return false;
     if (!form.mainGame.trim()) return false;
@@ -139,7 +139,7 @@ export default function PlayerContractPage() {
       const res = await fetch("/api/player-contract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, age }),
+        body: JSON.stringify(form),
       });
       const json = (await res.json().catch(() => ({}))) as { ok?: boolean };
       if (!res.ok || !json.ok) {
@@ -279,14 +279,12 @@ export default function PlayerContractPage() {
                     onChange={(v) => update("birthdate", v)}
                   />
                 </Field>
-                <Field label="年齢" required>
-                  <TextInput
-                    type="number"
-                    value={form.age}
-                    onChange={(v) => update("age", v)}
-                    min={1}
-                    max={120}
-                  />
+                <Field label="年齢（自動計算）">
+                  <div className="rounded-lg border border-white/15 bg-awa-indigo-950/40 text-white/80 px-3 py-2.5 text-sm">
+                    {age !== null
+                      ? `${age}歳${isMinor ? "（未成年）" : ""}`
+                      : "生年月日を入力すると表示されます"}
+                  </div>
                 </Field>
               </FieldGrid>
 

@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { AWA_SUPABASE_URL, awaSupabaseHeaders } from "@/lib/awa-supabase";
+import { createRateLimiter, clientIp } from "@/lib/rate-limit";
+import {
+  type SaveResult,
+  subjectPrefix,
+  htmlWarning,
+  textWarning,
+} from "@/lib/notify";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,6 +31,7 @@ const SurveySchema = z.object({
   expectations: z.string().trim().max(4000).optional().default(""),
   memo: z.string().trim().max(4000).optional().default(""),
   photoNg: z.boolean().optional().default(false),
+  submissionId: z.string().uuid().optional(),
 });
 
 type SurveyPayload = z.infer<typeof SurveySchema>;
@@ -55,21 +63,7 @@ const REGISTRATION_LABEL: Record<SurveyPayload["registration"], string> = {
   no: "希望しない",
 };
 
-const rateBucket = new Map<string, number[]>();
-const WINDOW_MS = 5 * 60 * 1000;
-const MAX_PER_WINDOW = 5;
-
-function rateLimit(ip: string): boolean {
-  const now = Date.now();
-  const arr = (rateBucket.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (arr.length >= MAX_PER_WINDOW) {
-    rateBucket.set(ip, arr);
-    return false;
-  }
-  arr.push(now);
-  rateBucket.set(ip, arr);
-  return true;
-}
+const limiter = createRateLimiter(5, 5 * 60 * 1000);
 
 function escapeHtml(s: string): string {
   return s
@@ -136,12 +130,9 @@ ${p.memo || "—"}
 }
 
 export async function POST(req: Request) {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
+  const ip = clientIp(req);
 
-  if (!rateLimit(ip)) {
+  if (limiter.isLimited(ip)) {
     return NextResponse.json(
       { ok: false, error: "rate_limited" },
       { status: 429 },
@@ -166,6 +157,9 @@ export async function POST(req: Request) {
     );
   }
 
+  // 検証を通ったリクエストだけをカウントする。
+  limiter.record(ip);
+
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.JOIN_NOTIFY_TO;
   const from = process.env.JOIN_NOTIFY_FROM ?? "onboarding@resend.dev";
@@ -183,13 +177,52 @@ export async function POST(req: Request) {
     timeZone: "Asia/Tokyo",
   });
 
+  // まず Supabase へ保存（結果を通知メールに反映）。submission_id で二重送信を無視。
+  let save: SaveResult = "failed";
+  try {
+    const events = [...payload.events];
+    if (payload.eventsOther) events.push(`その他：${payload.eventsOther}`);
+    const res = await fetch(
+      `${AWA_SUPABASE_URL}/rest/v1/awa_survey_responses?on_conflict=submission_id`,
+      {
+        method: "POST",
+        headers: awaSupabaseHeaders({
+          Prefer: "return=minimal,resolution=ignore-duplicates",
+        }),
+        body: JSON.stringify({
+          submission_id: payload.submissionId ?? null,
+          name: payload.name || "",
+          practice_days: PRACTICE_LABEL[payload.practiceDays],
+          practice_wish: payload.practiceWish || "",
+          gachi_days: GACHI_LABEL[payload.gachiDays],
+          ops: OPS_LABEL[payload.ops],
+          ops_detail: payload.opsDetail || "",
+          registration: REGISTRATION_LABEL[payload.registration],
+          events,
+          events_other: payload.eventsOther || "",
+          expectations: payload.expectations || "",
+          memo: payload.memo || "",
+          photo_ng: payload.photoNg,
+        }),
+      },
+    );
+    if (res.ok) {
+      save = "ok";
+    } else {
+      console.error("survey_supabase_error", res.status, await res.text());
+    }
+  } catch (e) {
+    console.error("survey_supabase_exception", e);
+  }
+
+  // 通知メール（保存の成否を反映して送る）。
   try {
     const { error } = await resend.emails.send({
       from,
       to,
-      subject: `[AWAKEN GLOW] 選手アンケート回答 — ${payload.name || "無記名"}`,
-      html: buildHtml(payload, agreedAt),
-      text: buildText(payload, agreedAt),
+      subject: `${subjectPrefix(save)}[AWAKEN GLOW] 選手アンケート回答 — ${payload.name || "無記名"}`,
+      html: htmlWarning(save) + buildHtml(payload, agreedAt),
+      text: textWarning(save) + buildText(payload, agreedAt),
     });
     if (error) {
       console.error("survey_send_error", error);
@@ -204,36 +237,6 @@ export async function POST(req: Request) {
       { ok: false, error: "send_exception" },
       { status: 502 },
     );
-  }
-
-  // Supabase へ保存（HPの回答一覧ページ用）。失敗してもメールは送れているので
-  // 送信自体は成功扱いにし、エラーはログのみ残す。
-  try {
-    const events = [...payload.events];
-    if (payload.eventsOther) events.push(`その他：${payload.eventsOther}`);
-    const res = await fetch(`${AWA_SUPABASE_URL}/rest/v1/awa_survey_responses`, {
-      method: "POST",
-      headers: awaSupabaseHeaders({ Prefer: "return=minimal" }),
-      body: JSON.stringify({
-        name: payload.name || "",
-        practice_days: PRACTICE_LABEL[payload.practiceDays],
-        practice_wish: payload.practiceWish || "",
-        gachi_days: GACHI_LABEL[payload.gachiDays],
-        ops: OPS_LABEL[payload.ops],
-        ops_detail: payload.opsDetail || "",
-        registration: REGISTRATION_LABEL[payload.registration],
-        events,
-        events_other: payload.eventsOther || "",
-        expectations: payload.expectations || "",
-        memo: payload.memo || "",
-        photo_ng: payload.photoNg,
-      }),
-    });
-    if (!res.ok) {
-      console.error("survey_supabase_error", res.status, await res.text());
-    }
-  } catch (e) {
-    console.error("survey_supabase_exception", e);
   }
 
   return NextResponse.json({ ok: true });

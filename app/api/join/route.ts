@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
+import { createRateLimiter, clientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -60,21 +61,7 @@ const DIVISION_LABEL: Record<JoinPayload["divisions"][number], string> = {
   UNDECIDED: "未定 / 相談したい",
 };
 
-const rateBucket = new Map<string, number[]>();
-const WINDOW_MS = 5 * 60 * 1000;
-const MAX_PER_WINDOW = 3;
-
-function rateLimit(ip: string): boolean {
-  const now = Date.now();
-  const arr = (rateBucket.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (arr.length >= MAX_PER_WINDOW) {
-    rateBucket.set(ip, arr);
-    return false;
-  }
-  arr.push(now);
-  rateBucket.set(ip, arr);
-  return true;
-}
+const limiter = createRateLimiter(3, 5 * 60 * 1000);
 
 function escapeHtml(s: string): string {
   return s
@@ -149,12 +136,9 @@ ${guardianBlock}プライバシーポリシー同意: ✅
 }
 
 export async function POST(req: Request) {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
+  const ip = clientIp(req);
 
-  if (!rateLimit(ip)) {
+  if (limiter.isLimited(ip)) {
     return NextResponse.json(
       { ok: false, error: "rate_limited" },
       { status: 429 },
@@ -178,6 +162,8 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
+
+  limiter.record(ip);
 
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.JOIN_NOTIFY_TO;

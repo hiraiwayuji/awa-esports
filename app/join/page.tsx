@@ -243,10 +243,11 @@ export default function JoinPage() {
                 >
                   {/* Name */}
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
+                    <label htmlFor="join-name" className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
                       01 / NAME — お名前
                     </label>
                     <input
+                      id="join-name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="例：平岩 裕治"
@@ -256,10 +257,11 @@ export default function JoinPage() {
 
                   {/* Furigana */}
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
+                    <label htmlFor="join-kana" className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
                       02 / NAME_KANA — フリガナ
                     </label>
                     <input
+                      id="join-kana"
                       value={nameKana}
                       onChange={(e) => setNameKana(e.target.value)}
                       placeholder="例：ヒライワ ユウジ"
@@ -274,10 +276,11 @@ export default function JoinPage() {
 
                   {/* Age */}
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
+                    <label htmlFor="join-age" className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
                       03 / AGE — 年齢
                     </label>
                     <input
+                      id="join-age"
                       type="number"
                       value={age}
                       onChange={(e) => setAge(e.target.value)}
@@ -297,9 +300,9 @@ export default function JoinPage() {
 
                   {/* Residency */}
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
+                    <div className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
                       04 / RESIDENCY — 徳島との関係
-                    </label>
+                    </div>
                     <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {[
                         { v: "current", l: "現在 徳島県在住" },
@@ -336,15 +339,16 @@ export default function JoinPage() {
 
                   {/* Contact — at least one required, multiple OK */}
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
+                    <div className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
                       05 / CONTACT — 連絡先（いずれか1つ以上・複数可）
-                    </label>
+                    </div>
                     <div className="mt-3 space-y-3">
                       <div>
-                        <div className="text-[10px] tracking-[0.2em] text-white/50 mb-1">
+                        <label htmlFor="join-email" className="block text-[10px] tracking-[0.2em] text-white/50 mb-1">
                           メール
-                        </div>
+                        </label>
                         <input
+                          id="join-email"
                           type="email"
                           inputMode="email"
                           value={contactEmail}
@@ -359,10 +363,11 @@ export default function JoinPage() {
                         )}
                       </div>
                       <div>
-                        <div className="text-[10px] tracking-[0.2em] text-white/50 mb-1">
+                        <label htmlFor="join-line" className="block text-[10px] tracking-[0.2em] text-white/50 mb-1">
                           LINE ID
-                        </div>
+                        </label>
                         <input
+                          id="join-line"
                           value={contactLine}
                           onChange={(e) => setContactLine(e.target.value)}
                           placeholder="@your-line-id"
@@ -370,10 +375,11 @@ export default function JoinPage() {
                         />
                       </div>
                       <div>
-                        <div className="text-[10px] tracking-[0.2em] text-white/50 mb-1">
+                        <label htmlFor="join-phone" className="block text-[10px] tracking-[0.2em] text-white/50 mb-1">
                           電話番号
-                        </div>
+                        </label>
                         <input
+                          id="join-phone"
                           type="tel"
                           inputMode="tel"
                           value={contactPhone}
@@ -404,9 +410,9 @@ export default function JoinPage() {
 
                   {/* Division */}
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
+                    <div className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
                       06 / DIVISION — 興味のある部門（複数可）
-                    </label>
+                    </div>
                     <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {divisionOptions.map((opt) => {
                         const active = divisions.includes(opt.v);
@@ -433,10 +439,11 @@ export default function JoinPage() {
 
                   {/* Favorite game */}
                   <div>
-                    <label className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
+                    <label htmlFor="join-game" className="text-[10px] font-display tracking-[0.3em] text-neon-cyan">
                       07 / FAVORITE GAME — 好きなゲーム（任意）
                     </label>
                     <input
+                      id="join-game"
                       value={favoriteGame}
                       onChange={(e) => setFavoriteGame(e.target.value)}
                       placeholder="自由に入力 or 下から選択"
@@ -479,10 +486,11 @@ export default function JoinPage() {
                             </p>
                           </div>
                           <div>
-                            <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow">
+                            <label htmlFor="join-guardian-name" className="text-[10px] font-display tracking-[0.3em] text-awa-glow">
                               08 / GUARDIAN — 保護者氏名
                             </label>
                             <input
+                              id="join-guardian-name"
                               value={guardianName}
                               onChange={(e) => setGuardianName(e.target.value)}
                               placeholder="例：平岩 太郎"
@@ -490,10 +498,11 @@ export default function JoinPage() {
                             />
                           </div>
                           <div>
-                            <label className="text-[10px] font-display tracking-[0.3em] text-awa-glow">
+                            <label htmlFor="join-guardian-contact" className="text-[10px] font-display tracking-[0.3em] text-awa-glow">
                               09 / GUARDIAN_CONTACT — 保護者連絡先
                             </label>
                             <input
+                              id="join-guardian-contact"
                               value={guardianContact}
                               onChange={(e) =>
                                 setGuardianContact(e.target.value)

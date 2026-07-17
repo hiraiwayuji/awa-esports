@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { AWA_SUPABASE_URL, AWA_SUPABASE_KEY, awaSupabaseHeaders } from "@/lib/awa-supabase";
 
 /* ── 定数 ─────────────────────────────────── */
-const MEMBER_PASS = "agmember2026";
+// この画面は管理合言葉でログイン済みなので、読み取り系RPC・Edgeにも
+// 管理合言葉を渡す。メンバー合言葉をクライアントに埋め込まない（漏洩防止）。
 const FN = `${AWA_SUPABASE_URL}/functions/v1/member-files`;
 
 /* ── 共通ヘルパー ─────────────────────────── */
@@ -43,6 +44,7 @@ type SurveyRow = {
   practice_days: string; practice_wish: string; gachi_days: string;
   ops: string; ops_detail: string; registration: string;
   events: string[]; events_other: string; expectations: string;
+  memo: string; photo_ng: boolean;
 };
 
 type LedgerEntry = {
@@ -220,8 +222,8 @@ function BoardTab({ adminPass }: { adminPass: string }) {
 
   async function load() {
     const [p, a] = await Promise.all([
-      rpc<BoardPost[]>("board_list", { member_pass: MEMBER_PASS }),
-      rpc<AttendRow[]>("attend_all", { member_pass: MEMBER_PASS }),
+      rpc<BoardPost[]>("board_list", { member_pass: adminPass }),
+      rpc<AttendRow[]>("attend_all", { member_pass: adminPass }),
     ]);
     const sorted = (p ?? []).slice().sort((a, b) => {
       if (!a.event_date && !b.event_date) return 0;
@@ -289,13 +291,13 @@ function BoardTab({ adminPass }: { adminPass: string }) {
   async function proxyJoin(postId: string) {
     const name = (proxyName[postId] ?? "").trim();
     if (!name) return;
-    await rpc("attend_join", { member_pass: MEMBER_PASS, post_id: postId, name });
+    await rpc("attend_join", { member_pass: adminPass, post_id: postId, name });
     setProxyName((p) => ({ ...p, [postId]: "" }));
     await load();
   }
 
   async function proxyCancel(postId: string, name: string) {
-    await rpc("attend_cancel", { member_pass: MEMBER_PASS, post_id: postId, name });
+    await rpc("attend_cancel", { member_pass: adminPass, post_id: postId, name });
     await load();
   }
 
@@ -441,12 +443,13 @@ function SurveyTab({ adminPass }: { adminPass: string }) {
   }
 
   function downloadCsv() {
-    const headers = ["回答日時","お名前","①練習日","希望","②ガチ練習","③運営","役割","④登録希望","⑤イベント","⑥期待・要望"];
+    const headers = ["回答日時","お名前","①練習日","希望","②ガチ練習","③運営","役割","④登録希望","⑤イベント","⑥期待・要望","写真掲載","メモ"];
     const esc = (s: string) => `"${(s ?? "").replace(/"/g, '""')}"`;
     const lines = rows.map((r) =>
       [new Date(r.created_at).toLocaleString("ja-JP"), r.name || "（無記名）",
        r.practice_days, r.practice_wish, r.gachi_days, r.ops, r.ops_detail,
-       r.registration, (r.events ?? []).join(" / "), r.expectations].map(esc).join(",")
+       r.registration, (r.events ?? []).join(" / "), r.expectations,
+       r.photo_ng ? "掲載NG" : "OK", r.memo ?? ""].map(esc).join(",")
     );
     const csv = "﻿" + [headers.map(esc).join(","), ...lines].join("\r\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
@@ -489,6 +492,13 @@ function SurveyTab({ adminPass }: { adminPass: string }) {
         <p className="text-white/50 text-sm">まだ回答がありません。</p>
       ) : (
         <>
+          {rows.some((r) => r.photo_ng) && (
+            <div className="rounded-xl border border-rose-300/40 bg-rose-300/10 px-4 py-3 text-sm text-rose-200">
+              ⚠ 写真の掲載NGの方が
+              <span className="font-bold mx-1">{rows.filter((r) => r.photo_ng).length}</span>
+              名います。SNS・HPへの掲載前に、下の個別回答でお名前をご確認ください。
+            </div>
+          )}
           <div className="grid gap-4 md:grid-cols-2">
             {tallies.map((t) => (
               <div key={t.label} className="rounded-xl border border-white/10 bg-awa-indigo-900/40 p-5">
@@ -528,6 +538,12 @@ function SurveyTab({ adminPass }: { adminPass: string }) {
                   <SurveyItem label="④ 選手登録">{r.registration}</SurveyItem>
                   <SurveyItem label="⑤ イベント">{(r.events ?? []).join(" / ") || "—"}</SurveyItem>
                   {r.expectations && <SurveyItem label="⑥ 期待">{r.expectations}</SurveyItem>}
+                  {r.memo && <SurveyItem label="メモ">{r.memo}</SurveyItem>}
+                  <SurveyItem label="写真掲載">
+                    {r.photo_ng
+                      ? <span className="text-rose-300 font-bold">⚠ 掲載NG（載せないで）</span>
+                      : <span className="text-white/60">OK</span>}
+                  </SurveyItem>
                 </dl>
                 <div className="text-right mt-3">
                   <button onClick={() => remove(r.id)} className="text-xs text-rose-300/70 hover:text-rose-300 transition">
@@ -791,7 +807,7 @@ function ResourcesTab({ adminPass }: { adminPass: string }) {
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
 
   async function load() {
-    const d = await fnCall({ action: "list", member_pass: MEMBER_PASS });
+    const d = await fnCall({ action: "list", member_pass: adminPass });
     if (Array.isArray(d.files)) setFiles(d.files as FileRow[]);
     setLoading(false);
   }
@@ -826,7 +842,7 @@ function ResourcesTab({ adminPass }: { adminPass: string }) {
   }
 
   async function dlFile(id: string) {
-    const d = await fnCall({ action: "download", member_pass: MEMBER_PASS, id });
+    const d = await fnCall({ action: "download", member_pass: adminPass, id });
     if (!d.url) { window.alert("ダウンロードできませんでした。"); return; }
     const a = document.createElement("a"); a.href = d.url as string; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove();
   }

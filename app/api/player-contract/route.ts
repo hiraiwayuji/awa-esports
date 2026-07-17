@@ -6,6 +6,14 @@ import {
   PLAYER_CONTRACT_TERMS,
 } from "@/lib/legal-text";
 import { appendToSheet } from "@/lib/sheets";
+import { ageOnDate } from "@/lib/age";
+import { createRateLimiter, clientIp } from "@/lib/rate-limit";
+import {
+  type SaveResult,
+  subjectPrefix,
+  htmlWarning,
+  textWarning,
+} from "@/lib/notify";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,8 +26,13 @@ const PlayerContractSchema = z
     realName: z.string().trim().min(1).max(60),
     email: z.string().trim().email().max(200),
     discordId: z.string().trim().max(80).optional().default(""),
-    birthdate: z.string().trim().max(20),
-    age: z.coerce.number().int().min(1).max(120),
+    // 年齢はサーバーで生年月日から算出するため受け取らない。
+    birthdate: z
+      .string()
+      .trim()
+      .refine((v) => ageOnDate(v) !== null, {
+        message: "生年月日が正しくありません。",
+      }),
     phone: z.string().trim().min(1).max(40),
     address: z.string().trim().min(1).max(200),
     guardianName: z.string().trim().max(80).optional().default(""),
@@ -46,7 +59,9 @@ const PlayerContractSchema = z
   })
   .refine(
     (v) => {
-      if (v.age < 18) {
+      // 未成年判定は生年月日からの算出年齢で行う（自己申告に依存しない）。
+      const age = ageOnDate(v.birthdate);
+      if (age !== null && age < 18) {
         return (
           v.guardianName.length > 0 &&
           v.guardianEmail.length > 0 &&
@@ -69,6 +84,11 @@ const PlayerContractSchema = z
 
 type PlayerContractPayload = z.infer<typeof PlayerContractSchema>;
 
+/** 生年月日からの算出年齢（保存・メール表示に使う） */
+function computedAge(p: PlayerContractPayload): number {
+  return ageOnDate(p.birthdate) ?? 0;
+}
+
 const ROLE_LABEL: Record<PlayerContractPayload["roleType"], string> = {
   player: "選手",
   streamer: "ストリーマー",
@@ -76,21 +96,7 @@ const ROLE_LABEL: Record<PlayerContractPayload["roleType"], string> = {
   other: "その他",
 };
 
-const rateBucket = new Map<string, number[]>();
-const WINDOW_MS = 5 * 60 * 1000;
-const MAX_PER_WINDOW = 3;
-
-function rateLimit(ip: string): boolean {
-  const now = Date.now();
-  const arr = (rateBucket.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (arr.length >= MAX_PER_WINDOW) {
-    rateBucket.set(ip, arr);
-    return false;
-  }
-  arr.push(now);
-  rateBucket.set(ip, arr);
-  return true;
-}
+const limiter = createRateLimiter(3, 5 * 60 * 1000);
 
 function escapeHtml(s: string): string {
   return s
@@ -105,7 +111,8 @@ function buildHtml(
   p: PlayerContractPayload,
   meta: { ip: string; userAgent: string; agreedAt: string },
 ): string {
-  const minor = p.age < 18;
+  const age = computedAge(p);
+  const minor = age < 18;
   const guardian = minor
     ? `<tr><th style="text-align:left;padding:8px;background:#f6f8fb;width:160px;">保護者氏名</th><td style="padding:8px;">${escapeHtml(p.guardianName)}</td></tr>
        <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">保護者メール</th><td style="padding:8px;">${escapeHtml(p.guardianEmail)}</td></tr>
@@ -128,7 +135,7 @@ function buildHtml(
     <div style="font-size:18px;font-weight:700;margin-top:4px;">${escapeHtml(p.playerName)} <span style="font-weight:400;color:#9aa;font-size:14px;">（${escapeHtml(p.realName)}）</span></div>
   </div>
   <table style="border-collapse:collapse;width:100%;font-size:14px;">
-    <tr><th style="text-align:left;padding:8px;background:#f6f8fb;width:160px;">生年月日 / 年齢</th><td style="padding:8px;">${escapeHtml(p.birthdate)} / ${p.age}歳${minor ? "（未成年）" : ""}</td></tr>
+    <tr><th style="text-align:left;padding:8px;background:#f6f8fb;width:160px;">生年月日 / 年齢</th><td style="padding:8px;">${escapeHtml(p.birthdate)} / ${age}歳${minor ? "（未成年）" : ""}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">メール</th><td style="padding:8px;">${escapeHtml(p.email)}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">電話番号</th><td style="padding:8px;">${escapeHtml(p.phone)}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">住所</th><td style="padding:8px;">${escapeHtml(p.address)}</td></tr>
@@ -175,7 +182,8 @@ function buildText(
   p: PlayerContractPayload,
   meta: { ip: string; userAgent: string; agreedAt: string },
 ): string {
-  const minor = p.age < 18;
+  const age = computedAge(p);
+  const minor = age < 18;
   const checks = [
     `契約内容確認: ${p.contractCheck ? "✅" : "❌"}`,
     `無報酬であることへの同意: ${p.unpaidCheck ? "✅" : "❌"}`,
@@ -192,7 +200,7 @@ function buildText(
 
 プレイヤー名: ${p.playerName}
 本名: ${p.realName}
-生年月日: ${p.birthdate} (${p.age}歳${minor ? " 未成年" : ""})
+生年月日: ${p.birthdate} (${age}歳${minor ? " 未成年" : ""})
 メール: ${p.email}
 電話: ${p.phone}
 住所: ${p.address}
@@ -228,13 +236,10 @@ User-Agent: ${meta.userAgent}
 }
 
 export async function POST(req: Request) {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
+  const ip = clientIp(req);
   const userAgent = req.headers.get("user-agent") ?? "unknown";
 
-  if (!rateLimit(ip)) {
+  if (limiter.isLimited(ip)) {
     return NextResponse.json(
       { ok: false, error: "rate_limited" },
       { status: 429 },
@@ -259,6 +264,8 @@ export async function POST(req: Request) {
     );
   }
 
+  limiter.record(ip);
+
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.JOIN_NOTIFY_TO;
   const from = process.env.JOIN_NOTIFY_FROM ?? "onboarding@resend.dev";
@@ -272,35 +279,14 @@ export async function POST(req: Request) {
 
   const resend = new Resend(apiKey);
   const payload = parsed.data;
+  const age = computedAge(payload);
+  const minor = age < 18;
   const agreedAt = new Date().toLocaleString("ja-JP", {
     timeZone: "Asia/Tokyo",
   });
 
-  try {
-    const { error } = await resend.emails.send({
-      from,
-      to,
-      replyTo: payload.email,
-      subject: `[AWAKEN GLOW] 正式選手契約 — ${payload.playerName}（${payload.age}歳・${ROLE_LABEL[payload.roleType]}）`,
-      html: buildHtml(payload, { ip, userAgent, agreedAt }),
-      text: buildText(payload, { ip, userAgent, agreedAt }),
-    });
-    if (error) {
-      console.error("contract_send_error", error);
-      return NextResponse.json(
-        { ok: false, error: "send_failed" },
-        { status: 502 },
-      );
-    }
-  } catch (e) {
-    console.error("contract_send_exception", e);
-    return NextResponse.json(
-      { ok: false, error: "send_exception" },
-      { status: 502 },
-    );
-  }
-
-  // Sheets書き込みはベストエフォート
+  // まず Sheets へ記録（結果を通知メールに反映）。
+  let save: SaveResult = "failed";
   try {
     await appendToSheet("player_contract", {
       申請日時: agreedAt,
@@ -309,7 +295,7 @@ export async function POST(req: Request) {
       メール: payload.email,
       "Discord ID": payload.discordId || "",
       生年月日: payload.birthdate,
-      年齢: String(payload.age),
+      年齢: String(age),
       電話番号: payload.phone,
       住所: payload.address,
       所属部門タイトル: payload.mainGame,
@@ -331,7 +317,7 @@ export async function POST(req: Request) {
       チート禁止誓約: payload.cheatCheck ? "✅" : "",
       反社会的勢力非該当誓約: payload.antiSocialCheck ? "✅" : "",
       プライバシー同意: payload.privacyCheck ? "✅" : "",
-      保護者同意: payload.age < 18 ? (payload.guardianCheck ? "✅" : "") : "—",
+      保護者同意: minor ? (payload.guardianCheck ? "✅" : "") : "—",
       契約バージョン: PLAYER_CONTRACT_VERSION,
       IP: ip,
       "User-Agent": userAgent,
@@ -340,8 +326,34 @@ export async function POST(req: Request) {
       "誓約書/契約書URL": "",
       "Discord メッセージURL": "",
     });
+    save = "ok";
   } catch (e) {
     console.error("contract_sheets_error", e);
+  }
+
+  // 通知メール（保存の成否を反映して送る）。
+  try {
+    const { error } = await resend.emails.send({
+      from,
+      to,
+      replyTo: payload.email,
+      subject: `${subjectPrefix(save)}[AWAKEN GLOW] 正式選手契約 — ${payload.playerName}（${age}歳・${ROLE_LABEL[payload.roleType]}）`,
+      html: htmlWarning(save) + buildHtml(payload, { ip, userAgent, agreedAt }),
+      text: textWarning(save) + buildText(payload, { ip, userAgent, agreedAt }),
+    });
+    if (error) {
+      console.error("contract_send_error", error);
+      return NextResponse.json(
+        { ok: false, error: "send_failed" },
+        { status: 502 },
+      );
+    }
+  } catch (e) {
+    console.error("contract_send_exception", e);
+    return NextResponse.json(
+      { ok: false, error: "send_exception" },
+      { status: 502 },
+    );
   }
 
   return NextResponse.json({ ok: true });

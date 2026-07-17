@@ -6,6 +6,14 @@ import {
   TRAINEE_AGREEMENT_TEXT,
 } from "@/lib/legal-text";
 import { appendToSheet } from "@/lib/sheets";
+import { ageOnDate } from "@/lib/age";
+import { createRateLimiter, clientIp } from "@/lib/rate-limit";
+import {
+  type SaveResult,
+  subjectPrefix,
+  htmlWarning,
+  textWarning,
+} from "@/lib/notify";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,8 +24,13 @@ const TraineeSchema = z
     realName: z.string().trim().min(1).max(60),
     email: z.string().trim().email().max(200),
     discordId: z.string().trim().max(80).optional().default(""),
-    birthdate: z.string().trim().max(20),
-    age: z.coerce.number().int().min(1).max(120),
+    // 生年月日は必須・実在するISO日付。年齢はサーバーで生年月日から算出するため受け取らない。
+    birthdate: z
+      .string()
+      .trim()
+      .refine((v) => ageOnDate(v) !== null, {
+        message: "生年月日が正しくありません。",
+      }),
     phone: z.string().trim().min(1).max(40),
     address: z.string().trim().min(1).max(200),
     guardianName: z.string().trim().max(80).optional().default(""),
@@ -30,7 +43,9 @@ const TraineeSchema = z
   })
   .refine(
     (v) => {
-      if (v.age < 18) {
+      // 未成年判定は自己申告ではなく生年月日からの算出年齢で行う。
+      const age = ageOnDate(v.birthdate);
+      if (age !== null && age < 18) {
         return (
           v.guardianName.length > 0 &&
           v.guardianContact.length > 0 &&
@@ -47,21 +62,12 @@ const TraineeSchema = z
 
 type TraineePayload = z.infer<typeof TraineeSchema>;
 
-const rateBucket = new Map<string, number[]>();
-const WINDOW_MS = 5 * 60 * 1000;
-const MAX_PER_WINDOW = 3;
-
-function rateLimit(ip: string): boolean {
-  const now = Date.now();
-  const arr = (rateBucket.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (arr.length >= MAX_PER_WINDOW) {
-    rateBucket.set(ip, arr);
-    return false;
-  }
-  arr.push(now);
-  rateBucket.set(ip, arr);
-  return true;
+/** 生年月日からの算出年齢（保存・メール表示に使う） */
+function computedAge(p: TraineePayload): number {
+  return ageOnDate(p.birthdate) ?? 0;
 }
+
+const limiter = createRateLimiter(3, 5 * 60 * 1000);
 
 function escapeHtml(s: string): string {
   return s
@@ -76,7 +82,8 @@ function buildHtml(
   p: TraineePayload,
   meta: { ip: string; userAgent: string; agreedAt: string },
 ): string {
-  const minor = p.age < 18;
+  const age = computedAge(p);
+  const minor = age < 18;
   const guardian = minor
     ? `<tr><th style="text-align:left;padding:8px;background:#f6f8fb;width:160px;">保護者氏名</th><td style="padding:8px;">${escapeHtml(p.guardianName)}</td></tr>
        <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">保護者連絡先</th><td style="padding:8px;">${escapeHtml(p.guardianContact)}</td></tr>`
@@ -90,7 +97,7 @@ function buildHtml(
     <div style="font-size:18px;font-weight:700;margin-top:4px;">${escapeHtml(p.playerName)} <span style="font-weight:400;color:#9aa;font-size:14px;">（${escapeHtml(p.realName)}）</span></div>
   </div>
   <table style="border-collapse:collapse;width:100%;font-size:14px;">
-    <tr><th style="text-align:left;padding:8px;background:#f6f8fb;width:160px;">年齢 / 生年月日</th><td style="padding:8px;">${p.age}歳${minor ? "（未成年）" : ""} / ${escapeHtml(p.birthdate)}</td></tr>
+    <tr><th style="text-align:left;padding:8px;background:#f6f8fb;width:160px;">年齢 / 生年月日</th><td style="padding:8px;">${age}歳${minor ? "（未成年）" : ""} / ${escapeHtml(p.birthdate)}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">メール</th><td style="padding:8px;">${escapeHtml(p.email)}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">電話番号</th><td style="padding:8px;">${escapeHtml(p.phone)}</td></tr>
     <tr><th style="text-align:left;padding:8px;background:#f6f8fb;">Discord ID</th><td style="padding:8px;">${escapeHtml(p.discordId || "—")}</td></tr>
@@ -119,12 +126,13 @@ function buildText(
   p: TraineePayload,
   meta: { ip: string; userAgent: string; agreedAt: string },
 ): string {
-  const minor = p.age < 18;
+  const age = computedAge(p);
+  const minor = age < 18;
   return `AWAKEN GLOW — 練習生登録・規約同意
 
 プレイヤー名: ${p.playerName}
 本名: ${p.realName}
-生年月日: ${p.birthdate} (${p.age}歳${minor ? " 未成年" : ""})
+生年月日: ${p.birthdate} (${age}歳${minor ? " 未成年" : ""})
 メール: ${p.email}
 電話番号: ${p.phone}
 Discord ID: ${p.discordId || "—"}
@@ -150,13 +158,10 @@ User-Agent: ${meta.userAgent}
 }
 
 export async function POST(req: Request) {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
+  const ip = clientIp(req);
   const userAgent = req.headers.get("user-agent") ?? "unknown";
 
-  if (!rateLimit(ip)) {
+  if (limiter.isLimited(ip)) {
     return NextResponse.json(
       { ok: false, error: "rate_limited" },
       { status: 429 },
@@ -181,6 +186,8 @@ export async function POST(req: Request) {
     );
   }
 
+  limiter.record(ip);
+
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.JOIN_NOTIFY_TO;
   const from = process.env.JOIN_NOTIFY_FROM ?? "onboarding@resend.dev";
@@ -194,18 +201,54 @@ export async function POST(req: Request) {
 
   const resend = new Resend(apiKey);
   const payload = parsed.data;
+  const age = computedAge(payload);
+  const minor = age < 18;
   const agreedAt = new Date().toLocaleString("ja-JP", {
     timeZone: "Asia/Tokyo",
   });
 
+  // まず Sheets へ記録（結果を通知メールに反映）。
+  let save: SaveResult = "failed";
+  try {
+    await appendToSheet("trainee", {
+      申請日時: agreedAt,
+      プレイヤー名: payload.playerName,
+      本名: payload.realName,
+      メール: payload.email,
+      "Discord ID": payload.discordId || "",
+      生年月日: payload.birthdate,
+      年齢: String(age),
+      電話番号: payload.phone,
+      住所: payload.address,
+      主なプレイタイトル: payload.mainGame,
+      参加希望理由: payload.joinReason,
+      保護者氏名: payload.guardianName || "",
+      保護者連絡先: payload.guardianContact || "",
+      規約同意: "✅",
+      プライバシー同意: "✅",
+      保護者同意: minor ? (payload.guardianCheck ? "✅" : "") : "—",
+      規約バージョン: TRAINEE_AGREEMENT_VERSION,
+      IP: ip,
+      "User-Agent": userAgent,
+      ステータス: "申請中",
+      管理者メモ: "",
+      "誓約書/契約書URL": "",
+      "Discord メッセージURL": "",
+    });
+    save = "ok";
+  } catch (e) {
+    console.error("trainee_sheets_error", e);
+  }
+
+  // 通知メール（保存の成否を反映して送る）。
   try {
     const { error } = await resend.emails.send({
       from,
       to,
       replyTo: payload.email,
-      subject: `[AWAKEN GLOW] 練習生登録 — ${payload.playerName}（${payload.age}歳）`,
-      html: buildHtml(payload, { ip, userAgent, agreedAt }),
-      text: buildText(payload, { ip, userAgent, agreedAt }),
+      subject: `${subjectPrefix(save)}[AWAKEN GLOW] 練習生登録 — ${payload.playerName}（${age}歳）`,
+      html: htmlWarning(save) + buildHtml(payload, { ip, userAgent, agreedAt }),
+      text: textWarning(save) + buildText(payload, { ip, userAgent, agreedAt }),
     });
     if (error) {
       console.error("trainee_send_error", error);
@@ -220,38 +263,6 @@ export async function POST(req: Request) {
       { ok: false, error: "send_exception" },
       { status: 502 },
     );
-  }
-
-  // Sheets書き込みはベストエフォート（失敗してもメールは飛んでいるので成功扱い）
-  try {
-    await appendToSheet("trainee", {
-      申請日時: agreedAt,
-      プレイヤー名: payload.playerName,
-      本名: payload.realName,
-      メール: payload.email,
-      "Discord ID": payload.discordId || "",
-      生年月日: payload.birthdate,
-      年齢: String(payload.age),
-      電話番号: payload.phone,
-      住所: payload.address,
-      主なプレイタイトル: payload.mainGame,
-      参加希望理由: payload.joinReason,
-      保護者氏名: payload.guardianName || "",
-      保護者連絡先: payload.guardianContact || "",
-      規約同意: "✅",
-      プライバシー同意: "✅",
-      保護者同意: payload.age < 18 ? (payload.guardianCheck ? "✅" : "") : "—",
-      規約バージョン: TRAINEE_AGREEMENT_VERSION,
-      IP: ip,
-      "User-Agent": userAgent,
-      ステータス: "申請中",
-      管理者メモ: "",
-      "誓約書/契約書URL": "",
-      "Discord メッセージURL": "",
-    });
-  } catch (e) {
-    console.error("trainee_sheets_error", e);
-    // メールは飛んでいるので成功は返す
   }
 
   return NextResponse.json({ ok: true });

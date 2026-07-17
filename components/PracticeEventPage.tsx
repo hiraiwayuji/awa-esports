@@ -11,6 +11,7 @@ import type {
   TimeBlock as TimeBlockType,
   TimeSlot,
 } from "@/lib/practice-events";
+import { newSubmissionId } from "@/lib/submission-id";
 
 
 /**
@@ -60,6 +61,8 @@ export default function PracticeEventPage({ event }: { event: PracticeEvent }) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // 1回の申込につき固定のID。再送しても同じIDなのでサーバー側で重複を無視できる。
+  const [submissionId] = useState(newSubmissionId);
 
   const canSubmit = useMemo(() => {
     if (submitting) return false;
@@ -92,7 +95,7 @@ export default function PracticeEventPage({ event }: { event: PracticeEvent }) {
       const res = await fetch("/api/event-entry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, eventDate: event.date }),
+        body: JSON.stringify({ ...form, eventDate: event.date, submissionId }),
       });
       const json = (await res.json().catch(() => ({}))) as { ok?: boolean };
       if (!res.ok || !json.ok) {
