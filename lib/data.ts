@@ -347,6 +347,12 @@ export type Player = {
   name: string;
   division?: PlayerDivision;
   game?: PlayerGame;
+  /**
+   * 選手登録している人（アスリート部門のうち正式に登録済み）。
+   * true の人はメンバーページのアスリート部門で「選手」として最上部に並ぶ。
+   * 未指定の人は「メンバー」として下にゲーム別で並ぶ。
+   */
+  registered?: boolean;
   rank?: PlayerRank;
   avatarUrl?: string;
   avatarUrlHover?: string;
@@ -386,6 +392,7 @@ export const legendPlayers: Player[] = [
     name: "hawk",
     division: "athlete",
     game: "SF6",
+    registered: true,
     rank: "S",
     avatarUrl: "/members/HAWK.png",
     avatarUrlHover: "/members/HAWK-2.jpg",
@@ -533,6 +540,7 @@ export const legendPlayers: Player[] = [
     name: "TKO",
     division: "athlete",
     game: "SF6",
+    registered: true,
     avatarUrl: "/members/TKO.jpg",
     role: "STREET FIGHTER 6",
     tagline: "経験と独創性で、昨日の自分を超える。",
@@ -739,6 +747,7 @@ export const legendPlayers: Player[] = [
     name: "てぃーる",
     division: "athlete",
     game: "MELTY",
+    registered: true,
     role: "MELTY BLOOD / 選手・広報",
     tagline: "スピードと判断で、空気を一気に変える。",
     socials: {

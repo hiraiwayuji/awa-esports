@@ -349,15 +349,22 @@ export default function MembersPage() {
   const athletes = legendPlayers.filter((p) => p.division === "athlete");
   const creators = legendPlayers.filter((p) => p.division === "creator");
 
-  // アスリートをゲーム別にグループ化（順序は GAME_LABELS の定義順）
+  // 選手登録している人を最上部に。それ以外は「メンバー」として下に並べる。
+  const registeredPlayers = athletes.filter((p) => p.registered);
+  const memberAthletes = athletes.filter((p) => !p.registered);
+
+  // メンバーをゲーム別にグループ化（順序は GAME_LABELS の定義順）
   const athleteGroups: Array<{ game: PlayerGame; players: Player[] }> = (
     Object.keys(GAME_LABELS) as PlayerGame[]
   )
-    .map((game) => ({ game, players: athletes.filter((p) => p.game === game) }))
+    .map((game) => ({
+      game,
+      players: memberAthletes.filter((p) => p.game === game),
+    }))
     .filter((g) => g.players.length > 0);
 
-  // game未指定のathlete（フォールバック）も保持
-  const ungroupedAthletes = athletes.filter((p) => !p.game);
+  // game未指定のメンバー（フォールバック）も保持
+  const ungroupedAthletes = memberAthletes.filter((p) => !p.game);
 
   return (
     <PageTransition>
@@ -378,24 +385,8 @@ export default function MembersPage() {
         </div>
       </section>
 
-      {/* Staff cards */}
-      <section className="relative py-12">
-        <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {staff.map((m, i) => (
-              <MemberCard
-                key={m.id}
-                member={m}
-                index={i}
-                onClick={() => setSelected(m)}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Roster */}
-      <section className="relative py-32">
+      {/* Roster（選手 → メンバー → クリエイター → 練習生） */}
+      <section className="relative pt-4 pb-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionTitle
             eyebrow="ROSTER / 所属プレーヤー"
@@ -444,8 +435,44 @@ export default function MembersPage() {
               </div>
             </div>
 
-            {/* ゲーム別サブグループ */}
-            <div className="mt-8 space-y-10">
+            {/* 選手登録している人（最上部） */}
+            {registeredPlayers.length > 0 && (
+              <div className="mt-8">
+                <div className="flex items-end justify-between flex-wrap gap-2 mb-5 pb-3 border-b border-neon-cyan/30">
+                  <div>
+                    <h3 className="font-display font-black text-lg md:text-2xl tracking-tight text-neon-cyan drop-shadow-[0_0_16px_rgba(0,240,255,0.4)]">
+                      選手
+                    </h3>
+                    <p className="mt-1 text-[10px] md:text-xs text-white/55 tracking-wide">
+                      選手登録しているプレーヤー。
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-mono tracking-[0.2em] text-neon-cyan/70">
+                    REGISTERED · {String(registeredPlayers.length).padStart(2, "0")}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 [&:hover>*:not(:hover)]:opacity-40 [&>*]:transition-opacity [&>*]:duration-300">
+                  {registeredPlayers.map((p, i) => (
+                    <PlayerCard
+                      key={p.name}
+                      p={p}
+                      i={i}
+                      variant="athlete"
+                      onClick={() => setSelectedPlayer(p)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* メンバー（選手登録以外）— ゲーム別サブグループ */}
+            <div className="mt-12 flex items-center gap-3">
+              <span className="h-px w-8 bg-white/30" />
+              <span className="text-xs font-display tracking-[0.35em] text-white/70">
+                MEMBERS / メンバー
+              </span>
+            </div>
+            <div className="mt-6 space-y-10">
               {athleteGroups.map(({ game, players }) => {
                 const label = GAME_LABELS[game];
                 return (
@@ -562,9 +589,35 @@ export default function MembersPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Team Uniform — preview */}
-          <div className="mt-16">
+      {/* Staff（選手・メンバーの下） */}
+      <section className="relative pb-24">
+        <div className="mx-auto max-w-7xl px-5 md:px-8">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="h-px w-8 bg-awa-glow" />
+            <span className="text-xs font-display tracking-[0.35em] text-awa-glow">
+              STAFF / スタッフ
+            </span>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {staff.map((m, i) => (
+              <MemberCard
+                key={m.id}
+                member={m}
+                index={i}
+                onClick={() => setSelected(m)}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Uniform — preview */}
+      <section className="relative pb-24">
+        <div className="mx-auto max-w-7xl px-5 md:px-8">
+          <div className="mt-0">
             <div className="flex items-center gap-3 mb-6">
               <span className="h-px w-8 bg-neon-cyan" />
               <span className="text-xs font-display tracking-[0.35em] text-neon-cyan">
