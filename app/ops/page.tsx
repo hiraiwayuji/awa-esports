@@ -37,7 +37,26 @@ type BoardPost = {
   category: "practice" | "tournament" | "supplies" | "other";
   title: string; body: string; event_date: string | null;
 };
-type AttendRow = { post_id: string; name: string };
+type AttendPart = "1" | "2" | "both";
+type AttendRow = { post_id: string; name: string; part: AttendPart | null };
+
+/** 練習会は2部制。part が null の行は2部制になる前の古い参加表明。 */
+const PART_LABEL: Record<AttendPart, string> = {
+  "1": "第1部",
+  "2": "第2部",
+  both: "両方",
+};
+const PART_ORDER: AttendPart[] = ["1", "2", "both"];
+
+/** 内訳表示。2部制前の「部未選択」が居るときだけその数も出し、合計と食い違わないようにする。 */
+function partBreakdown(rows: AttendRow[]): string {
+  const parts = PART_ORDER.map(
+    (pt) => `${PART_LABEL[pt]}${rows.filter((a) => a.part === pt).length}`,
+  );
+  const unset = rows.filter((a) => !a.part).length;
+  if (unset > 0) parts.push(`部未選択${unset}`);
+  return parts.join("・");
+}
 
 type SurveyRow = {
   id: string; created_at: string; name: string;
@@ -219,6 +238,7 @@ function BoardTab({ adminPass }: { adminPass: string }) {
 
   // 代理出欠
   const [proxyName, setProxyName] = useState<Record<string, string>>({});
+  const [proxyPart, setProxyPart] = useState<Record<string, AttendPart>>({});
 
   async function load() {
     const [p, a] = await Promise.all([
@@ -288,24 +308,35 @@ function BoardTab({ adminPass }: { adminPass: string }) {
     await load();
   }
 
+  // 引数名は RPC 定義（p_post_id / p_name / p_part）に合わせること。
+  // 以前は post_id / name で送っていて 404 になり、代理追加が動いていなかった。
   async function proxyJoin(postId: string) {
     const name = (proxyName[postId] ?? "").trim();
     if (!name) return;
-    await rpc("attend_join", { member_pass: adminPass, post_id: postId, name });
+    await rpc("attend_join", {
+      member_pass: adminPass,
+      p_post_id: postId,
+      p_name: name,
+      p_part: proxyPart[postId] ?? "both",
+    });
     setProxyName((p) => ({ ...p, [postId]: "" }));
     await load();
   }
 
   async function proxyCancel(postId: string, name: string) {
-    await rpc("attend_cancel", { member_pass: adminPass, post_id: postId, name });
+    await rpc("attend_cancel", {
+      member_pass: adminPass,
+      p_post_id: postId,
+      p_name: name,
+    });
     await load();
   }
 
   const attendMap = useMemo(() => {
-    const m: Record<string, string[]> = {};
+    const m: Record<string, AttendRow[]> = {};
     for (const a of attend) {
       if (!m[a.post_id]) m[a.post_id] = [];
-      m[a.post_id].push(a.name);
+      m[a.post_id].push(a);
     }
     return m;
   }, [attend]);
@@ -383,13 +414,21 @@ function BoardTab({ adminPass }: { adminPass: string }) {
                   {/* 出欠 */}
                   {post.event_date && (
                     <div className="mt-3 pt-3 border-t border-white/10">
+                      {names.length > 0 && (
+                        <div className="text-[11px] text-white/50 mb-1.5">
+                          参加 {names.length}人（{partBreakdown(names)}）
+                        </div>
+                      )}
                       <div className="flex flex-wrap gap-1.5 mb-2">
                         {names.length === 0
                           ? <span className="text-[11px] text-white/30">参加者なし</span>
-                          : names.map((n) => (
-                            <span key={n} className="flex items-center gap-1 text-[11px] bg-neon-cyan/10 border border-neon-cyan/30 text-neon-cyan rounded-full px-2.5 py-0.5">
-                              {n}
-                              <button onClick={() => proxyCancel(post.id, n)} className="text-neon-cyan/50 hover:text-rose-300 transition ml-0.5">×</button>
+                          : names.map((a) => (
+                            <span key={a.name} className="flex items-center gap-1 text-[11px] bg-neon-cyan/10 border border-neon-cyan/30 text-neon-cyan rounded-full px-2.5 py-0.5">
+                              {a.name}
+                              <span className="text-neon-cyan/60">
+                                / {a.part ? PART_LABEL[a.part] : "部未選択"}
+                              </span>
+                              <button onClick={() => proxyCancel(post.id, a.name)} className="text-neon-cyan/50 hover:text-rose-300 transition ml-0.5">×</button>
                             </span>
                           ))
                         }
@@ -403,6 +442,25 @@ function BoardTab({ adminPass }: { adminPass: string }) {
                           className={`grow text-xs ${inputCls} py-1.5`}
                         />
                         <button onClick={() => proxyJoin(post.id)} className="text-xs border border-neon-cyan/50 text-neon-cyan rounded-lg px-3 hover:bg-neon-cyan/10 transition">追加</button>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {PART_ORDER.map((pt) => {
+                          const active = (proxyPart[post.id] ?? "both") === pt;
+                          return (
+                            <button
+                              key={pt}
+                              type="button"
+                              onClick={() => setProxyPart((p) => ({ ...p, [post.id]: pt }))}
+                              className={`rounded-full border text-[11px] px-3 py-1 transition ${
+                                active
+                                  ? "border-neon-cyan bg-neon-cyan/10 text-neon-cyan"
+                                  : "border-white/20 text-white/55 hover:border-white/40"
+                              }`}
+                            >
+                              {PART_LABEL[pt]}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}

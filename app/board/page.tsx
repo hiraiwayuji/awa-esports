@@ -33,6 +33,49 @@ const CAT_LABEL: Record<Notice["category"], string> = {
   other: "その他連絡",
 };
 
+/** 練習会は2部制。どの枠で参加するかを選んでもらう。 */
+type AttendPart = "1" | "2" | "both";
+
+/** 出欠1件。part が null の行は、2部制になる前の古い参加表明。 */
+type AttendEntry = { name: string; part: AttendPart | null };
+
+const PART_LABEL: Record<
+  AttendPart,
+  { short: string; time: string; badge: string }
+> = {
+  "1": {
+    short: "第1部",
+    time: "10:00〜14:00",
+    badge: "border-neon-cyan/40 bg-neon-cyan/10 text-neon-cyan",
+  },
+  "2": {
+    short: "第2部",
+    time: "14:00〜18:00",
+    badge: "border-awa-glow/40 bg-awa-glow/10 text-awa-glow",
+  },
+  both: {
+    short: "両方",
+    time: "10:00〜18:00",
+    badge: "border-amber-300/40 bg-amber-300/10 text-amber-200",
+  },
+};
+
+const PART_ORDER: AttendPart[] = ["1", "2", "both"];
+
+/**
+ * 内訳表示（例: 第1部2・第2部1・両方3）。
+ * 2部制になる前の「部未選択」が居るときだけ、その数も足して
+ * 「参加◯人」と内訳の合計が食い違って見えないようにする。
+ */
+function partBreakdown(entries: AttendEntry[]): string {
+  const parts = PART_ORDER.map(
+    (pt) => `${PART_LABEL[pt].short}${entries.filter((a) => a.part === pt).length}`,
+  );
+  const unset = entries.filter((a) => !a.part).length;
+  if (unset > 0) parts.push(`部未選択${unset}`);
+  return parts.join("・");
+}
+
 async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
   const res = await fetch(`${AWA_SUPABASE_URL}/rest/v1/rpc/${fn}`, {
     method: "POST",
@@ -100,8 +143,9 @@ export default function BoardPage() {
       ? localStorage.getItem("awa_board_name") || ""
       : "",
   );
-  const [attendance, setAttendance] = useState<Record<string, string[]>>({});
+  const [attendance, setAttendance] = useState<Record<string, AttendEntry[]>>({});
   const [proxyName, setProxyName] = useState<Record<string, string>>({});
+  const [proxyPart, setProxyPart] = useState<Record<string, AttendPart>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [attendMsg, setAttendMsg] = useState<{
     id: string;
@@ -116,19 +160,19 @@ export default function BoardPage() {
 
   async function loadAttendance(pass: string) {
     try {
-      const rows = await rpc<{ post_id: string; name: string }[]>(
-        "attend_all",
-        { member_pass: pass },
-      );
-      const map: Record<string, string[]> = {};
-      for (const r of rows) (map[r.post_id] ??= []).push(r.name);
+      const rows = await rpc<
+        { post_id: string; name: string; part: AttendPart | null }[]
+      >("attend_all", { member_pass: pass });
+      const map: Record<string, AttendEntry[]> = {};
+      for (const r of rows)
+        (map[r.post_id] ??= []).push({ name: r.name, part: r.part });
       setAttendance(map);
     } catch {
       /* noop */
     }
   }
 
-  async function joinEvent(postId: string) {
+  async function joinEvent(postId: string, part: AttendPart) {
     const nm = myName.trim();
     if (!nm) return;
     setBusyId(postId);
@@ -138,9 +182,14 @@ export default function BoardPage() {
         member_pass: memberPass.trim(),
         p_post_id: postId,
         p_name: nm,
+        p_part: part,
       });
       await loadAttendance(memberPass.trim());
-      setAttendMsg({ id: postId, text: "参加しました！", ok: true });
+      setAttendMsg({
+        id: postId,
+        text: `${PART_LABEL[part].short}で参加登録しました！`,
+        ok: true,
+      });
     } catch {
       setAttendMsg({
         id: postId,
@@ -178,6 +227,7 @@ export default function BoardPage() {
   async function proxyAdd(postId: string) {
     const nm = (proxyName[postId] ?? "").trim();
     if (!nm) return;
+    const part = proxyPart[postId] ?? "both";
     setBusyId(postId);
     setAttendMsg(null);
     try {
@@ -185,10 +235,15 @@ export default function BoardPage() {
         member_pass: memberPass.trim(),
         p_post_id: postId,
         p_name: nm,
+        p_part: part,
       });
       await loadAttendance(memberPass.trim());
       setProxyName((p) => ({ ...p, [postId]: "" }));
-      setAttendMsg({ id: postId, text: `「${nm}」を追加しました`, ok: true });
+      setAttendMsg({
+        id: postId,
+        text: `「${nm}」を${PART_LABEL[part].short}で追加しました`,
+        ok: true,
+      });
     } catch {
       setAttendMsg({
         id: postId,
@@ -506,7 +561,15 @@ export default function BoardPage() {
                       <h3 className="text-sm tracking-[0.2em] text-white/70 font-display">
                         {g.label}
                       </h3>
-                      {g.items.map((n) => (
+                      {g.items.map((n) => {
+                        // 自分の参加状況（名前一致）。未参加なら undefined。
+                        const myEntry = myName.trim()
+                          ? (attendance[n.id] ?? []).find(
+                              (a) => a.name === myName.trim(),
+                            )
+                          : undefined;
+                        const myPart = myEntry?.part ?? null;
+                        return (
                         <div
                           key={n.id}
                           className={`rounded-xl border border-white/10 bg-awa-indigo-950/50 p-5 transition ${
@@ -558,37 +621,78 @@ export default function BoardPage() {
                                     {attendance[n.id]?.length ?? 0}
                                   </span>
                                   人
+                                  {n.category === "practice" &&
+                                    (attendance[n.id]?.length ?? 0) > 0 && (
+                                      <span className="text-white/45 ml-1.5">
+                                        （{partBreakdown(attendance[n.id] ?? [])}）
+                                      </span>
+                                    )}
                                 </div>
-                                {n.isPast ? (
+                                {n.isPast && (
                                   <span className="text-[11px] text-white/40">
                                     受付終了
                                   </span>
-                                ) : myName.trim() &&
-                                  attendance[n.id]?.includes(myName.trim()) ? (
-                                  <button
-                                    onClick={() => cancelEvent(n.id)}
-                                    disabled={busyId === n.id}
-                                    className="rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 disabled:opacity-40 text-xs px-4 py-1.5 transition"
-                                  >
-                                    {busyId === n.id ? "処理中…" : "参加を取り消す"}
-                                  </button>
-                                ) : (
-                                  <div className="flex items-center gap-2">
-                                    {!myName.trim() && (
-                                      <span className="text-[11px] text-awa-glow/70">
-                                        ← 先に上で名前を入れてね
-                                      </span>
-                                    )}
-                                    <button
-                                      onClick={() => joinEvent(n.id)}
-                                      disabled={!myName.trim() || busyId === n.id}
-                                      className="rounded-full border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 disabled:cursor-not-allowed text-awa-glow text-xs font-bold px-5 py-1.5 transition"
-                                    >
-                                      {busyId === n.id ? "登録中…" : "参加する"}
-                                    </button>
-                                  </div>
                                 )}
                               </div>
+
+                              {/* 参加の枠を選ぶ（練習会は2部制） */}
+                              {!n.isPast && (
+                                <div className="mt-2.5">
+                                  {!myName.trim() ? (
+                                    <p className="text-[11px] text-awa-glow/70">
+                                      ← 先に上で名前を入れてね
+                                    </p>
+                                  ) : (
+                                    <>
+                                      <div className="flex flex-wrap gap-2">
+                                        {PART_ORDER.map((pt) => {
+                                          const active = myPart === pt;
+                                          return (
+                                            <button
+                                              key={pt}
+                                              onClick={() => joinEvent(n.id, pt)}
+                                              disabled={busyId === n.id}
+                                              className={`rounded-full border text-xs font-bold px-4 py-1.5 transition disabled:opacity-40 ${
+                                                active
+                                                  ? PART_LABEL[pt].badge
+                                                  : "border-white/20 text-white/65 hover:border-white/45 hover:text-white"
+                                              }`}
+                                            >
+                                              {PART_LABEL[pt].short}
+                                              <span className="ml-1.5 font-normal opacity-70">
+                                                {PART_LABEL[pt].time}
+                                              </span>
+                                              {active && " ✓"}
+                                            </button>
+                                          );
+                                        })}
+                                      </div>
+                                      {myEntry ? (
+                                        <div className="mt-2 flex items-center gap-3 flex-wrap">
+                                          <span className="text-[11px] text-white/55">
+                                            {myPart
+                                              ? `${PART_LABEL[myPart].short}で参加予定。押し直せば変更できます。`
+                                              : "参加予定（部は未選択）。上から選べます。"}
+                                          </span>
+                                          <button
+                                            onClick={() => cancelEvent(n.id)}
+                                            disabled={busyId === n.id}
+                                            className="rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 disabled:opacity-40 text-[11px] px-3 py-1 transition"
+                                          >
+                                            {busyId === n.id
+                                              ? "処理中…"
+                                              : "参加を取り消す"}
+                                          </button>
+                                        </div>
+                                      ) : (
+                                        <p className="mt-2 text-[11px] text-white/45">
+                                          参加する枠を押してください。
+                                        </p>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              )}
                               {attendMsg?.id === n.id && (
                                 <p
                                   className={`mt-2 text-[11px] ${attendMsg.ok ? "text-awa-glow" : "text-rose-300"}`}
@@ -598,16 +702,23 @@ export default function BoardPage() {
                               )}
                               {attendance[n.id]?.length ? (
                                 <div className="mt-2 flex flex-wrap gap-1.5">
-                                  {attendance[n.id].map((nm) => (
+                                  {attendance[n.id].map((a) => (
                                     <span
-                                      key={nm}
-                                      className="text-[11px] rounded-full border border-neon-cyan/30 bg-neon-cyan/5 text-neon-cyan/90 px-2 py-0.5 inline-flex items-center gap-1"
+                                      key={a.name}
+                                      className={`text-[11px] rounded-full border px-2 py-0.5 inline-flex items-center gap-1 ${
+                                        a.part
+                                          ? PART_LABEL[a.part].badge
+                                          : "border-white/25 bg-white/5 text-white/70"
+                                      }`}
                                     >
-                                      {nm}
+                                      {a.name}
+                                      <span className="opacity-70">
+                                        / {a.part ? PART_LABEL[a.part].short : "部未選択"}
+                                      </span>
                                       {adminMode && (
                                         <button
-                                          onClick={() => proxyRemove(n.id, nm)}
-                                          aria-label={`${nm} を取り消す`}
+                                          onClick={() => proxyRemove(n.id, a.name)}
+                                          aria-label={`${a.name} を取り消す`}
                                           className="text-rose-300/70 hover:text-rose-300 leading-none font-bold"
                                         >
                                           ×
@@ -624,30 +735,57 @@ export default function BoardPage() {
 
                               {/* 運営：代理で参加追加 */}
                               {adminMode && !n.isPast && (
-                                <div className="mt-3 flex items-center gap-2">
-                                  <input
-                                    type="text"
-                                    value={proxyName[n.id] ?? ""}
-                                    onChange={(e) =>
-                                      setProxyName((p) => ({
-                                        ...p,
-                                        [n.id]: e.target.value,
-                                      }))
-                                    }
-                                    placeholder="メンバー名を入れて代理で追加"
-                                    maxLength={40}
-                                    className="grow rounded-lg border border-awa-glow/30 bg-awa-indigo-950/60 text-white px-3 py-2 text-xs placeholder-white/30 focus:outline-none focus:border-awa-glow transition"
-                                  />
-                                  <button
-                                    onClick={() => proxyAdd(n.id)}
-                                    disabled={
-                                      busyId === n.id ||
-                                      !(proxyName[n.id] ?? "").trim()
-                                    }
-                                    className="rounded-lg border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow text-xs font-bold px-4 py-2 transition shrink-0"
-                                  >
-                                    追加
-                                  </button>
+                                <div className="mt-3 space-y-2">
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="text"
+                                      value={proxyName[n.id] ?? ""}
+                                      onChange={(e) =>
+                                        setProxyName((p) => ({
+                                          ...p,
+                                          [n.id]: e.target.value,
+                                        }))
+                                      }
+                                      placeholder="メンバー名を入れて代理で追加"
+                                      maxLength={40}
+                                      className="grow rounded-lg border border-awa-glow/30 bg-awa-indigo-950/60 text-white px-3 py-2 text-xs placeholder-white/30 focus:outline-none focus:border-awa-glow transition"
+                                    />
+                                    <button
+                                      onClick={() => proxyAdd(n.id)}
+                                      disabled={
+                                        busyId === n.id ||
+                                        !(proxyName[n.id] ?? "").trim()
+                                      }
+                                      className="rounded-lg border border-awa-glow bg-awa-glow/10 hover:bg-awa-glow/20 disabled:opacity-30 text-awa-glow text-xs font-bold px-4 py-2 transition shrink-0"
+                                    >
+                                      追加
+                                    </button>
+                                  </div>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {PART_ORDER.map((pt) => {
+                                      const active =
+                                        (proxyPart[n.id] ?? "both") === pt;
+                                      return (
+                                        <button
+                                          key={pt}
+                                          type="button"
+                                          onClick={() =>
+                                            setProxyPart((p) => ({
+                                              ...p,
+                                              [n.id]: pt,
+                                            }))
+                                          }
+                                          className={`rounded-full border text-[11px] px-3 py-1 transition ${
+                                            active
+                                              ? PART_LABEL[pt].badge
+                                              : "border-white/20 text-white/55 hover:border-white/40"
+                                          }`}
+                                        >
+                                          {PART_LABEL[pt].short}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
                                 </div>
                               )}
                             </div>
@@ -664,7 +802,8 @@ export default function BoardPage() {
                             </div>
                           )}
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   ))}
                 </div>
