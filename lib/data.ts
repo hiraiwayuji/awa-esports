@@ -812,38 +812,6 @@ export const legendPlayers: Player[] = [
     },
   },
   {
-    name: "ボールくん",
-    division: "creator",
-    avatarUrl: "/members/BORU.jpg",
-    role: "STREET FIGHTER 6 / モダンマノン使い",
-    tagline: "コマ投げで、徳島の道を切り開く特攻隊長。",
-    socials: {
-      x: "https://x.com/borukuntkv",
-    },
-    bio: {
-      headline: "元 大塚FC（→徳島ヴォルティス）プロサッカー選手。AWAKEN GLOW 代表が自らアタッカーとしてSF6の最前線に立つ。",
-      paragraphs: [
-        "プレイスタイルはモダンマノンによるコマ投げ中心。攻撃力を武器に、特攻隊長として徳島の道を切り開く。",
-      ],
-      highlights: [
-        "本名：平岩裕治",
-        "主戦：STREET FIGHTER 6（モダンマノン）",
-        "ロール：アタッカー",
-        "強み：攻撃力",
-        "他に好きなゲーム：APEX / Ghost of Tsushima",
-        "経歴：元 大塚FC プロサッカー選手 → 徳島ヴォルティス公式マスコット",
-        "AWAKEN GLOW 創業者・代表",
-      ],
-      message: "徳島を盛り上げるために、特攻隊長として道を切り開いていきます。",
-    },
-    stats: {
-      aggression: 95,
-      patience: 45,
-      teamwork: 70,
-      strategy: 60,
-    },
-  },
-  {
     name: "いわちゃん",
     division: "creator",
     avatarUrl: "/members/IWASA.jpg",
