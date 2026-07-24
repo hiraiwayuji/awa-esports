@@ -9,6 +9,7 @@ import {
   Shield,
   Rocket,
   BrainCircuit,
+  Trophy,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -244,6 +245,29 @@ export const staff: StaffMember[] = [
         "操作ログから脳疲労・メンタルスタックを先回り検知",
         "エイム / 盤面把握 / 立ち回りIQ / タイム予測を数値化",
         "スト6特化のパフォーマンス解析システムを提供",
+      ],
+    },
+  },
+  {
+    id: "STAFF-010",
+    role: "大会運営プロデューサー / TOURNAMENT OPERATIONS",
+    name: "tK",
+    tagline: "大会は、準備がすべて。",
+    icon: Trophy,
+    accent: "warmth",
+    rank: "A+",
+    callsign: "TK",
+    bio: {
+      headline:
+        "AWAKEN GLOW の大会・イベントの企画から当日運営までを支える、トーナメントオペレーションズ担当。",
+      paragraphs: [
+        "レギュレーション設計、対戦表の組み立て、タイムテーブル管理など、大会が滞りなく進むための裏側を担う。",
+        "「選手が競技だけに集中できる場をつくる」ことを信条に、企画段階から当日の進行までチームを支える。",
+      ],
+      highlights: [
+        "AWAKEN GLOW 大会運営 企画・進行サポート",
+        "レギュレーション設計／対戦表・タイムテーブル管理",
+        "当日運営・進行サポート",
       ],
     },
   },
