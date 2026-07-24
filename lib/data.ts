@@ -269,6 +269,9 @@ export const staff: StaffMember[] = [
         "レギュレーション設計／対戦表・タイムテーブル管理",
         "当日運営・進行サポート",
       ],
+      links: [
+        { label: "X (@tK_0089)", url: "https://x.com/tK_0089" },
+      ],
     },
   },
 ];
