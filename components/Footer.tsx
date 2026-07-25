@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Twitter, Instagram } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -14,6 +17,10 @@ const socials: { Icon: LucideIcon; href: string; label: string }[] = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
+  // 管理コンソール（/admin 配下）ではサイト共通フッターを出さない。
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="relative z-10 mt-32 border-t border-neon-cyan/20 bg-awa-indigo-950/80 backdrop-blur-md overflow-hidden">
       <div className="divider-neon" />

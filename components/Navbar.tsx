@@ -40,6 +40,10 @@ export default function Navbar() {
     setOpen(false);
   }, [pathname]);
 
+  // 管理コンソール（/admin 配下）はサイト共通ヘッダーを出さない
+  // （管理画面は独自の左サイドバー／モバイルヘッダーを持つため、重なりを防ぐ）。
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <header
       className={clsx(
