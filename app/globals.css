@@ -335,6 +335,52 @@ select:focus {
   animation: glitch-shift 0.35s steps(2) infinite reverse;
 }
 
+/* ============================================
+   印刷（スポンサー営業前確認シート A4）
+   ============================================ */
+@media print {
+  /* サイト共通の装飾・ナビ・フッターは印刷しない */
+  header,
+  footer,
+  nav,
+  .noise-overlay,
+  .scanline-overlay,
+  .aurora-layer,
+  .cursor-glow {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    background-image: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  /* 印刷シートは白地・黒文字で見やすく */
+  .print-sheet {
+    color: #000 !important;
+    background: #fff !important;
+  }
+  .print-sheet * {
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+  .print-sheet .ps-box {
+    border: 1px solid #999 !important;
+    background: #fff !important;
+    break-inside: avoid;
+  }
+  .print-sheet .ps-badge {
+    border: 2px solid #000 !important;
+  }
+}
+
 /* motion配慮 */
 @media (prefers-reduced-motion: reduce) {
   .aurora-a,

@@ -45,6 +45,9 @@ npm run start
 | `/join` | Join Us — Cockpit UI form、ダミー送信 |
 | `/sponsor` | スポンサー・応援パートナー募集 — 眉山SVG + 提灯背景、6つの応援メニュー（年額・口数）、支援金の使い道、企業メリット、CTA |
 | `/partners` | （旧URL）`/sponsor` へリダイレクト |
+| `/partners-policy` | **スポンサー企業・応援企業に関する規約**（公開）— 審査理由・提携条件・禁止/慎重業種・競合/独占方針・大会規定優先・広告表示・流れ・解除・最終決定 + 問い合わせフォーム |
+| `/admin` | 管理ダッシュボード（Basic認証）— 練習生・正式選手 |
+| `/admin/sponsor-check` | **営業前スポンサー確認**（Basic認証）— 適合チェック / 企業一覧 / カテゴリー / 大会規定 / 問い合わせ / 審査履歴 |
 
 ---
 
@@ -123,6 +126,59 @@ public/about/machi-asobi/loop.mp4   ← 動画もOK
 - [Coverr](https://coverr.co/)（CC0）
 - [Mixkit](https://mixkit.co/free-stock-video/)（無料ライセンス）
 - 阿波踊り公式素材は[徳島市公式](https://www.city.tokushima.tokushima.jp/)から問い合わせ
+
+---
+
+## スポンサー管理機能（/partners-policy ＋ /admin/sponsor-check）
+
+スポンサー・応援企業の**公開規約ページ**と、運営専用の**営業前スポンサー確認機能**（ルールベースの適合チェック・競合/独占管理・大会規定・審査履歴・A4印刷シート）。
+
+### アーキテクチャ
+
+- **公開ページ** `/partners-policy`：規約12セクション + 問い合わせフォーム（`/api/partners-inquiry`）。zod検証 + IP単位レートリミット + XSSエスケープ。問い合わせは非公開テーブルへ保存し、Resendで運営へ通知。
+- **管理画面** `/admin/sponsor-check`：`middleware.ts` の Basic 認証（`/admin/*`・`/api/admin/*`）で保護。各 API 側でも `canRead` / `requireAdmin` で再確認（多層防御）。
+- **判定エンジン** `lib/sponsor/screening.ts`：純粋関数。禁止(A)/慎重(B)/競合(C)/独占(D)/関連(E)/期間(F)/地域(G)/イベント(H)/ゲーム(I)/大会規定(J)/法人情報(K)/不足(L)/広告表示(M)/肖像・ロゴ(N) を確認し、緑/黄/橙/赤/灰の5段階で判定＋日本語理由を生成。**最終承認は必ず人間**（履歴タブで記録）。
+
+### データベース（Supabase）
+
+このプロジェクトの Supabase（`uatmzcnoumafeuzprkdo`）は他アプリと同居する共有DBのため、スポンサー系テーブルはすべて **`awa_sponsor_` プレフィックス**で追加（既存テーブルには一切触れない）。
+
+- `awa_sponsor_categories` / `awa_sponsor_companies` / `awa_sponsor_rights` / `awa_tournament_sponsor_rules` / `awa_sponsor_screenings` / `awa_sponsor_inquiries` / `awa_sponsor_audit_logs`
+- マイグレーション：[`supabase/migrations/20260725_awa_sponsor.sql`](./supabase/migrations/20260725_awa_sponsor.sql)、初期カテゴリー：[`supabase/seed/awa_sponsor_categories.sql`](./supabase/seed/awa_sponsor_categories.sql)（**適用済み**）。
+- **RLS**：全テーブルで有効化＋anon/authenticated 用ポリシーなし＝publishable(anon)キーからは読み書き不可（完全遮断）。アクセスは**サーバーの service_role キーのみ**（RLSバイパス、フロントに出さない）。
+
+### 必要な環境変数（Vercel Production）
+
+| 変数 | 用途 | 未設定時の挙動 |
+| --- | --- | --- |
+| `ADMIN_USER` / `ADMIN_PASSWORD` | 管理者（作成・更新・承認・削除まで可）Basic認証 | 管理画面全体が 503 |
+| `ADMIN_VIEWER_USER` / `ADMIN_VIEWER_PASSWORD` | （任意）閲覧者（閲覧のみ・編集不可） | 閲覧者ログインが無効になるだけ |
+| `SUPABASE_SERVICE_ROLE_KEY` | スポンサーDBへのサーバー専用アクセス（`sb_secret_...`） | 適合チェック・企業管理・履歴保存が 503（画面に警告表示）。公開問い合わせはメール通知のみで継続 |
+| `HOUJIN_BANGOU_APP_ID` | 国税庁 法人番号 Web-API アプリケーションID | 「法人番号API未設定」表示＋公表サイトへの手動確認導線 |
+| `RESEND_API_KEY` / `SPONSOR_NOTIFY_TO`（無ければ `JOIN_NOTIFY_TO`） | 問い合わせ通知メール（既存と共用） | 通知メールなし（DB保存があれば記録は残る） |
+
+Vercel CLI 例：
+```bash
+printf 'sb_secret_xxxxx' | vercel env add SUPABASE_SERVICE_ROLE_KEY production
+printf 'あなたのアプリID' | vercel env add HOUJIN_BANGOU_APP_ID production
+printf 'viewer' | vercel env add ADMIN_VIEWER_USER production
+printf '閲覧用パスワード' | vercel env add ADMIN_VIEWER_PASSWORD production
+```
+
+> `SUPABASE_SERVICE_ROLE_KEY` は Supabase ダッシュボード → Project Settings → API Keys の **secret key** を使用。**絶対にフロントエンド／公開リポジトリに置かない**こと。
+
+### 国税庁 法人番号 API の設定
+
+1. [法人番号システム Web-API](https://www.houjin-bangou.nta.go.jp/webapi/) でアプリケーションID（無料）を申請・取得。
+2. `HOUJIN_BANGOU_APP_ID` に設定（サーバー専用。クライアントには一切出ない）。
+3. 管理画面「適合チェック」の法人番号欄で「番号で確認 / 名称で検索」→ 候補を「反映」で入力欄へ。
+4. 未設定でもエラーにはならず、公表サイトでの手動確認導線を表示。**法人実在の確認はスポンサー適格性を保証しない**旨を明記。
+
+### 権限（ロール）
+
+- `admin`：全操作（作成・更新・承認・論理削除・CSV）
+- `viewer`：閲覧のみ（書き込み系 API は 401、UIも編集ボタン非表示）
+- 削除は原則**論理削除**（`is_deleted`）。全変更は `awa_sponsor_audit_logs` に記録。
 
 ---
 

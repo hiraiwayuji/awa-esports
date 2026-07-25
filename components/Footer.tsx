@@ -64,6 +64,7 @@ export default function Footer() {
               ["/schedule", "Schedule"],
               ["/news", "News"],
               ["/sponsor", "スポンサー募集"],
+              ["/partners-policy", "スポンサー規約"],
               ["/join", "Join Us"],
               ["/trainee-entry", "練習生登録"],
               ["/player-contract", "正式選手登録"],
