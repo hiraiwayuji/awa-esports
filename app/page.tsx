@@ -285,6 +285,47 @@ export default function HomePage() {
         </motion.div>
       </section>
 
+      {/* スト6 オンライン対戦会 — 対戦相手募集 */}
+      <section className="relative pb-4">
+        <div className="mx-auto max-w-7xl px-5 md:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-5 rounded-2xl border border-neon-cyan/30 bg-awa-indigo-900/40 backdrop-blur-md px-7 py-7 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-radial-glow opacity-20 pointer-events-none" />
+            <div className="relative z-10">
+              <p className="flex items-center gap-2 text-[11px] font-display tracking-[0.3em] text-neon-cyan mb-2">
+                <span
+                  aria-hidden
+                  className="inline-block w-1.5 h-1.5 rounded-full bg-neon-cyan animate-pulse-slow"
+                />
+                SF6 / オンライン対戦会
+              </p>
+              <h3 className="text-xl md:text-2xl font-bold text-white">
+                対戦相手を
+                <span className="text-neon-cyan">随時募集中。</span>
+              </h3>
+              <p className="mt-2 text-sm text-white/60 [word-break:auto-phrase]">
+                ストリートファイター6のオンライン対戦会をひらいています。チーム・個人は問いません。
+              </p>
+              <p className="mt-1 text-sm text-white/60 [word-break:auto-phrase]">
+                募集・お問い合わせは X まで。
+              </p>
+            </div>
+            <a
+              href="https://x.com/awaken_glow"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative z-10 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-neon-cyan/50 text-neon-cyan font-display tracking-[0.2em] text-xs uppercase hover:bg-neon-cyan/10 transition-colors whitespace-nowrap"
+            >
+              X @awaken_glow →
+            </a>
+          </motion.div>
+        </div>
+      </section>
+
       {/* MARQUEE — 2段逆走 */}
       <section className="relative py-10 border-y border-white/10 overflow-hidden bg-awa-indigo-900/30">
         <div className="flex whitespace-nowrap animate-marquee">
