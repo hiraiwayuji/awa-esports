@@ -183,12 +183,10 @@ export async function POST(req: Request) {
     const events = [...payload.events];
     if (payload.eventsOther) events.push(`その他：${payload.eventsOther}`);
     const res = await fetch(
-      `${AWA_SUPABASE_URL}/rest/v1/awa_survey_responses?on_conflict=submission_id`,
+      `${AWA_SUPABASE_URL}/rest/v1/awa_survey_responses`,
       {
         method: "POST",
-        headers: awaSupabaseHeaders({
-          Prefer: "return=minimal,resolution=ignore-duplicates",
-        }),
+        headers: awaSupabaseHeaders({ Prefer: "return=minimal" }),
         body: JSON.stringify({
           submission_id: payload.submissionId ?? null,
           name: payload.name || "",
@@ -206,7 +204,8 @@ export async function POST(req: Request) {
         }),
       },
     );
-    if (res.ok) {
+    if (res.ok || res.status === 409) {
+      // 409 = submission_id の一意制約違反（再送による重複）。保存済みとして扱う。
       save = "ok";
     } else {
       console.error("survey_supabase_error", res.status, await res.text());
