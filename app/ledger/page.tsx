@@ -5,6 +5,8 @@ import Link from "next/link";
 import PageTransition from "@/components/PageTransition";
 import SectionTitle from "@/components/SectionTitle";
 import { AWA_SUPABASE_URL, AWA_SUPABASE_KEY, awaSupabaseHeaders } from "@/lib/awa-supabase";
+import { type ParsedInvoice } from "@/lib/invoice-parse";
+import { readInvoicePdf } from "@/lib/invoice-pdf";
 
 type Entry = {
   id: string;
@@ -42,6 +44,16 @@ async function fnCall(payload: Record<string, unknown>) {
 
 const yen = (n: number) => `¥${(n ?? 0).toLocaleString("ja-JP")}`;
 
+/** 同じ請求書がもう帳簿にあるか（請求書No か、同じ日・同じ金額の支出） */
+function findSameInvoice(entries: Entry[], inv: ParsedInvoice): Entry | undefined {
+  return (
+    (inv.invoiceNo ? entries.find((e) => e.memo?.includes(inv.invoiceNo)) : undefined) ??
+    entries.find(
+      (e) => e.kind === "expense" && e.entry_date === inv.eventDate && e.amount === inv.total,
+    )
+  );
+}
+
 const inputCls =
   "rounded-lg border border-white/15 bg-awa-indigo-950/60 text-white px-3 py-2.5 text-sm placeholder-white/30 focus:outline-none focus:border-neon-cyan transition";
 
@@ -61,6 +73,13 @@ export default function LedgerPage() {
   const [createReceipt, setCreateReceipt] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  // 請求書PDFを選んだときの読み取り結果
+  const [reading, setReading] = useState(false);
+  const [readMsg, setReadMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [sameEntry, setSameEntry] = useState<Entry | null>(null);
+  const [attaching, setAttaching] = useState(false);
+  // 欄を請求書から自動で埋めたか（別のファイルに選び直したら消すため）
+  const [autoFilled, setAutoFilled] = useState(false);
 
   // 編集フォーム
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -120,10 +139,105 @@ export default function LedgerPage() {
     };
   }
 
+  function resetCreateForm() {
+    setItem("");
+    setAmount("");
+    setMemo("");
+    setDate("");
+    setCreateReceipt(null);
+    setReadMsg(null);
+    setSameEntry(null);
+    setAutoFilled(false);
+    const inp = document.getElementById("create-receipt") as HTMLInputElement | null;
+    if (inp) inp.value = "";
+  }
+
+  // 請求書PDFを選んだら中身を読んで、項目・金額・日付・メモを埋める
+  async function onCreateFile(file: File | null) {
+    setCreateReceipt(file);
+    setReadMsg(null);
+    setSameEntry(null);
+    // 前の請求書から埋めた中身が、選び直したファイルと食い違わないよう消す
+    if (autoFilled) {
+      setItem("");
+      setAmount("");
+      setMemo("");
+      setDate("");
+      setAutoFilled(false);
+    }
+    if (!file) return;
+    if (!/\.pdf$/i.test(file.name) && file.type !== "application/pdf") return;
+    setReading(true);
+    try {
+      const inv = await readInvoicePdf(file);
+      if (!inv) {
+        setReadMsg({
+          text: "請求書の中身を読み取れませんでした。項目・金額を手で入れてください。",
+          ok: false,
+        });
+      } else {
+        setKind("expense");
+        setDate(inv.eventDate);
+        setItem(inv.item);
+        setAmount(String(inv.total));
+        setMemo(inv.memo);
+        setAutoFilled(true);
+        const same = findSameInvoice(entries, inv);
+        setSameEntry(same ?? null);
+        setReadMsg({
+          text: "請求書から読み取って入れました。中身を確かめてから「記録する」を押してください。",
+          ok: true,
+        });
+      }
+    } catch {
+      setReadMsg({
+        text: "請求書の中身を読み取れませんでした。項目・金額を手で入れてください。",
+        ok: false,
+      });
+    }
+    setReading(false);
+  }
+
+  // もう記録してある行に、選んだ請求書を添付するだけにする（二重記録を防ぐ）
+  async function attachToSame() {
+    if (!sameEntry || !createReceipt || attaching) return;
+    setAttaching(true);
+    setMsg(null);
+    try {
+      const receipt = await uploadReceipt(sameEntry.id, createReceipt);
+      if (!receipt) throw new Error("upload");
+      await rpc("ledger_update", {
+        admin_pass: adminPass.trim(),
+        target_id: sameEntry.id,
+        p_entry_date: sameEntry.entry_date || null,
+        p_kind: sameEntry.kind,
+        p_item: sameEntry.item,
+        p_amount: sameEntry.amount,
+        p_memo: sameEntry.memo ?? "",
+        p_receipt_path: receipt.storage_path,
+        p_receipt_name: receipt.file_name,
+        p_clear_receipt: false,
+      });
+      resetCreateForm();
+      await load();
+      setMsg({ text: `「${sameEntry.item}」に請求書を添付しました`, ok: true });
+    } catch {
+      setMsg({ text: "添付できませんでした。もう一度お試しください。", ok: false });
+    }
+    setAttaching(false);
+  }
+
   async function addEntry(e: React.FormEvent) {
     e.preventDefault();
     const amt = Number.parseInt(amount, 10);
     if (!item.trim() || !Number.isFinite(amt) || amt < 0 || saving) return;
+    if (
+      sameEntry &&
+      !window.confirm(
+        `同じ請求書が「${sameEntry.entry_date} ${sameEntry.item}」でもう記録されています。\n新しく記録すると二重になります。それでも記録しますか？`,
+      )
+    )
+      return;
     setSaving(true);
     setMsg(null);
     try {
@@ -153,13 +267,7 @@ export default function LedgerPage() {
         }
       }
 
-      setItem("");
-      setAmount("");
-      setMemo("");
-      setDate("");
-      setCreateReceipt(null);
-      const inp = document.getElementById("create-receipt") as HTMLInputElement | null;
-      if (inp) inp.value = "";
+      resetCreateForm();
       await load();
       setMsg({ text: "記録しました", ok: true });
     } catch {
@@ -420,10 +528,44 @@ export default function LedgerPage() {
                     id="create-receipt"
                     type="file"
                     accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
-                    onChange={(e) => setCreateReceipt(e.target.files?.[0] ?? null)}
+                    onChange={(e) => onCreateFile(e.target.files?.[0] ?? null)}
                     className="w-full text-sm text-white/70 file:mr-3 file:rounded-lg file:border-0 file:bg-awa-glow/15 file:text-awa-glow file:px-3 file:py-1.5 file:text-xs file:font-bold hover:file:bg-awa-glow/25"
                   />
-                  <p className="text-[11px] text-white/30">写真・PDF・Wordなど（25MBまで）</p>
+                  <p className="text-[11px] text-white/30">
+                    写真・PDF・Wordなど（25MBまで）。請求書のPDFを選ぶと、中身を読んで上の欄に入れます。
+                  </p>
+                  {reading && <p className="text-[12px] text-white/60">請求書を読み取り中…</p>}
+                  {readMsg && (
+                    <p className={`text-[12px] ${readMsg.ok ? "text-awa-glow" : "text-rose-300"}`}>
+                      {readMsg.text}
+                    </p>
+                  )}
+                  {sameEntry && (
+                    <div className="rounded-lg border border-amber-400/50 bg-amber-500/10 p-3 space-y-2">
+                      <p className="text-[12px] text-amber-100 leading-relaxed">
+                        この請求書は、もう帳簿にあります：
+                        <br />
+                        <span className="font-bold">
+                          {sameEntry.entry_date} {sameEntry.item} {yen(sameEntry.amount)}
+                        </span>
+                        {sameEntry.receipt_path && "（添付あり）"}
+                        <br />
+                        「記録する」を押すと二重になります。添付だけなら下のボタンを押してください。
+                      </p>
+                      <button
+                        type="button"
+                        onClick={attachToSame}
+                        disabled={attaching}
+                        className="rounded-lg border border-amber-300 bg-amber-400/15 hover:bg-amber-400/25 disabled:opacity-40 text-amber-100 text-xs font-bold px-4 py-2 transition"
+                      >
+                        {attaching
+                          ? "添付中…"
+                          : sameEntry.receipt_path
+                            ? "この行の請求書を差し替える"
+                            : "この行に請求書を添付する"}
+                      </button>
+                    </div>
+                  )}
                 </div>
                 {msg && (
                   <p className={`text-[12px] ${msg.ok ? "text-awa-glow" : "text-rose-300"}`}>
