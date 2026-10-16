@@ -2,17 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Twitter, Instagram } from "lucide-react";
+import { Twitter, Instagram, Youtube } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 // 公式SNSは開設次第ここに追加。
-// YouTube / Twitch は未開設のため非表示。
+// Twitch は未開設のため非表示。YouTube は 2026-10-16 開設。
 const socials: { Icon: LucideIcon; href: string; label: string }[] = [
   { Icon: Twitter, href: "https://x.com/awaken_glow", label: "X (@awaken_glow)" },
   {
     Icon: Instagram,
     href: "https://www.instagram.com/awakenglow2026/",
     label: "Instagram (@awakenglow2026)",
+  },
+  {
+    Icon: Youtube,
+    href: "https://www.youtube.com/@AwakenGlow-g9o",
+    label: "YouTube (AwakenGlow)",
   },
 ];
 
