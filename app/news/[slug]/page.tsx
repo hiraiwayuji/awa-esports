@@ -70,8 +70,19 @@ const mdxComponents = {
   ),
   // 埋め込みが許可されていない動画（ライブのアーカイブなど）は、サムネイルを押すとYouTubeで開くカードにする。
   // 記事中で <YouTubeCard id="動画ID" title="説明" /> と書く。
-  // サムネイルに記事と食い違う文字（日付など）が入っているときは noThumb を付けて文字だけのカードにする
-  YouTubeCard: ({ id, title, noThumb }: { id: string; title?: string; noThumb?: boolean }) =>
+  // サムネイルに記事と食い違う文字（日付など）が入っているときは noThumb を付けて文字だけのカードにする。
+  // YouTube側でサムネイルを直してもしばらく古い画像が配られるので、直した画像を public に置いて thumb で指定できる
+  YouTubeCard: ({
+    id,
+    title,
+    noThumb,
+    thumb,
+  }: {
+    id: string;
+    title?: string;
+    noThumb?: boolean;
+    thumb?: string;
+  }) =>
     noThumb ? (
       <a
         href={`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`}
@@ -94,17 +105,21 @@ const mdxComponents = {
       href={`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative my-6 block aspect-video w-full overflow-hidden rounded-xl border border-neon-cyan/20 shadow-[0_0_30px_rgba(0,240,255,0.12)]"
+      className="group my-6 block w-full overflow-hidden rounded-xl border border-neon-cyan/20 shadow-[0_0_30px_rgba(0,240,255,0.12)] transition hover:border-neon-cyan/60"
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={`https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`}
-        alt={title ?? "YouTube動画"}
-        className="h-full w-full object-cover transition group-hover:scale-[1.02]"
-        loading="lazy"
-      />
-      <span className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/15 transition">
-        <span className="flex items-center gap-2 rounded-full bg-[#ff0000] px-5 py-3 text-sm font-bold text-white shadow-lg">
+      <span className="block aspect-video w-full overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={thumb ?? `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`}
+          alt={title ?? "YouTube動画"}
+          className="h-full w-full object-cover transition group-hover:scale-[1.02]"
+          loading="lazy"
+        />
+      </span>
+      {/* ボタンはサムネイルの文字（日付・対戦相手名など）を隠さないよう、画像の下に出す */}
+      <span className="flex items-center justify-between gap-3 bg-awa-indigo-900/70 px-4 py-3">
+        <span className="min-w-0 truncate text-sm font-bold text-white">{title ?? "YouTube動画"}</span>
+        <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#ff0000] px-3 py-1.5 text-xs font-bold text-white md:text-sm">
           ▶ YouTubeで見る
         </span>
       </span>
