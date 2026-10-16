@@ -68,6 +68,62 @@ const mdxComponents = {
       {...props}
     />
   ),
+  // 埋め込みが許可されていない動画（ライブのアーカイブなど）は、サムネイルを押すとYouTubeで開くカードにする。
+  // 記事中で <YouTubeCard id="動画ID" title="説明" /> と書く。
+  // サムネイルに記事と食い違う文字（日付など）が入っているときは noThumb を付けて文字だけのカードにする
+  YouTubeCard: ({ id, title, noThumb }: { id: string; title?: string; noThumb?: boolean }) =>
+    noThumb ? (
+      <a
+        href={`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group my-6 flex items-center gap-4 rounded-xl border border-neon-cyan/30 bg-awa-indigo-900/50 p-5 shadow-[0_0_30px_rgba(0,240,255,0.12)] transition hover:border-neon-cyan"
+      >
+        <span className="flex h-12 w-16 shrink-0 items-center justify-center rounded-lg bg-[#ff0000] text-xl text-white">
+          ▶
+        </span>
+        <span className="min-w-0">
+          <span className="block font-bold text-white">{title ?? "YouTube動画"}</span>
+          <span className="block text-xs text-neon-cyan group-hover:text-awa-glow">
+            YouTubeで見る →
+          </span>
+        </span>
+      </a>
+    ) : (
+    <a
+      href={`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative my-6 block aspect-video w-full overflow-hidden rounded-xl border border-neon-cyan/20 shadow-[0_0_30px_rgba(0,240,255,0.12)]"
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`}
+        alt={title ?? "YouTube動画"}
+        className="h-full w-full object-cover transition group-hover:scale-[1.02]"
+        loading="lazy"
+      />
+      <span className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/15 transition">
+        <span className="flex items-center gap-2 rounded-full bg-[#ff0000] px-5 py-3 text-sm font-bold text-white shadow-lg">
+          ▶ YouTubeで見る
+        </span>
+      </span>
+    </a>
+  ),
+  // 記事中で <YouTube id="動画ID" title="説明" /> と書くと動画を埋め込む
+  YouTube: ({ id, title }: { id: string; title?: string }) => (
+    <div className="my-6 aspect-video w-full overflow-hidden rounded-xl border border-neon-cyan/20 shadow-[0_0_30px_rgba(0,240,255,0.12)]">
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`}
+        title={title ?? "YouTube動画"}
+        className="h-full w-full"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+      />
+    </div>
+  ),
 };
 
 export async function generateStaticParams() {
