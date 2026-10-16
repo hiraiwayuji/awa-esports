@@ -18,6 +18,12 @@ export type TshirtItems = Partial<Record<TshirtSizeKey, number>>;
 
 export const TSHIRT_MAX_PER_SIZE = 20;
 
+/** 注文の締め切り（この日の終わりまで受け付ける）。過ぎたら回答ページとAPIは受付を止める。
+ *  締め切り後の追加は集計ページの「注文を代理で追加」から入れる。 */
+export const TSHIRT_DEADLINE_LABEL = "10月18日（日）";
+export const TSHIRT_DEADLINE_END = Date.parse("2026-10-18T23:59:59+09:00");
+export const tshirtOrderClosed = (now: number = Date.now()) => now > TSHIRT_DEADLINE_END;
+
 export function tshirtTotals(items: TshirtItems) {
   let qty = 0;
   let price = 0;

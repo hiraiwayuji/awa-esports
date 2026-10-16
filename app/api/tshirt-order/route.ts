@@ -6,6 +6,7 @@ import {
   TSHIRT_MAX_PER_SIZE,
   TSHIRT_SIZES,
   normalizeTshirtItems,
+  tshirtOrderClosed,
   tshirtTotals,
   type TshirtItems,
 } from "@/lib/tshirt-order";
@@ -32,6 +33,10 @@ const limiter = createRateLimiter(5, 5 * 60 * 1000);
 
 export async function POST(req: Request) {
   const ip = clientIp(req);
+
+  if (tshirtOrderClosed()) {
+    return NextResponse.json({ ok: false, error: "closed" }, { status: 403 });
+  }
 
   if (limiter.isLimited(ip)) {
     return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });

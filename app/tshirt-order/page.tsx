@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import SectionTitle from "@/components/SectionTitle";
@@ -8,8 +8,10 @@ import PageTransition from "@/components/PageTransition";
 import { newSubmissionId } from "@/lib/submission-id";
 import {
   TSHIRT_MAX_PER_SIZE,
+  TSHIRT_DEADLINE_LABEL,
   TSHIRT_SIZES,
   formatTshirtItems,
+  tshirtOrderClosed,
   tshirtTotals,
   yen,
   type TshirtItems,
@@ -24,6 +26,9 @@ export default function TshirtOrderPage() {
   const [done, setDone] = useState<{ summary: string; price: number } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submissionId] = useState(newSubmissionId);
+  // 締め切り判定は見ている人の時計で行う（サーバー描画とずれないよう描画後に判定）
+  const [closed, setClosed] = useState(false);
+  useEffect(() => setClosed(tshirtOrderClosed()), []);
 
   const totals = useMemo(() => tshirtTotals(items), [items]);
   const canSubmit = !submitting && name.trim() !== "" && totals.qty > 0;
@@ -42,7 +47,12 @@ export default function TshirtOrderPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, items, memo, submissionId }),
       });
-      const json = (await res.json().catch(() => ({}))) as { ok?: boolean };
+      const json = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (json.error === "closed") {
+        setClosed(true);
+        setSubmitting(false);
+        return;
+      }
       if (!res.ok || !json.ok) {
         setErrorMessage("送信に失敗しました。少し時間をおいて再度お試しください。");
         setSubmitting(false);
@@ -97,6 +107,10 @@ export default function TshirtOrderPage() {
           </div>
           <p className="text-center text-xs text-white/50">左：表／右：裏　色：ブラック</p>
           <div className="rounded-2xl border border-neon-cyan/30 bg-awa-indigo-900/40 backdrop-blur-md p-7 md:p-9 space-y-4 text-[15px] text-white/85 leading-relaxed">
+            <div className="rounded-lg border border-awa-glow/50 bg-awa-glow/[0.08] px-4 py-3">
+              <span className="text-xs tracking-[0.2em] text-awa-glow mr-3">締め切り</span>
+              <span className="text-white font-bold">{TSHIRT_DEADLINE_LABEL}まで</span>
+            </div>
             <div>
               <p className="text-xs tracking-[0.2em] text-awa-glow mb-2">値段（1枚）</p>
               <ul className="space-y-1.5 text-white/80">
@@ -113,6 +127,8 @@ export default function TshirtOrderPage() {
 
       {done ? (
         <ThanksCard summary={done.summary} price={done.price} />
+      ) : closed ? (
+        <ClosedCard />
       ) : (
         <section className="relative pb-24">
           <div className="mx-auto max-w-3xl px-5 md:px-8">
@@ -225,6 +241,32 @@ export default function TshirtOrderPage() {
         </section>
       )}
     </PageTransition>
+  );
+}
+
+function ClosedCard() {
+  return (
+    <section className="relative pb-32">
+      <div className="mx-auto max-w-2xl px-5 md:px-8">
+        <div className="rounded-2xl border border-white/15 bg-awa-indigo-900/40 backdrop-blur-md p-8 md:p-10 text-center space-y-4">
+          <h2 className="text-2xl md:text-3xl font-display font-black text-white">
+            注文は締め切りました
+          </h2>
+          <p className="text-sm md:text-base text-white/80 leading-relaxed">
+            {TSHIRT_DEADLINE_LABEL}で締め切りました。たくさんの注文ありがとうございました。
+            まだほしい方は、運営にLINE・Discordで連絡してください。
+          </p>
+          <div className="pt-2">
+            <Link
+              href="/"
+              className="inline-block rounded-full border border-neon-cyan/60 text-neon-cyan px-5 py-2 text-xs tracking-[0.25em] font-display hover:bg-neon-cyan/10 transition"
+            >
+              トップへ戻る →
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
